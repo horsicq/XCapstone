@@ -20,6 +20,12 @@
 //
 #include "xcapstone.h"
 
+#if defined(_MSC_VER)
+#if _MSC_VER > 1800
+#pragma comment(lib, "legacy_stdio_definitions.lib") // vsprintf
+#endif
+#endif
+
 XCapstone::XCapstone(QObject *parent) : QObject(parent)
 {
 
