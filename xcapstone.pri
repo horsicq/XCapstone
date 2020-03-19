@@ -9,5 +9,5 @@ SOURCES += \
 
 !contains(XCONFIG, capstone) {
     XCONFIG += capstone
-    include(3rdparty/Capstone/QCapstone_x86.pri)
+    include($$PWD/3rdparty/Capstone/QCapstone_x86.pri)
 }
