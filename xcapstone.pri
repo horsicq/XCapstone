@@ -7,7 +7,7 @@ HEADERS += \
 SOURCES += \
     $$PWD/xcapstone.cpp
 
-!contains(XCONFIG, capstone) {
-    XCONFIG += capstone
-    include($$PWD/3rdparty/Capstone/QCapstone_x86.pri)
+!contains(XCONFIG, Capstone) {
+    XCONFIG += Capstone
+    include($$PWD/3rdparty/Capstone/Capstone.pri)
 }
