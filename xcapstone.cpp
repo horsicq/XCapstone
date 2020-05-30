@@ -25,6 +25,7 @@
 #pragma comment(lib, "legacy_stdio_definitions.lib") // vsprintf
 #endif
 #endif
+#pragma comment(lib, "legacy_stdio_definitions.lib")
 
 XCapstone::XCapstone(QObject *parent) : QObject(parent)
 {
