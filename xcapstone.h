@@ -27,6 +27,7 @@
 class XCapstone : public QObject
 {
     Q_OBJECT
+
 public:
     explicit XCapstone(QObject *parent=nullptr);
     static QString disasm(csh handle,qint64 nAddress,char *pData,int nDataSize);
