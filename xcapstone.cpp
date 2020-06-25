@@ -45,10 +45,7 @@ QString XCapstone::disasm(csh handle, qint64 nAddress, char *pData, int nDataSiz
 
         sResult+=sMnemonic;
 
-        if(sStr!="")
-        {
-            sResult+=QString(" %1").arg(sStr);
-        }
+        if(sStr!="") sResult+=QString(" %1").arg(sStr);
 
         cs_free(insn, count);
     }
