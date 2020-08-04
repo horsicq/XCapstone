@@ -26,7 +26,7 @@
 #endif
 #endif
 
-XCapstone::XCapstone(QObject *parent) : QObject(parent)
+XCapstone::XCapstone(QObject *pParent) : QObject(pParent)
 {
 
 }

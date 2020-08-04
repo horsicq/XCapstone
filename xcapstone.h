@@ -29,7 +29,7 @@ class XCapstone : public QObject
     Q_OBJECT
 
 public:
-    explicit XCapstone(QObject *parent=nullptr);
+    explicit XCapstone(QObject *pParent=nullptr);
     static QString disasm(csh handle,qint64 nAddress,char *pData,int nDataSize);
 };
 
