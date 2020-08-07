@@ -35,19 +35,19 @@ QString XCapstone::disasm(csh handle, qint64 nAddress, char *pData, int nDataSiz
 {
     QString sResult;
 
-    cs_insn *insn;
+    cs_insn *pInsn=0;
 
-    int count=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&insn);
+    int count=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
     if(count>0)
     {
-        QString sMnemonic=insn->mnemonic;
-        QString sStr=insn->op_str;
+        QString sMnemonic=pInsn->mnemonic;
+        QString sStr=pInsn->op_str;
 
         sResult+=sMnemonic;
 
         if(sStr!="") sResult+=QString(" %1").arg(sStr);
 
-        cs_free(insn, count);
+        cs_free(pInsn, count);
     }
 
     return sResult;
