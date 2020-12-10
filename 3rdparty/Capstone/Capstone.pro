@@ -56,6 +56,7 @@ SOURCES += \
     $$PWD/src/SStream.c \
     $$PWD/src/MCRegisterInfo.c \
     $$PWD/src/utils.c \
+    src/MCInstrDesc.c \
     src/arch/AArch64/AArch64BaseInfo.c \
     src/arch/AArch64/AArch64Disassembler.c \
     src/arch/AArch64/AArch64InstPrinter.c \
