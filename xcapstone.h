@@ -31,6 +31,7 @@ class XCapstone : public QObject
 public:
     explicit XCapstone(QObject *pParent=nullptr);
     static QString disasm(csh handle,qint64 nAddress,char *pData,int nDataSize);
+    static bool isJmpOpcode(quint16 nOpcodeID);
 };
 
 #endif // XCAPSTONE_H
