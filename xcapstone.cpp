@@ -55,6 +55,7 @@ QString XCapstone::disasm(csh handle, qint64 nAddress, char *pData, int nDataSiz
 
 bool XCapstone::isJmpOpcode(quint16 nOpcodeID)
 {
+    // TODO
     bool bResult=false;
 
     if( (nOpcodeID==X86_INS_JMP)||
