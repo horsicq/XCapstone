@@ -22,7 +22,7 @@
 
 #if defined(_MSC_VER)
 #if _MSC_VER > 1800
-#pragma comment(lib, "legacy_stdio_definitions.lib") // vsprintf
+#pragma comment(lib, "legacy_stdio_definitions.lib") // vsprintf // TODO Check
 #endif
 #endif
 
