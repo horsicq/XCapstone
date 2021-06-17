@@ -11,3 +11,8 @@ SOURCES += \
     XCONFIG += Capstone
     include($$PWD/3rdparty/Capstone/Capstone.pri)
 }
+
+!contains(XCONFIG, xbinary) {
+    XCONFIG += xbinary
+    include($$PWD/../Formats/xbinary.pri)
+}

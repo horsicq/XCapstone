@@ -21,7 +21,7 @@
 #ifndef XCAPSTONE_H
 #define XCAPSTONE_H
 
-#include <QObject>
+#include "xbinary.h"
 #include "capstone/capstone.h"
 
 class XCapstone : public QObject
@@ -29,8 +29,18 @@ class XCapstone : public QObject
     Q_OBJECT
 
 public:
+
+    struct DISASM_STRUCT
+    {
+        qint64 nAddress;
+        QString sString;
+        qint64 nSize;
+    };
+
     explicit XCapstone(QObject *pParent=nullptr);
-    static QString disasm(csh handle,qint64 nAddress,char *pData,int nDataSize);
+    static cs_err openHandle(XBinary::DM disasmMode,csh *pHandle,bool bDetails);
+    static cs_err closeHandle(csh *pHandle);
+    static DISASM_STRUCT disasm(csh handle,qint64 nAddress,char *pData,int nDataSize);
     static bool isJmpOpcode(quint16 nOpcodeID);
 };
 
