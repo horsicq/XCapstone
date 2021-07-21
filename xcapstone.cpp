@@ -169,7 +169,9 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
 
     csh handle=0;
 
-    openHandle(XBinary::getDisasmMode(pMemoryMap),&handle,true);
+    XBinary::DM disasmMode=XBinary::getDisasmMode(pMemoryMap);
+
+    openHandle(disasmMode,&handle,true);
 
     if(handle)
     {
@@ -190,10 +192,18 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
 
             if(nNumberOfOpcodes>0)
             {
-                quint32 nDispOffset=pInsn->detail->x86.encoding.disp_offset;
-                quint32 nDispSize=pInsn->detail->x86.encoding.disp_size;
-                quint32 nImmOffset=pInsn->detail->x86.encoding.imm_offset;
-                quint32 nImmSize=pInsn->detail->x86.encoding.imm_size;
+                quint32 nDispOffset=0;
+                quint32 nDispSize=0;
+                quint32 nImmOffset=0;
+                quint32 nImmSize=0;
+
+                if((disasmMode==XBinary::DM_X86_16)||(disasmMode==XBinary::DM_X86_32)||(disasmMode==XBinary::DM_X86_64))
+                {
+                    nDispOffset=pInsn->detail->x86.encoding.disp_offset;
+                    nDispSize=pInsn->detail->x86.encoding.disp_size;
+                    nImmOffset=pInsn->detail->x86.encoding.imm_offset;
+                    nImmSize=pInsn->detail->x86.encoding.imm_size;
+                }
 
                 baData.resize(pInsn->size);
 
@@ -221,16 +231,23 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
                     if(isJmpOpcode(pInsn->id))
                     {
                         // TODO another archs
-                        for(int i=0; i<pInsn->detail->x86.op_count; i++)
+                        if((disasmMode==XBinary::DM_X86_16)||(disasmMode==XBinary::DM_X86_32)||(disasmMode==XBinary::DM_X86_64))
                         {
-                            if(pInsn->detail->x86.operands[i].type==X86_OP_IMM) // TODO another archs !!!
+                            for(int i=0; i<pInsn->detail->x86.op_count; i++)
                             {
-                                qint64 nImm=pInsn->detail->x86.operands[i].imm;
+                                if(pInsn->detail->x86.operands[i].type==X86_OP_IMM) // TODO another archs !!!
+                                {
+                                    qint64 nImm=pInsn->detail->x86.operands[i].imm;
 
-                                nAddress=nImm;
+                                    nAddress=nImm;
 
-                                sHEX=replaceWild(sHEX,nImmOffset,nImmSize,'$');
+                                    sHEX=replaceWild(sHEX,nImmOffset,nImmSize,'$');
+                                }
                             }
+                        }
+                        else
+                        {
+                            nAddress+=pInsn->size;
                         }
                     }
                     else
