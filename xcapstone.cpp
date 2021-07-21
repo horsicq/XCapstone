@@ -190,9 +190,62 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
 
             if(nNumberOfOpcodes>0)
             {
-                // TODO
+                quint32 nDispOffset=pInsn->detail->x86.encoding.disp_offset;
+                quint32 nDispSize=pInsn->detail->x86.encoding.disp_size;
+                quint32 nImmOffset=pInsn->detail->x86.encoding.imm_offset;
+                quint32 nImmSize=pInsn->detail->x86.encoding.imm_size;
+
+                baData.resize(pInsn->size);
+
+                QString sHEX=baData.toHex().data();
+
+                if((signatureType==ST_FULL)||(signatureType==ST_MASK))
+                {
+                    nAddress+=pInsn->size;
+
+                    if(signatureType==ST_MASK)
+                    {
+                        if(nDispSize)
+                        {
+                            sHEX=replaceWild(sHEX,nDispOffset,nDispSize,'.');
+                        }
+
+                        if(nImmSize)
+                        {
+                            sHEX=replaceWild(sHEX,nImmOffset,nImmSize,'.');
+                        }
+                    }
+                }
+                else if(signatureType==ST_MASKREL)
+                {
+                    if(isJmpOpcode(pInsn->id))
+                    {
+                        // TODO another archs
+                        for(int i=0; i<pInsn->detail->x86.op_count; i++)
+                        {
+                            if(pInsn->detail->x86.operands[i].type==X86_OP_IMM) // TODO another archs !!!
+                            {
+                                qint64 nImm=pInsn->detail->x86.operands[i].imm;
+
+                                nAddress=nImm;
+
+                                sHEX=replaceWild(sHEX,nImmOffset,nImmSize,'$');
+                            }
+                        }
+                    }
+                    else
+                    {
+                        nAddress+=pInsn->size;
+                    }
+                }
+
+                sResult+=sHEX;
 
                 cs_free(pInsn,nNumberOfOpcodes);
+            }
+            else
+            {
+                break;
             }
 
             nCount--;
@@ -200,6 +253,18 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
 
         closeHandle(&handle);
     }
+
+    return sResult;
+}
+
+QString XCapstone::replaceWild(QString sString, qint32 nOffset, qint32 nSize, QChar cWild)
+{
+    QString sResult=sString;
+    QString sWild;
+
+    sWild=sWild.fill(cWild,nSize*2);
+
+    sResult=sResult.replace(nOffset*2,nSize*2,sWild);
 
     return sResult;
 }

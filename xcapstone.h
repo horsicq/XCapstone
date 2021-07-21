@@ -52,6 +52,7 @@ public:
     static DISASM_STRUCT disasm(csh handle,qint64 nAddress,char *pData,int nDataSize);
     static bool isJmpOpcode(quint16 nOpcodeID);
     static QString getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemoryMap,qint64 nAddress,ST signatureType,qint32 nCount);
+    static QString replaceWild(QString sString,qint32 nOffset,qint32 nSize,QChar cWild);
 };
 
 #endif // XCAPSTONE_H
