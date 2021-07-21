@@ -37,11 +37,21 @@ public:
         qint64 nSize;
     };
 
+    enum ST
+    {
+        ST_UNKNOWN=0,
+        ST_FULL,
+        ST_MASK,
+        ST_MASKREL
+    };
+
+    // TODO error
     explicit XCapstone(QObject *pParent=nullptr);
     static cs_err openHandle(XBinary::DM disasmMode,csh *pHandle,bool bDetails);
     static cs_err closeHandle(csh *pHandle);
     static DISASM_STRUCT disasm(csh handle,qint64 nAddress,char *pData,int nDataSize);
     static bool isJmpOpcode(quint16 nOpcodeID);
+    static QString getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemoryMap,qint64 nAddress,ST signatureType,qint32 nCount);
 };
 
 #endif // XCAPSTONE_H

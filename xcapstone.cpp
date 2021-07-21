@@ -162,3 +162,44 @@ bool XCapstone::isJmpOpcode(quint16 nOpcodeID)
 
     return bResult;
 }
+
+QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, qint64 nAddress, ST signatureType, qint32 nCount)
+{
+    QString sResult;
+
+    csh handle=0;
+
+    openHandle(XBinary::getDisasmMode(pMemoryMap),&handle,true);
+
+    if(handle)
+    {
+        while(nCount>0)
+        {
+            qint64 nOffset=XBinary::addressToOffset(pMemoryMap,nAddress);
+
+            if(nOffset==-1)
+            {
+                break;
+            }
+
+            QByteArray baData=XBinary::read_array(pDevice,nOffset,15);
+
+            cs_insn *pInsn=0;
+
+            int nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)baData.data(),15,nAddress,1,&pInsn);
+
+            if(nNumberOfOpcodes>0)
+            {
+                // TODO
+
+                cs_free(pInsn,nNumberOfOpcodes);
+            }
+
+            nCount--;
+        }
+
+        closeHandle(&handle);
+    }
+
+    return sResult;
+}
