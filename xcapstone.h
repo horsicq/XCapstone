@@ -29,7 +29,6 @@ class XCapstone : public QObject
     Q_OBJECT
 
 public:
-
     struct DISASM_STRUCT
     {
         qint64 nAddress;
