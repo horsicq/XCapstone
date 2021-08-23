@@ -69,7 +69,7 @@ cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails
     else if (disasmMode==XBinary::DM_HD6301)        result=cs_open(CS_ARCH_M680X,cs_mode(CS_MODE_M680X_6301),pHandle);
     else if (disasmMode==XBinary::DM_HD6309)        result=cs_open(CS_ARCH_M680X,cs_mode(CS_MODE_M680X_6309),pHandle);
     else if (disasmMode==XBinary::DM_HCS08)         result=cs_open(CS_ARCH_M680X,cs_mode(CS_MODE_M680X_HCS08),pHandle);
-//    else if (disasmMode==XBinary::DM_EVM)           error=cs_open(CS_ARCH_M680X,cs_mode(CS_ARCH_EVM),pHandle);
+    else if (disasmMode==XBinary::DM_EVM)           result=cs_open(CS_ARCH_EVM,cs_mode(CS_ARCH_EVM),pHandle);
 //    else if (disasmMode==XBinary::DM_MOS65XX)       error=cs_open(CS_ARCH_M680X,cs_mode(CS_ARCH_MOS65XX),pHandle);
 
     if(result==CS_ERR_OK)
