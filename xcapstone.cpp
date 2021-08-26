@@ -285,3 +285,25 @@ QString XCapstone::replaceWild(QString sString, qint32 nOffset, qint32 nSize, QC
 
     return sResult;
 }
+#ifdef QT_GUI_LIB
+QMap<QString, QColor> XCapstone::getOpcodeColorMap(XBinary::DM disasmMode)
+{
+    QMap<QString, QColor> mapResult;
+
+    if((disasmMode==XBinary::DM_X86_16)||(disasmMode==XBinary::DM_X86_32)||(disasmMode==XBinary::DM_X86_64))
+    {
+        // TODO Function
+        mapResult.insert("call",Qt::red);
+        mapResult.insert("ret",Qt::red);
+        mapResult.insert("push",Qt::blue);
+        mapResult.insert("pop",Qt::blue);
+        mapResult.insert("je",Qt::green);
+        mapResult.insert("jne",Qt::green);
+        mapResult.insert("jz",Qt::green);
+        mapResult.insert("jnz",Qt::green);
+        mapResult.insert("ja",Qt::green);
+    }
+
+    return mapResult;
+}
+#endif

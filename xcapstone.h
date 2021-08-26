@@ -23,6 +23,9 @@
 
 #include "xbinary.h"
 #include "capstone/capstone.h"
+#ifdef QT_GUI_LIB
+#include <QColor>
+#endif
 
 class XCapstone : public QObject
 {
@@ -52,6 +55,9 @@ public:
     static bool isJmpOpcode(quint16 nOpcodeID);
     static QString getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemoryMap,qint64 nAddress,ST signatureType,qint32 nCount);
     static QString replaceWild(QString sString,qint32 nOffset,qint32 nSize,QChar cWild);
+#ifdef QT_GUI_LIB
+    static QMap<QString,QColor> getOpcodeColorMap(XBinary::DM disasmMode);
+#endif
 };
 
 #endif // XCAPSTONE_H
