@@ -197,8 +197,7 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
                 quint32 nImmOffset=0;
                 quint32 nImmSize=0;
 
-                // TODO getFamily function
-                if((disasmMode==XBinary::DM_X86_16)||(disasmMode==XBinary::DM_X86_32)||(disasmMode==XBinary::DM_X86_64))
+                if(XBinary::getDisasmFamily(disasmMode)==XBinary::DMFAMILY_X86)
                 {
                     nDispOffset=pInsn->detail->x86.encoding.disp_offset;
                     nDispSize=pInsn->detail->x86.encoding.disp_size;
@@ -232,8 +231,7 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
                     if(isJmpOpcode(pInsn->id))
                     {
                         // TODO another archs
-                        // TODO getFamily function
-                        if((disasmMode==XBinary::DM_X86_16)||(disasmMode==XBinary::DM_X86_32)||(disasmMode==XBinary::DM_X86_64))
+                        if(XBinary::getDisasmFamily(disasmMode)==XBinary::DMFAMILY_X86)
                         {
                             for(int i=0; i<pInsn->detail->x86.op_count; i++)
                             {
@@ -292,8 +290,7 @@ QMap<QString, QColor> XCapstone::getOpcodeColorMap(XBinary::DM disasmMode)
 {
     QMap<QString, QColor> mapResult;
 
-    // TODO use getFamily function
-    if((disasmMode==XBinary::DM_X86_16)||(disasmMode==XBinary::DM_X86_32)||(disasmMode==XBinary::DM_X86_64))
+    if(XBinary::getDisasmFamily(disasmMode)==XBinary::DMFAMILY_X86)
     {
         mapResult.insert("call",Qt::red);
         mapResult.insert("ret",Qt::red);
@@ -306,6 +303,7 @@ QMap<QString, QColor> XCapstone::getOpcodeColorMap(XBinary::DM disasmMode)
         mapResult.insert("jz",Qt::green);
         mapResult.insert("jnz",Qt::green);
         mapResult.insert("ja",Qt::green);
+        // TODO more
     }
 
     return mapResult;
