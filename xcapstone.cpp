@@ -33,6 +33,8 @@ XCapstone::XCapstone(QObject *pParent) : QObject(pParent)
 
 cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails)
 {
+//    printEnabledArchs();
+
     cs_err result=CS_ERR_HANDLE;
 
     if      (disasmMode==XBinary::DM_X86_16)        result=cs_open(CS_ARCH_X86,cs_mode(CS_MODE_16),pHandle);
@@ -69,7 +71,10 @@ cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails
     else if (disasmMode==XBinary::DM_HD6301)        result=cs_open(CS_ARCH_M680X,cs_mode(CS_MODE_M680X_6301),pHandle);
     else if (disasmMode==XBinary::DM_HD6309)        result=cs_open(CS_ARCH_M680X,cs_mode(CS_MODE_M680X_6309),pHandle);
     else if (disasmMode==XBinary::DM_HCS08)         result=cs_open(CS_ARCH_M680X,cs_mode(CS_MODE_M680X_HCS08),pHandle);
-    else if (disasmMode==XBinary::DM_EVM)           result=cs_open(CS_ARCH_EVM,cs_mode(CS_ARCH_EVM),pHandle);
+    else if (disasmMode==XBinary::DM_EVM)           result=cs_open(CS_ARCH_EVM,cs_mode(0),pHandle);
+    else if (disasmMode==XBinary::DM_RISKV32)       result=cs_open(CS_ARCH_RISCV,cs_mode(CS_MODE_RISCV32),pHandle);
+    else if (disasmMode==XBinary::DM_RISKV64)       result=cs_open(CS_ARCH_RISCV,cs_mode(CS_MODE_RISCV64),pHandle);
+    else if (disasmMode==XBinary::DM_RISKVC)        result=cs_open(CS_ARCH_RISCV,cs_mode(CS_MODE_RISCVC),pHandle);
 //    else if (disasmMode==XBinary::DM_MOS65XX)       error=cs_open(CS_ARCH_M680X,cs_mode(CS_ARCH_MOS65XX),pHandle);
 
     if(result==CS_ERR_OK)
@@ -284,6 +289,26 @@ QString XCapstone::replaceWild(QString sString, qint32 nOffset, qint32 nSize, QC
     sResult=sResult.replace(nOffset*2,nSize*2,sWild);
 
     return sResult;
+}
+
+void XCapstone::printEnabledArchs()
+{
+    if(cs_support(CS_ARCH_ARM))         qDebug("CS_ARCH_ARM");
+    if(cs_support(CS_ARCH_ARM64))       qDebug("CS_ARCH_ARM64");
+    if(cs_support(CS_ARCH_MIPS))        qDebug("CS_ARCH_MIPS");
+    if(cs_support(CS_ARCH_X86))         qDebug("CS_ARCH_X86");
+    if(cs_support(CS_ARCH_PPC))         qDebug("CS_ARCH_PPC");
+    if(cs_support(CS_ARCH_SPARC))       qDebug("CS_ARCH_SPARC");
+    if(cs_support(CS_ARCH_SYSZ))        qDebug("CS_ARCH_SYSZ");
+    if(cs_support(CS_ARCH_XCORE))       qDebug("CS_ARCH_XCORE");
+    if(cs_support(CS_ARCH_M68K))        qDebug("CS_ARCH_M68K");
+    if(cs_support(CS_ARCH_TMS320C64X))  qDebug("CS_ARCH_TMS320C64X");
+    if(cs_support(CS_ARCH_M680X))       qDebug("CS_ARCH_M680X");
+    if(cs_support(CS_ARCH_EVM))         qDebug("CS_ARCH_EVM");
+    if(cs_support(CS_ARCH_MOS65XX))     qDebug("CS_ARCH_MOS65XX");
+    if(cs_support(CS_ARCH_WASM))        qDebug("CS_ARCH_WASM");
+    if(cs_support(CS_ARCH_BPF))         qDebug("CS_ARCH_BPF");
+    if(cs_support(CS_ARCH_RISCV))       qDebug("CS_ARCH_RISCV");
 }
 #ifdef QT_GUI_LIB
 QMap<QString, QColor> XCapstone::getOpcodeColorMap(XBinary::DM disasmMode)
