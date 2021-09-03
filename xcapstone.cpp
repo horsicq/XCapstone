@@ -72,13 +72,14 @@ cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails
     else if (disasmMode==XBinary::DM_HD6309)        result=cs_open(CS_ARCH_M680X,cs_mode(CS_MODE_M680X_6309),pHandle);
     else if (disasmMode==XBinary::DM_HCS08)         result=cs_open(CS_ARCH_M680X,cs_mode(CS_MODE_M680X_HCS08),pHandle);
     else if (disasmMode==XBinary::DM_EVM)           result=cs_open(CS_ARCH_EVM,cs_mode(0),pHandle);
+    else if (disasmMode==XBinary::DM_WASM)          result=cs_open(CS_ARCH_WASM,cs_mode(0),pHandle);
     else if (disasmMode==XBinary::DM_RISKV32)       result=cs_open(CS_ARCH_RISCV,cs_mode(CS_MODE_RISCV32),pHandle);
     else if (disasmMode==XBinary::DM_RISKV64)       result=cs_open(CS_ARCH_RISCV,cs_mode(CS_MODE_RISCV64),pHandle);
     else if (disasmMode==XBinary::DM_RISKVC)        result=cs_open(CS_ARCH_RISCV,cs_mode(CS_MODE_RISCVC),pHandle);
     else if (disasmMode==XBinary::DM_MOS65XX)       result=cs_open(CS_ARCH_M680X,cs_mode(CS_ARCH_MOS65XX),pHandle);
-    // TODO WASM
     // TODO BPF
-    // TODO MOS65XX
+//    { "bpf", CS_ARCH_BPF, CS_MODE_LITTLE_ENDIAN | CS_MODE_BPF_CLASSIC },
+//	{ "bpfbe", CS_ARCH_BPF, CS_MODE_BIG_ENDIAN | CS_MODE_BPF_CLASSIC },
 
     if(result==CS_ERR_OK)
     {
