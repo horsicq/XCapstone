@@ -77,9 +77,8 @@ cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails
     else if (disasmMode==XBinary::DM_RISKV64)       result=cs_open(CS_ARCH_RISCV,cs_mode(CS_MODE_RISCV64),pHandle);
     else if (disasmMode==XBinary::DM_RISKVC)        result=cs_open(CS_ARCH_RISCV,cs_mode(CS_MODE_RISCVC),pHandle);
     else if (disasmMode==XBinary::DM_MOS65XX)       result=cs_open(CS_ARCH_M680X,cs_mode(CS_ARCH_MOS65XX),pHandle);
-    // TODO BPF
-//    { "bpf", CS_ARCH_BPF, CS_MODE_LITTLE_ENDIAN | CS_MODE_BPF_CLASSIC },
-//	{ "bpfbe", CS_ARCH_BPF, CS_MODE_BIG_ENDIAN | CS_MODE_BPF_CLASSIC },
+    else if (disasmMode==XBinary::DM_BPF_LE)        result=cs_open(CS_ARCH_BPF,cs_mode(CS_MODE_BPF_CLASSIC|CS_MODE_LITTLE_ENDIAN),pHandle);
+    else if (disasmMode==XBinary::DM_BPF_BE)        result=cs_open(CS_ARCH_BPF,cs_mode(CS_MODE_BPF_CLASSIC|CS_MODE_BIG_ENDIAN),pHandle);
 
     if(result==CS_ERR_OK)
     {
