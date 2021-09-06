@@ -37,6 +37,13 @@ public:
         qint64 nAddress;
         QString sString;
         qint64 nSize;
+        qint16 nOpcodeID;
+    };
+
+    struct OPCODE_ID
+    {
+        qint16 nOpcodeID;
+        qint64 nSize;
     };
 
     enum ST
@@ -52,7 +59,11 @@ public:
     static cs_err openHandle(XBinary::DM disasmMode,csh *pHandle,bool bDetails);
     static cs_err closeHandle(csh *pHandle);
     static DISASM_STRUCT disasm(csh handle,qint64 nAddress,char *pData,int nDataSize);
+    static qint32 getOpcodeLength(csh handle,qint64 nAddress,char *pData,int nDataSize);
+    static OPCODE_ID getOpcodeID(csh handle,qint64 nAddress,char *pData,int nDataSize);
     static bool isJmpOpcode(quint16 nOpcodeID);
+    static bool isRetOpcode(quint16 nOpcodeID);
+    static bool isCallOpcode(quint16 nOpcodeID);
     static QString getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemoryMap,qint64 nAddress,ST signatureType,qint32 nCount);
     static QString replaceWild(QString sString,qint32 nOffset,qint32 nSize,QChar cWild);
     static void printEnabledArchs();

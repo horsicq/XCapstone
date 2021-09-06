@@ -121,6 +121,7 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, qint64 nAddress, char *pD
     {
         result.nAddress=nAddress;
         result.nSize=pInsn->size;
+        result.nOpcodeID=pInsn->id;
 
         QString sMnemonic=pInsn->mnemonic;
         QString sStr=pInsn->op_str;
@@ -128,6 +129,41 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, qint64 nAddress, char *pD
         result.sString+=sMnemonic;
 
         if(sStr!="") result.sString+=QString(" %1").arg(sStr);
+
+        cs_free(pInsn,nNumberOfOpcodes);
+    }
+
+    return result;
+}
+
+qint32 XCapstone::getOpcodeLength(csh handle, qint64 nAddress, char *pData, int nDataSize)
+{
+    qint32 nResult=0;
+
+    cs_insn *pInsn=0;
+
+    int nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
+    if(nNumberOfOpcodes>0)
+    {
+        nResult=pInsn->size;
+
+        cs_free(pInsn,nNumberOfOpcodes);
+    }
+
+    return nResult;
+}
+
+XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, qint64 nAddress, char *pData, int nDataSize)
+{
+    OPCODE_ID result={};
+
+    cs_insn *pInsn=0;
+
+    int nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
+    if(nNumberOfOpcodes>0)
+    {
+        result.nSize=pInsn->size;
+        result.nOpcodeID=pInsn->id;
 
         cs_free(pInsn,nNumberOfOpcodes);
     }
@@ -162,8 +198,35 @@ bool XCapstone::isJmpOpcode(quint16 nOpcodeID)
         (nOpcodeID==X86_INS_JS)||
         (nOpcodeID==X86_INS_LOOP)||
         (nOpcodeID==X86_INS_LOOPE)||
-        (nOpcodeID==X86_INS_LOOPNE)||
-        (nOpcodeID==X86_INS_CALL))
+        (nOpcodeID==X86_INS_LOOPNE))
+    {
+        bResult=true;
+    }
+
+    return bResult;
+}
+
+bool XCapstone::isRetOpcode(quint16 nOpcodeID)
+{
+    // TODO
+    bool bResult=false;
+
+    if( (nOpcodeID==X86_INS_RET)||
+        (nOpcodeID==X86_INS_RETF)||
+        (nOpcodeID==X86_INS_RETFQ))
+    {
+        bResult=true;
+    }
+
+    return bResult;
+}
+
+bool XCapstone::isCallOpcode(quint16 nOpcodeID)
+{
+    // TODO
+    bool bResult=false;
+
+    if(nOpcodeID==X86_INS_CALL)
     {
         bResult=true;
     }
@@ -236,7 +299,7 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
                 }
                 else if(signatureType==ST_MASKREL)
                 {
-                    if(isJmpOpcode(pInsn->id))
+                    if(isJmpOpcode(pInsn->id)||isCallOpcode(pInsn->id))
                     {
                         // TODO another archs
                         if(XBinary::getDisasmFamily(disasmMode)==XBinary::DMFAMILY_X86)
