@@ -56,7 +56,7 @@ public:
 
     // TODO error
     explicit XCapstone(QObject *pParent=nullptr);
-    static cs_err openHandle(XBinary::DM disasmMode,csh *pHandle,bool bDetails);
+    static cs_err openHandle(XBinary::DM disasmMode,csh *pHandle,bool bDetails,XBinary::SYNTAX syntax=XBinary::SYNTAX_DEFAULT);
     static cs_err closeHandle(csh *pHandle);
     static DISASM_STRUCT disasm(csh handle,qint64 nAddress,char *pData,int nDataSize);
     static qint32 getOpcodeLength(csh handle,qint64 nAddress,char *pData,int nDataSize);
@@ -68,7 +68,7 @@ public:
     static QString replaceWild(QString sString,qint32 nOffset,qint32 nSize,QChar cWild);
     static void printEnabledArchs();
 #ifdef QT_GUI_LIB
-    static QMap<QString,QColor> getOpcodeColorMap(XBinary::DM disasmMode);
+    static QMap<QString,QColor> getOpcodeColorMap(XBinary::DM disasmMode,XBinary::SYNTAX syntax=XBinary::SYNTAX_DEFAULT);
 #endif
 };
 

@@ -31,7 +31,7 @@ XCapstone::XCapstone(QObject *pParent) : QObject(pParent)
 
 }
 
-cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails)
+cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails, XBinary::SYNTAX syntax)
 {
 //    printEnabledArchs();
 
@@ -87,7 +87,25 @@ cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails
             cs_option(*pHandle,CS_OPT_DETAIL,CS_OPT_ON);
         }
 
-        // TODO Syntax
+        if(syntax!=XBinary::SYNTAX_DEFAULT)
+        {
+            if(syntax==XBinary::SYNTAX_ATT)
+            {
+                cs_option(*pHandle,CS_OPT_SYNTAX,CS_OPT_SYNTAX_ATT);
+            }
+            else if(syntax==XBinary::SYNTAX_INTEL)
+            {
+                cs_option(*pHandle,CS_OPT_SYNTAX,CS_OPT_SYNTAX_INTEL);
+            }
+            if(syntax==XBinary::SYNTAX_MASM)
+            {
+                cs_option(*pHandle,CS_OPT_SYNTAX,CS_OPT_SYNTAX_MASM);
+            }
+            if(syntax==XBinary::SYNTAX_MOTOROLA)
+            {
+                cs_option(*pHandle,CS_OPT_SYNTAX,CS_OPT_SYNTAX_MOTOROLA);
+            }
+        }
     }
     else
     {
@@ -377,24 +395,45 @@ void XCapstone::printEnabledArchs()
     if(cs_support(CS_ARCH_RISCV))       qDebug("CS_ARCH_RISCV");
 }
 #ifdef QT_GUI_LIB
-QMap<QString, QColor> XCapstone::getOpcodeColorMap(XBinary::DM disasmMode)
+QMap<QString, QColor> XCapstone::getOpcodeColorMap(XBinary::DM disasmMode,XBinary::SYNTAX syntax)
 {
     QMap<QString, QColor> mapResult;
 
     if(XBinary::getDisasmFamily(disasmMode)==XBinary::DMFAMILY_X86)
     {
-        mapResult.insert("call",Qt::red);
-        mapResult.insert("ret",Qt::red);
+        if((syntax==XBinary::SYNTAX_DEFAULT)||(syntax==XBinary::SYNTAX_INTEL)||(syntax==XBinary::SYNTAX_MASM))
+        {
+            mapResult.insert("call",Qt::red);
+            mapResult.insert("ret",Qt::red);
+        }
+        else if(syntax==XBinary::SYNTAX_ATT)
+        {
+            // TODO
+        }
 
-        mapResult.insert("push",Qt::blue);
-        mapResult.insert("pop",Qt::blue);
+        if((syntax==XBinary::SYNTAX_DEFAULT)||(syntax==XBinary::SYNTAX_INTEL)||(syntax==XBinary::SYNTAX_MASM))
+        {
+            mapResult.insert("push",Qt::blue);
+            mapResult.insert("pop",Qt::blue);
+        }
+        else if(syntax==XBinary::SYNTAX_ATT)
+        {
+            // TODO
+        }
 
-        mapResult.insert("je",Qt::green);
-        mapResult.insert("jne",Qt::green);
-        mapResult.insert("jz",Qt::green);
-        mapResult.insert("jnz",Qt::green);
-        mapResult.insert("ja",Qt::green);
-        // TODO more
+        if((syntax==XBinary::SYNTAX_DEFAULT)||(syntax==XBinary::SYNTAX_INTEL)||(syntax==XBinary::SYNTAX_MASM))
+        {
+            mapResult.insert("je",Qt::green);
+            mapResult.insert("jne",Qt::green);
+            mapResult.insert("jz",Qt::green);
+            mapResult.insert("jnz",Qt::green);
+            mapResult.insert("ja",Qt::green);
+            // TODO more
+        }
+        else if(syntax==XBinary::SYNTAX_ATT)
+        {
+            // TODO
+        }
     }
 
     return mapResult;
