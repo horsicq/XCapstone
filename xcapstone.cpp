@@ -377,6 +377,7 @@ QString XCapstone::replaceWild(QString sString, qint32 nOffset, qint32 nSize, QC
 
 void XCapstone::printEnabledArchs()
 {
+#ifdef QT_DEBUG
     if(cs_support(CS_ARCH_ARM))         qDebug("CS_ARCH_ARM");
     if(cs_support(CS_ARCH_ARM64))       qDebug("CS_ARCH_ARM64");
     if(cs_support(CS_ARCH_MIPS))        qDebug("CS_ARCH_MIPS");
@@ -393,6 +394,7 @@ void XCapstone::printEnabledArchs()
     if(cs_support(CS_ARCH_WASM))        qDebug("CS_ARCH_WASM");
     if(cs_support(CS_ARCH_BPF))         qDebug("CS_ARCH_BPF");
     if(cs_support(CS_ARCH_RISCV))       qDebug("CS_ARCH_RISCV");
+#endif
 }
 #ifdef QT_GUI_LIB
 QMap<QString, QColor> XCapstone::getOpcodeColorMap(XBinary::DM disasmMode,XBinary::SYNTAX syntax)
