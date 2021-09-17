@@ -191,7 +191,6 @@ XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, qint64 nAddress, char *p
 
 bool XCapstone::isJmpOpcode(quint16 nOpcodeID)
 {
-    // TODO
     bool bResult=false;
 
     if( (nOpcodeID==X86_INS_JMP)||
@@ -226,7 +225,6 @@ bool XCapstone::isJmpOpcode(quint16 nOpcodeID)
 
 bool XCapstone::isRetOpcode(quint16 nOpcodeID)
 {
-    // TODO
     bool bResult=false;
 
     if( (nOpcodeID==X86_INS_RET)||
@@ -241,7 +239,6 @@ bool XCapstone::isRetOpcode(quint16 nOpcodeID)
 
 bool XCapstone::isCallOpcode(quint16 nOpcodeID)
 {
-    // TODO
     bool bResult=false;
 
     if(nOpcodeID==X86_INS_CALL)
