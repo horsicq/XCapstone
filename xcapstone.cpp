@@ -132,7 +132,7 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, qint64 nAddress, char *pD
 {
     DISASM_STRUCT result={};
 
-    cs_insn *pInsn=0;
+    cs_insn *pInsn=nullptr;
 
     int nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
     if(nNumberOfOpcodes>0)
