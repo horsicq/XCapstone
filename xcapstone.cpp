@@ -158,7 +158,7 @@ qint32 XCapstone::getOpcodeLength(csh handle, qint64 nAddress, char *pData, int 
 {
     qint32 nResult=0;
 
-    cs_insn *pInsn=0;
+    cs_insn *pInsn=nullptr;
 
     int nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
     if(nNumberOfOpcodes>0)
