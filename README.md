@@ -1,1 +1,2 @@
 # XCapstone
+Capstone for Qt.
