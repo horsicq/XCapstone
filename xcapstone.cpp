@@ -319,7 +319,7 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
                         // TODO another archs
                         if(XBinary::getDisasmFamily(disasmMode)==XBinary::DMFAMILY_X86)
                         {
-                            for(int i=0;i<pInsn->detail->x86.op_count;i++)
+                            for(qint32 i=0;i<pInsn->detail->x86.op_count;i++)
                             {
                                 if(pInsn->detail->x86.operands[i].type==X86_OP_IMM) // TODO another archs !!!
                                 {
