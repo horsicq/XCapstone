@@ -179,7 +179,8 @@ XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, qint64 nAddress, char *p
 
     cs_insn *pInsn=nullptr;
 
-    int nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
+    qint32 nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
+
     if(nNumberOfOpcodes>0)
     {
         result.nSize=pInsn->size;
