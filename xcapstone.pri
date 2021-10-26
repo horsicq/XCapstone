@@ -5,6 +5,7 @@ HEADERS += \
     $$PWD/xcapstone.h
 
 SOURCES += \
+    $$PWD/xcapstone.cpp \
     $$PWD/xcapstone.cpp
 
 !contains(XCONFIG, Capstone) {
@@ -19,4 +20,5 @@ SOURCES += \
 
 DISTFILES += \
     $$PWD/LICENSE \
-    $$PWD/README.md
+    $$PWD/README.md \
+    $$PWD/xcapstone.cmake
