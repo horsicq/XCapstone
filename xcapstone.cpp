@@ -128,7 +128,7 @@ cs_err XCapstone::closeHandle(csh *pHandle)
     return result;
 }
 
-XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, qint64 nAddress, char *pData, int nDataSize)
+XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, qint64 nAddress, char *pData, qint32 nDataSize)
 {
     DISASM_STRUCT result={};
 
