@@ -60,7 +60,7 @@ public:
     static cs_err closeHandle(csh *pHandle);
     static DISASM_STRUCT disasm(csh handle,qint64 nAddress,char *pData,qint32 nDataSize);
     static qint32 getOpcodeLength(csh handle,qint64 nAddress,char *pData,qint32 nDataSize);
-    static OPCODE_ID getOpcodeID(csh handle,qint64 nAddress,char *pData,int nDataSize);
+    static OPCODE_ID getOpcodeID(csh handle,qint64 nAddress,char *pData,qint32 nDataSize);
     static bool isJmpOpcode(quint16 nOpcodeID);
     static bool isRetOpcode(quint16 nOpcodeID);
     static bool isCallOpcode(quint16 nOpcodeID);

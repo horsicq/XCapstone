@@ -173,7 +173,7 @@ qint32 XCapstone::getOpcodeLength(csh handle, qint64 nAddress, char *pData, qint
     return nResult;
 }
 
-XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, qint64 nAddress, char *pData, int nDataSize)
+XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, qint64 nAddress, char *pData, qint32 nDataSize)
 {
     OPCODE_ID result={};
 
