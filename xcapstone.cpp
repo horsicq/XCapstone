@@ -155,7 +155,7 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, qint64 nAddress, char *pD
     return result;
 }
 
-qint32 XCapstone::getOpcodeLength(csh handle, qint64 nAddress, char *pData, int nDataSize)
+qint32 XCapstone::getOpcodeLength(csh handle, qint64 nAddress, char *pData, qint32 nDataSize)
 {
     qint32 nResult=0;
 

@@ -5,7 +5,6 @@ HEADERS += \
     $$PWD/xcapstone.h
 
 SOURCES += \
-    $$PWD/xcapstone.cpp \
     $$PWD/xcapstone.cpp
 
 !contains(XCONFIG, Capstone) {

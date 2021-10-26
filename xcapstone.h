@@ -59,7 +59,7 @@ public:
     static cs_err openHandle(XBinary::DM disasmMode,csh *pHandle,bool bDetails,XBinary::SYNTAX syntax=XBinary::SYNTAX_DEFAULT);
     static cs_err closeHandle(csh *pHandle);
     static DISASM_STRUCT disasm(csh handle,qint64 nAddress,char *pData,qint32 nDataSize);
-    static qint32 getOpcodeLength(csh handle,qint64 nAddress,char *pData,int nDataSize);
+    static qint32 getOpcodeLength(csh handle,qint64 nAddress,char *pData,qint32 nDataSize);
     static OPCODE_ID getOpcodeID(csh handle,qint64 nAddress,char *pData,int nDataSize);
     static bool isJmpOpcode(quint16 nOpcodeID);
     static bool isRetOpcode(quint16 nOpcodeID);
