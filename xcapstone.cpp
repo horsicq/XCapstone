@@ -134,7 +134,7 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, qint64 nAddress, char *pD
 
     cs_insn *pInsn=nullptr;
 
-    qint32 nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
+    size_t nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
 
     if(nNumberOfOpcodes>0)
     {
@@ -161,7 +161,7 @@ qint32 XCapstone::getOpcodeLength(csh handle, qint64 nAddress, char *pData, qint
 
     cs_insn *pInsn=nullptr;
 
-    qint32 nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
+    size_t nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
 
     if(nNumberOfOpcodes>0)
     {
@@ -179,7 +179,7 @@ XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, qint64 nAddress, char *p
 
     cs_insn *pInsn=nullptr;
 
-    qint32 nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
+    size_t nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
 
     if(nNumberOfOpcodes>0)
     {
@@ -277,7 +277,7 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
 
             cs_insn *pInsn=0;
 
-            qint32 nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)baData.data(),15,nAddress,1,&pInsn);
+            size_t nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)baData.data(),15,nAddress,1,&pInsn);
 
             if(nNumberOfOpcodes>0)
             {
