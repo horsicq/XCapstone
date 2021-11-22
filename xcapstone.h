@@ -59,7 +59,11 @@ public:
     static cs_err openHandle(XBinary::DM disasmMode,csh *pHandle,bool bDetails,XBinary::SYNTAX syntax=XBinary::SYNTAX_DEFAULT);
     static cs_err closeHandle(csh *pHandle);
     static DISASM_STRUCT disasm(csh handle,qint64 nAddress,char *pData,qint32 nDataSize);
-    static qint32 getOpcodeLength(csh handle,qint64 nAddress,char *pData,qint32 nDataSize);
+    static DISASM_STRUCT disasm(csh handle,QIODevice *pDevice,qint64 nOffset,qint64 nAddress);
+    static qint32 getDisasmLength(csh handle,qint64 nAddress,char *pData,qint32 nDataSize);
+    static qint32 getDisasmLength(csh handle,QIODevice *pDevice,qint64 nOffset,qint64 nAddress);
+    static qint64 getNextAddress(csh handle,qint64 nAddress,char *pData,qint32 nDataSize);
+    static qint64 getNextAddress(csh handle,QIODevice *pDevice,qint64 nOffset,qint64 nAddress);
     static OPCODE_ID getOpcodeID(csh handle,qint64 nAddress,char *pData,qint32 nDataSize);
     static bool isJmpOpcode(quint16 nOpcodeID);
     static bool isRetOpcode(quint16 nOpcodeID);
@@ -68,7 +72,14 @@ public:
     static QString replaceWild(QString sString,qint32 nOffset,qint32 nSize,QChar cWild);
     static void printEnabledArchs();
 #ifdef QT_GUI_LIB
-    static QMap<QString,QColor> getOpcodeColorMap(XBinary::DM disasmMode,XBinary::SYNTAX syntax=XBinary::SYNTAX_DEFAULT);
+
+    struct OPCODECOLOR
+    {
+        QColor colText;
+        QColor colBackground;
+    };
+
+    static QMap<QString,OPCODECOLOR> getOpcodeColorMap(XBinary::DM disasmMode,XBinary::SYNTAX syntax=XBinary::SYNTAX_DEFAULT);
 #endif
 };
 

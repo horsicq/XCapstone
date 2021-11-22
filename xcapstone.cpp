@@ -155,7 +155,14 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, qint64 nAddress, char *pD
     return result;
 }
 
-qint32 XCapstone::getOpcodeLength(csh handle, qint64 nAddress, char *pData, qint32 nDataSize)
+XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, QIODevice *pDevice, qint64 nOffset, qint64 nAddress)
+{
+    QByteArray baData=XBinary::read_array(pDevice,nOffset,15); // TODO const
+
+    return disasm(handle,nAddress,baData.data(),baData.size());
+}
+
+qint32 XCapstone::getDisasmLength(csh handle, qint64 nAddress, char *pData, qint32 nDataSize)
 {
     qint32 nResult=0;
 
@@ -171,6 +178,50 @@ qint32 XCapstone::getOpcodeLength(csh handle, qint64 nAddress, char *pData, qint
     }
 
     return nResult;
+}
+
+qint32 XCapstone::getDisasmLength(csh handle, QIODevice *pDevice, qint64 nOffset, qint64 nAddress)
+{
+    QByteArray baData=XBinary::read_array(pDevice,nOffset,15); // TODO const
+
+    return getDisasmLength(handle,nAddress,baData.data(),baData.size());
+}
+
+qint64 XCapstone::getNextAddress(csh handle, qint64 nAddress, char *pData, qint32 nDataSize)
+{
+    qint64 nResult=-1;
+
+    cs_insn *pInsn=nullptr;
+
+    size_t nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)pData,nDataSize,nAddress,1,&pInsn);
+
+    if(nNumberOfOpcodes>0)
+    {
+        nResult=nAddress+pInsn->size;
+
+        if(isJmpOpcode(pInsn->id)||isCallOpcode(pInsn->id))
+        {
+            // TODO other archs
+            for(int i=0; i<pInsn->detail->x86.op_count; i++)
+            {
+                if(pInsn->detail->x86.operands[i].type==X86_OP_IMM)
+                {
+                    nResult=pInsn->detail->x86.operands[i].imm;
+                }
+            }
+        }
+
+        cs_free(pInsn,nNumberOfOpcodes);
+    }
+
+    return nResult;
+}
+
+qint64 XCapstone::getNextAddress(csh handle, QIODevice *pDevice, qint64 nOffset, qint64 nAddress)
+{
+    QByteArray baData=XBinary::read_array(pDevice,nOffset,15); // TODO const
+
+    return getNextAddress(handle,nAddress,baData.data(),baData.size());
 }
 
 XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, qint64 nAddress, char *pData, qint32 nDataSize)
@@ -397,16 +448,19 @@ void XCapstone::printEnabledArchs()
 #endif
 }
 #ifdef QT_GUI_LIB
-QMap<QString, QColor> XCapstone::getOpcodeColorMap(XBinary::DM disasmMode,XBinary::SYNTAX syntax)
+QMap<QString, XCapstone::OPCODECOLOR> XCapstone::getOpcodeColorMap(XBinary::DM disasmMode,XBinary::SYNTAX syntax)
 {
-    QMap<QString, QColor> mapResult;
+    QMap<QString, OPCODECOLOR> mapResult;
 
     if(XBinary::getDisasmFamily(disasmMode)==XBinary::DMFAMILY_X86)
     {
         if((syntax==XBinary::SYNTAX_DEFAULT)||(syntax==XBinary::SYNTAX_INTEL)||(syntax==XBinary::SYNTAX_MASM))
         {
-            mapResult.insert("call",Qt::red);
-            mapResult.insert("ret",Qt::red);
+            OPCODECOLOR opcodeColor={};
+            opcodeColor.colText=Qt::red;
+
+            mapResult.insert("call",opcodeColor);
+            mapResult.insert("ret",opcodeColor);
         }
         else if(syntax==XBinary::SYNTAX_ATT)
         {
@@ -415,8 +469,11 @@ QMap<QString, QColor> XCapstone::getOpcodeColorMap(XBinary::DM disasmMode,XBinar
 
         if((syntax==XBinary::SYNTAX_DEFAULT)||(syntax==XBinary::SYNTAX_INTEL)||(syntax==XBinary::SYNTAX_MASM))
         {
-            mapResult.insert("push",Qt::blue);
-            mapResult.insert("pop",Qt::blue);
+            OPCODECOLOR opcodeColor={};
+            opcodeColor.colText=Qt::blue;
+
+            mapResult.insert("push",opcodeColor);
+            mapResult.insert("pop",opcodeColor);
         }
         else if(syntax==XBinary::SYNTAX_ATT)
         {
@@ -425,11 +482,14 @@ QMap<QString, QColor> XCapstone::getOpcodeColorMap(XBinary::DM disasmMode,XBinar
 
         if((syntax==XBinary::SYNTAX_DEFAULT)||(syntax==XBinary::SYNTAX_INTEL)||(syntax==XBinary::SYNTAX_MASM))
         {
-            mapResult.insert("je",Qt::green);
-            mapResult.insert("jne",Qt::green);
-            mapResult.insert("jz",Qt::green);
-            mapResult.insert("jnz",Qt::green);
-            mapResult.insert("ja",Qt::green);
+            OPCODECOLOR opcodeColor={};
+            opcodeColor.colText=Qt::green;
+
+            mapResult.insert("je",opcodeColor);
+            mapResult.insert("jne",opcodeColor);
+            mapResult.insert("jz",opcodeColor);
+            mapResult.insert("jnz",opcodeColor);
+            mapResult.insert("ja",opcodeColor);
             // TODO more
         }
         else if(syntax==XBinary::SYNTAX_ATT)
