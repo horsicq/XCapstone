@@ -368,6 +368,8 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
                 }
                 else if(signatureType==ST_MASKREL)
                 {
+                    bool bIsJump=false;
+
                     if(isJmpOpcode(pInsn->id)||isCallOpcode(pInsn->id))
                     {
                         // TODO another archs
@@ -382,6 +384,8 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
                                     nAddress=nImm;
 
                                     sHEX=replaceWild(sHEX,nImmOffset,nImmSize,'$');
+
+                                    bIsJump=true;
                                 }
                             }
                         }
@@ -393,6 +397,19 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
                     else
                     {
                         nAddress+=pInsn->size;
+                    }
+
+                    if(!bIsJump)
+                    {
+                        if(nDispSize)
+                        {
+                            sHEX=replaceWild(sHEX,nDispOffset,nDispSize,'.');
+                        }
+
+                        if(nImmSize)
+                        {
+                            sHEX=replaceWild(sHEX,nImmOffset,nImmSize,'.');
+                        }
                     }
                 }
 
