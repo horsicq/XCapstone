@@ -1,3 +1,5 @@
+INCLUDEPATH += $$PWD/src
+DEPENDPATH += $$PWD/src
 INCLUDEPATH += $$PWD/src/include
 DEPENDPATH += $$PWD/src/include
 
