@@ -328,7 +328,11 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
 
             cs_insn *pInsn=0;
 
-            size_t nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)baData.data(),15,nAddress,1,&pInsn);
+            // 4198408
+
+            // 0f0fe7b80d0f0f6509650e650de7df
+
+            size_t nNumberOfOpcodes=cs_disasm(handle,(uint8_t *)baData.data(),baData.size(),nAddress,1,&pInsn);
 
             if(nNumberOfOpcodes>0)
             {
