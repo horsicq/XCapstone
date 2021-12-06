@@ -10,6 +10,7 @@ win32-g++ {
         LIBS += $$PWD/libs/win64-g++/libcapstone_x86.a
     }
 }
+
 win32-msvc* {
     contains(QMAKE_TARGET.arch, x86_64) {
         LIBS += $$PWD/libs/win64-msvc/capstone_x86.lib
@@ -17,6 +18,7 @@ win32-msvc* {
         LIBS += $$PWD/libs/win32-msvc/capstone_x86.lib
     }
 }
+
 unix:!macx {
     BITSIZE = $$system(getconf LONG_BIT)
     if (contains(BITSIZE, 64)) {
@@ -26,6 +28,7 @@ unix:!macx {
         LIBS +=  $$PWD/libs/lin32/libcapstone_x86.a
     }
 }
+
 unix:macx {
     LIBS +=  $$PWD/libs/mac/libcapstone_x86.a
 }
