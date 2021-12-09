@@ -21,8 +21,8 @@
 #ifndef XCAPSTONE_H
 #define XCAPSTONE_H
 
-#include "xbinary.h"
 #include "capstone/capstone.h"
+#include "xbinary.h"
 #ifdef QT_GUI_LIB
 #include <QColor>
 #endif
