@@ -57,6 +57,7 @@ public:
     // TODO error signals
     // TODO info signals
     explicit XCapstone(QObject *pParent=nullptr);
+
     static cs_err openHandle(XBinary::DM disasmMode,csh *pHandle,bool bDetails,XBinary::SYNTAX syntax=XBinary::SYNTAX_DEFAULT);
     static cs_err closeHandle(csh *pHandle);
     static DISASM_STRUCT disasm(csh handle,qint64 nAddress,char *pData,qint32 nDataSize);
