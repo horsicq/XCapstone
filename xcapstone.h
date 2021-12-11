@@ -54,8 +54,7 @@ public:
         ST_MASKREL
     };
 
-    // TODO error signals
-    // TODO info signals
+    // TODO error and info signals
     explicit XCapstone(QObject *pParent=nullptr);
 
     static cs_err openHandle(XBinary::DM disasmMode,csh *pHandle,bool bDetails,XBinary::SYNTAX syntax=XBinary::SYNTAX_DEFAULT);
