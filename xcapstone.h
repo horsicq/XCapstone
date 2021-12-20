@@ -54,6 +54,14 @@ public:
         ST_MASKREL
     };
 
+#ifdef QT_GUI_LIB
+    struct OPCODECOLOR
+    {
+        QColor colText;
+        QColor colBackground;
+    };
+#endif
+
     // TODO error and info signals
     explicit XCapstone(QObject *pParent=nullptr);
 
@@ -73,11 +81,6 @@ public:
     static QString replaceWild(QString sString,qint32 nOffset,qint32 nSize,QChar cWild);
     static void printEnabledArchs();
 #ifdef QT_GUI_LIB
-    struct OPCODECOLOR
-    {
-        QColor colText;
-        QColor colBackground;
-    };
     static QMap<QString,OPCODECOLOR> getOpcodeColorMap(XBinary::DM disasmMode,XBinary::SYNTAX syntax=XBinary::SYNTAX_DEFAULT);
 #endif
 };
