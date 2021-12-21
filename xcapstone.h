@@ -53,7 +53,6 @@ public:
         ST_MASK,
         ST_MASKREL
     };
-
 #ifdef QT_GUI_LIB
     struct OPCODECOLOR
     {
