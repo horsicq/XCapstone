@@ -376,7 +376,7 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
 
                     if(isJmpOpcode(pInsn->id)||isCallOpcode(pInsn->id))
                     {
-                        // TODO another archs
+                        // TODO another archs !!!
                         if(XBinary::getDisasmFamily(disasmMode)==XBinary::DMFAMILY_X86)
                         {
                             for(qint32 i=0;i<pInsn->detail->x86.op_count;i++)
