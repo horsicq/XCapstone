@@ -53,13 +53,6 @@ public:
         ST_MASK,
         ST_MASKREL
     };
-#ifdef QT_GUI_LIB
-    struct OPCODECOLOR
-    {
-        QColor colText;
-        QColor colBackground;
-    };
-#endif
 
     // TODO error and info signals
     // TODO non static
@@ -80,9 +73,6 @@ public:
     static QString getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemoryMap,qint64 nAddress,ST signatureType,qint32 nCount);
     static QString replaceWild(QString sString,qint32 nOffset,qint32 nSize,QChar cWild);
     static void printEnabledArchs();
-#ifdef QT_GUI_LIB
-    static QMap<QString,OPCODECOLOR> getOpcodeColorMap(XBinary::DM disasmMode,XBinary::SYNTAX syntax=XBinary::SYNTAX_DEFAULT);
-#endif
 };
 
 #endif // XCAPSTONE_H

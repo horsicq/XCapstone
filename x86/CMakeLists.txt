@@ -28,10 +28,8 @@ add_library(capstone_x86 STATIC
     ${PROJECT_SOURCE_DIR}/../3rdparty/Capstone/src/MCInstrDesc.c
     ${PROJECT_SOURCE_DIR}/../3rdparty/Capstone/src/MCRegisterInfo.c
     ${PROJECT_SOURCE_DIR}/../3rdparty/Capstone/src/SStream.c
-    ${PROJECT_SOURCE_DIR}/../3rdparty/Capstone/src/arch/X86/X86ATTInstPrinter.c
     ${PROJECT_SOURCE_DIR}/../3rdparty/Capstone/src/arch/X86/X86Disassembler.c
     ${PROJECT_SOURCE_DIR}/../3rdparty/Capstone/src/arch/X86/X86DisassemblerDecoder.c
-    ${PROJECT_SOURCE_DIR}/../3rdparty/Capstone/src/arch/X86/X86InstPrinterCommon.c
     ${PROJECT_SOURCE_DIR}/../3rdparty/Capstone/src/arch/X86/X86IntelInstPrinter.c
     ${PROJECT_SOURCE_DIR}/../3rdparty/Capstone/src/arch/X86/X86Mapping.c
     ${PROJECT_SOURCE_DIR}/../3rdparty/Capstone/src/arch/X86/X86Module.c
