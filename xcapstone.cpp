@@ -471,6 +471,7 @@ void XCapstone::printEnabledArchs()
 #ifdef QT_GUI_LIB
 QMap<QString, XCapstone::OPCODECOLOR> XCapstone::getOpcodeColorMap(XBinary::DM disasmMode,XBinary::SYNTAX syntax)
 {
+    // TODO set color sheme
     QMap<QString, OPCODECOLOR> mapResult;
 
     if(XBinary::getDisasmFamily(disasmMode)==XBinary::DMFAMILY_X86)
@@ -517,6 +518,20 @@ QMap<QString, XCapstone::OPCODECOLOR> XCapstone::getOpcodeColorMap(XBinary::DM d
         {
             // TODO
         }
+
+        if((syntax==XBinary::SYNTAX_DEFAULT)||(syntax==XBinary::SYNTAX_INTEL)||(syntax==XBinary::SYNTAX_MASM))
+        {
+            OPCODECOLOR opcodeColor={};
+            opcodeColor.colText=Qt::gray;
+
+            mapResult.insert("nop",opcodeColor);
+        }
+        else if(syntax==XBinary::SYNTAX_ATT)
+        {
+            // TODO
+        }
+
+        // TODO jmp
     }
 
     return mapResult;
