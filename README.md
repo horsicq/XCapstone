@@ -1,2 +1,2 @@
 # XCapstone
-Capstone for Qt.
+Capstone disasm for Qt.
