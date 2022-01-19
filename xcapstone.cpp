@@ -202,7 +202,7 @@ qint64 XCapstone::getNextAddress(csh handle, qint64 nAddress, char *pData, qint3
         if(isJmpOpcode(pInsn->id)||isCallOpcode(pInsn->id))
         {
             // TODO other archs
-            for(qint32 i=0; i<pInsn->detail->x86.op_count; i++)
+            for(qint32 i=0;i<pInsn->detail->x86.op_count;i++)
             {
                 if(pInsn->detail->x86.operands[i].type==X86_OP_IMM)
                 {
