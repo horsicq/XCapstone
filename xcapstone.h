@@ -56,6 +56,7 @@ public:
 
     // TODO error, info signals
     // TODO non static
+
     explicit XCapstone(QObject *pParent=nullptr);
 
     static cs_err openHandle(XBinary::DM disasmMode,csh *pHandle,bool bDetails,XBinary::SYNTAX syntax=XBinary::SYNTAX_DEFAULT);
@@ -73,6 +74,9 @@ public:
     static QString getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemoryMap,qint64 nAddress,ST signatureType,qint32 nCount);
     static QString replaceWild(QString sString,qint32 nOffset,qint32 nSize,QChar cWild);
     static void printEnabledArchs();
+
+private:
+    static const int N_OPCODE_SIZE=15;
 };
 
 #endif // XCAPSTONE_H

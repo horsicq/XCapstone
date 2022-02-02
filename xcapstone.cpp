@@ -157,7 +157,7 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, qint64 nAddress, char *pD
 
 XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, QIODevice *pDevice, qint64 nOffset, qint64 nAddress)
 {
-    QByteArray baData=XBinary::read_array(pDevice,nOffset,15); // TODO const for X86
+    QByteArray baData=XBinary::read_array(pDevice,nOffset,N_OPCODE_SIZE);
 
     return disasm(handle,nAddress,baData.data(),baData.size());
 }
@@ -182,7 +182,7 @@ qint32 XCapstone::getDisasmLength(csh handle, qint64 nAddress, char *pData, qint
 
 qint32 XCapstone::getDisasmLength(csh handle, QIODevice *pDevice, qint64 nOffset, qint64 nAddress)
 {
-    QByteArray baData=XBinary::read_array(pDevice,nOffset,15); // TODO const
+    QByteArray baData=XBinary::read_array(pDevice,nOffset,N_OPCODE_SIZE);
 
     return getDisasmLength(handle,nAddress,baData.data(),baData.size());
 }
@@ -219,7 +219,7 @@ qint64 XCapstone::getNextAddress(csh handle, qint64 nAddress, char *pData, qint3
 
 qint64 XCapstone::getNextAddress(csh handle, QIODevice *pDevice, qint64 nOffset, qint64 nAddress)
 {
-    QByteArray baData=XBinary::read_array(pDevice,nOffset,15); // TODO const
+    QByteArray baData=XBinary::read_array(pDevice,nOffset,N_OPCODE_SIZE);
 
     return getNextAddress(handle,nAddress,baData.data(),baData.size());
 }
