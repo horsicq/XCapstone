@@ -431,7 +431,7 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
     return sResult;
 }
 
-QString XCapstone::replaceWild(QString sString, qint32 nOffset, qint32 nSize, QChar cWild)
+QString XCapstone::replaceWild(QString sString,qint32 nOffset,qint32 nSize,QChar cWild)
 {
     QString sResult=sString;
     QString sWild;
