@@ -224,7 +224,7 @@ qint64 XCapstone::getNextAddress(csh handle, QIODevice *pDevice, qint64 nOffset,
     return getNextAddress(handle,nAddress,baData.data(),baData.size());
 }
 
-XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, qint64 nAddress, char *pData, qint32 nDataSize)
+XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle,qint64 nAddress,char *pData,qint32 nDataSize)
 {
     OPCODE_ID result={};
 
