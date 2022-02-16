@@ -303,7 +303,7 @@ bool XCapstone::isCallOpcode(quint16 nOpcodeID)
     return bResult;
 }
 
-QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, qint64 nAddress, ST signatureType, qint32 nCount)
+QString XCapstone::getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemoryMap,qint64 nAddress,ST signatureType,qint32 nCount)
 {
     QString sResult;
 
