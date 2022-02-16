@@ -187,7 +187,7 @@ qint32 XCapstone::getDisasmLength(csh handle,QIODevice *pDevice,qint64 nOffset,q
     return getDisasmLength(handle,nAddress,baData.data(),baData.size());
 }
 
-qint64 XCapstone::getNextAddress(csh handle, qint64 nAddress, char *pData, qint32 nDataSize)
+qint64 XCapstone::getNextAddress(csh handle,qint64 nAddress,char *pData,qint32 nDataSize)
 {
     qint64 nResult=-1;
 
