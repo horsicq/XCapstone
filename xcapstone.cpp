@@ -379,13 +379,11 @@ QString XCapstone::getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemory
                             {
                                 if(pInsn->detail->x86.operands[i].type==X86_OP_IMM) // TODO another archs !!!
                                 {
-                                    if((pMemoryMap->fileType==XBinary::FT_COM)&&(pInsn->detail->x86.encoding.imm_size==4))
+                                    nAddress=pInsn->detail->x86.operands[i].imm;
+
+                                    if((pMemoryMap->fileType==XBinary::FT_COM)&&(pInsn->detail->x86.encoding.imm_size==2))
                                     {
-                                        nAddress=(quint64)(pInsn->detail->x86.operands[i].imm);
-                                    }
-                                    else
-                                    {
-                                        nAddress=pInsn->detail->x86.operands[i].imm;
+                                        qDebug("Test");
                                     }
 
                                     sHEX=replaceWild(sHEX,nImmOffset,nImmSize,'$');
