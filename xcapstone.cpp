@@ -383,7 +383,10 @@ QString XCapstone::getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemory
 
                                     if((pMemoryMap->fileType==XBinary::FT_COM)&&(pInsn->detail->x86.encoding.imm_size==2))
                                     {
-                                        qDebug("Test");
+                                        if(nAddress>0xFFFF)
+                                        {
+                                            nAddress&=0xFFFF;
+                                        }
                                     }
 
                                     sHEX=replaceWild(sHEX,nImmOffset,nImmSize,'$');
