@@ -54,7 +54,7 @@ public:
         ST_MASKREL
     };
 
-    // TODO error, info signals
+    // TODO error,info signals
     // TODO non static
 
     explicit XCapstone(QObject *pParent=nullptr);
