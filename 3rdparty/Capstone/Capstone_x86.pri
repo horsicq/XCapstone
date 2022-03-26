@@ -3,6 +3,7 @@ DEPENDPATH += $$PWD/src
 INCLUDEPATH += $$PWD/src/include
 DEPENDPATH += $$PWD/src/include
 
+# TODO ARM
 win32-g++ {
     contains(QT_ARCH, i386) {
         LIBS += $$PWD/libs/win32-g++/libcapstone_x86.a
