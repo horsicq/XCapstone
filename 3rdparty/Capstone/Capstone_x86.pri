@@ -29,7 +29,7 @@ unix:!macx {
         LIBS +=  $$PWD/libs/lin32/libcapstone_x86.a
     }
 }
-
+# TODO ARM
 unix:macx {
     LIBS +=  $$PWD/libs/mac/libcapstone_x86.a
 }
