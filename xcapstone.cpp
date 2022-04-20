@@ -128,7 +128,7 @@ cs_err XCapstone::closeHandle(csh *pHandle)
     return result;
 }
 
-XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle,qint64 nAddress,char *pData,qint32 nDataSize)
+XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle,XADDR nAddress,char *pData,qint32 nDataSize)
 {
     DISASM_STRUCT result={};
 
@@ -155,14 +155,14 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle,qint64 nAddress,char *pDat
     return result;
 }
 
-XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle,QIODevice *pDevice,qint64 nOffset,qint64 nAddress)
+XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle,QIODevice *pDevice,qint64 nOffset,XADDR nAddress)
 {
     QByteArray baData=XBinary::read_array(pDevice,nOffset,N_OPCODE_SIZE);
 
     return disasm(handle,nAddress,baData.data(),baData.size());
 }
 
-qint32 XCapstone::getDisasmLength(csh handle,qint64 nAddress,char *pData,qint32 nDataSize)
+qint32 XCapstone::getDisasmLength(csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
 {
     qint32 nResult=0;
 
@@ -180,14 +180,14 @@ qint32 XCapstone::getDisasmLength(csh handle,qint64 nAddress,char *pData,qint32 
     return nResult;
 }
 
-qint32 XCapstone::getDisasmLength(csh handle,QIODevice *pDevice,qint64 nOffset,qint64 nAddress)
+qint32 XCapstone::getDisasmLength(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress)
 {
     QByteArray baData=XBinary::read_array(pDevice,nOffset,N_OPCODE_SIZE);
 
     return getDisasmLength(handle,nAddress,baData.data(),baData.size());
 }
 
-qint64 XCapstone::getNextAddress(csh handle,qint64 nAddress,char *pData,qint32 nDataSize)
+qint64 XCapstone::getNextAddress(csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
 {
     qint64 nResult=-1;
 
@@ -217,14 +217,14 @@ qint64 XCapstone::getNextAddress(csh handle,qint64 nAddress,char *pData,qint32 n
     return nResult;
 }
 
-qint64 XCapstone::getNextAddress(csh handle,QIODevice *pDevice,qint64 nOffset,qint64 nAddress)
+qint64 XCapstone::getNextAddress(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress)
 {
     QByteArray baData=XBinary::read_array(pDevice,nOffset,N_OPCODE_SIZE);
 
     return getNextAddress(handle,nAddress,baData.data(),baData.size());
 }
 
-XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle,qint64 nAddress,char *pData,qint32 nDataSize)
+XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle,XADDR nAddress,char *pData,qint32 nDataSize)
 {
     OPCODE_ID result={};
 
@@ -304,7 +304,7 @@ bool XCapstone::isCallOpcode(quint16 nOpcodeID)
     return bResult;
 }
 
-QString XCapstone::getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemoryMap,qint64 nAddress,ST signatureType,qint32 nCount)
+QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount)
 {
     QString sResult;
 
