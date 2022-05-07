@@ -162,7 +162,7 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle,QIODevice *pDevice,qint64 
     return disasm(handle,nAddress,baData.data(),baData.size());
 }
 
-qint32 XCapstone::getDisasmLength(csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
+qint32 XCapstone::getDisasmLength(csh handle,XADDR nAddress,char *pData,qint32 nDataSize)
 {
     qint32 nResult=0;
 
