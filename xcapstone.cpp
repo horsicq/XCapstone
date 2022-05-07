@@ -217,7 +217,7 @@ qint64 XCapstone::getNextAddress(csh handle,XADDR nAddress,char *pData,qint32 nD
     return nResult;
 }
 
-qint64 XCapstone::getNextAddress(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress)
+qint64 XCapstone::getNextAddress(csh handle,QIODevice *pDevice,qint64 nOffset,XADDR nAddress)
 {
     QByteArray baData=XBinary::read_array(pDevice,nOffset,N_OPCODE_SIZE);
 
