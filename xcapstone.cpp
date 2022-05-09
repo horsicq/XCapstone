@@ -180,7 +180,7 @@ qint32 XCapstone::getDisasmLength(csh handle,XADDR nAddress,char *pData,qint32 n
     return nResult;
 }
 
-qint32 XCapstone::getDisasmLength(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress)
+qint32 XCapstone::getDisasmLength(csh handle,QIODevice *pDevice,qint64 nOffset,XADDR nAddress)
 {
     QByteArray baData=XBinary::read_array(pDevice,nOffset,N_OPCODE_SIZE);
 
