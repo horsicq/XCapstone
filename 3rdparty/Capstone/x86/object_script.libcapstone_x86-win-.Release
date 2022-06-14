@@ -1,0 +1,13 @@
+C:/tmp_build/capstone/release/MCInst.o
+C:/tmp_build/capstone/release/MCInstrDesc.o
+C:/tmp_build/capstone/release/MCRegisterInfo.o
+C:/tmp_build/capstone/release/SStream.o
+C:/tmp_build/capstone/release/X86ATTInstPrinter.o
+C:/tmp_build/capstone/release/X86Disassembler.o
+C:/tmp_build/capstone/release/X86DisassemblerDecoder.o
+C:/tmp_build/capstone/release/X86InstPrinterCommon.o
+C:/tmp_build/capstone/release/X86IntelInstPrinter.o
+C:/tmp_build/capstone/release/X86Mapping.o
+C:/tmp_build/capstone/release/X86Module.o
+C:/tmp_build/capstone/release/cs.o
+C:/tmp_build/capstone/release/utils.o

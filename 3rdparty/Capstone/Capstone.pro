@@ -18,6 +18,16 @@ CONFIG(debug, debug|release) {
     TARGET = capstone
 }
 
+win32{
+    TARGET = capstone-win-$${QT_ARCH}
+}
+unix:!macx {
+    TARGET = capstone-unix-$${QT_ARCH}
+}
+unix:macx {
+    TARGET = capstone-macos-$${QT_ARCH}
+}
+
 win32 {
     DEFINES += "WIN32"
 }
@@ -125,29 +135,4 @@ SOURCES += \
 
 TARGETLIB_PATH = $$PWD
 
-win32-g++ {
-    contains(QT_ARCH, i386) {
-        DESTDIR=$${TARGETLIB_PATH}/libs/win32-g++
-    } else {
-        DESTDIR=$${TARGETLIB_PATH}/libs/win64-g++
-    }
-}
-win32-msvc* {
-    contains(QMAKE_TARGET.arch, x86_64) {
-        DESTDIR=$${TARGETLIB_PATH}/libs/win64-msvc
-    } else {
-        DESTDIR=$${TARGETLIB_PATH}/libs/win32-msvc
-    }
-}
-unix:!macx {
-    BITSIZE = $$system(getconf LONG_BIT)
-    if (contains(BITSIZE, 64)) {
-        DESTDIR=$${TARGETLIB_PATH}/libs/lin64
-    }
-    if (contains(BITSIZE, 32)) {
-        DESTDIR=$${TARGETLIB_PATH}/libs/lin32
-    }
-}
-unix:macx {
-    DESTDIR=$${TARGETLIB_PATH}/libs/mac
-}
+DESTDIR=$${TARGETLIB_PATH}/libs

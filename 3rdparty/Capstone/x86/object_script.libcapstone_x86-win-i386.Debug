@@ -1,0 +1,13 @@
+C:/tmp_build/capstone/debug/MCInst.o
+C:/tmp_build/capstone/debug/MCInstrDesc.o
+C:/tmp_build/capstone/debug/MCRegisterInfo.o
+C:/tmp_build/capstone/debug/SStream.o
+C:/tmp_build/capstone/debug/X86ATTInstPrinter.o
+C:/tmp_build/capstone/debug/X86Disassembler.o
+C:/tmp_build/capstone/debug/X86DisassemblerDecoder.o
+C:/tmp_build/capstone/debug/X86InstPrinterCommon.o
+C:/tmp_build/capstone/debug/X86IntelInstPrinter.o
+C:/tmp_build/capstone/debug/X86Mapping.o
+C:/tmp_build/capstone/debug/X86Module.o
+C:/tmp_build/capstone/debug/cs.o
+C:/tmp_build/capstone/debug/utils.o
