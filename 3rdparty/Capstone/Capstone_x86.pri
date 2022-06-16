@@ -7,7 +7,7 @@ win32-g++ {
     LIBS += $$PWD/libs/libcapstone_x86-win-$${QT_ARCH}.a
 }
 win32-msvc* {
-    LIBS += $$PWD/libs/libcapstone_x86-win-$${QT_ARCH}.lib
+    LIBS += $$PWD/libs/capstone_x86-win-$${QT_ARCH}.lib
 }
 unix:!macx {
     LIBS += $$PWD/libs/libcapstone_x86-unix-$${QT_ARCH}.a
