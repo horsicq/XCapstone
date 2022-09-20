@@ -345,6 +345,10 @@ QString XCapstone::getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemory
                     nImmOffset=pInsn->detail->x86.encoding.imm_offset;
                     nImmSize=pInsn->detail->x86.encoding.imm_size;
                 }
+                else if(XBinary::getDisasmFamily(disasmMode)==XBinary::DMFAMILY_X86)
+                {
+                    // TODO
+                }
 
                 baData.resize(pInsn->size);
 
