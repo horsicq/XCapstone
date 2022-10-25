@@ -75,7 +75,7 @@ public:
     static void printEnabledArchs();
 
 private:
-    static const int N_OPCODE_SIZE=15; // mb TODO rename
+    static const int N_OPCODE_SIZE=15; // mb TODO rename set/get
 };
 
 #endif // XCAPSTONE_H
