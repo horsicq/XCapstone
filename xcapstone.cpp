@@ -246,7 +246,7 @@ XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle,XADDR nAddress,char *pDat
 
 bool XCapstone::isJmpOpcode(quint16 nOpcodeID)
 {
-    // TODO another structs
+    // TODO another archs
     bool bResult=false;
 
     if( (nOpcodeID==X86_INS_JMP)||
