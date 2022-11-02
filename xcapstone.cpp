@@ -106,6 +106,7 @@ cs_err XCapstone::openHandle(XBinary::DM disasmMode,csh *pHandle,bool bDetails,X
             {
                 cs_option(*pHandle,CS_OPT_SYNTAX,CS_OPT_SYNTAX_MOTOROLA);
             }
+            // TODO Check more
         }
     }
     else
