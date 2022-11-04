@@ -364,12 +364,12 @@ QString XCapstone::getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemory
                     {
                         if(nDispSize)
                         {
-                            sHEX=replaceWild(sHEX,nDispOffset,nDispSize,'.');
+                            sHEX=replaceWildChar(sHEX,nDispOffset,nDispSize,'.');
                         }
 
                         if(nImmSize)
                         {
-                            sHEX=replaceWild(sHEX,nImmOffset,nImmSize,'.');
+                            sHEX=replaceWildChar(sHEX,nImmOffset,nImmSize,'.');
                         }
                     }
                 }
@@ -396,7 +396,7 @@ QString XCapstone::getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemory
                                         }
                                     }
 
-                                    sHEX=replaceWild(sHEX,nImmOffset,nImmSize,'$');
+                                    sHEX=replaceWildChar(sHEX,nImmOffset,nImmSize,'$');
 
                                     bIsJump=true;
                                 }
@@ -416,12 +416,12 @@ QString XCapstone::getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemory
                     {
                         if(nDispSize)
                         {
-                            sHEX=replaceWild(sHEX,nDispOffset,nDispSize,'.');
+                            sHEX=replaceWildChar(sHEX,nDispOffset,nDispSize,'.');
                         }
 
                         if(nImmSize)
                         {
-                            sHEX=replaceWild(sHEX,nImmOffset,nImmSize,'.');
+                            sHEX=replaceWildChar(sHEX,nImmOffset,nImmSize,'.');
                         }
                     }
                 }
@@ -444,7 +444,7 @@ QString XCapstone::getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemory
     return sResult;
 }
 
-QString XCapstone::replaceWild(QString sString,qint32 nOffset,qint32 nSize,QChar cWild)
+QString XCapstone::replaceWildChar(QString sString,qint32 nOffset,qint32 nSize,QChar cWild)
 {
     QString sResult=sString;
     QString sWild;

@@ -71,7 +71,7 @@ public:
     static bool isRetOpcode(quint16 nOpcodeID);
     static bool isCallOpcode(quint16 nOpcodeID);
     static QString getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemoryMap,XADDR nAddress,ST signatureType,qint32 nCount);
-    static QString replaceWild(QString sString,qint32 nOffset,qint32 nSize,QChar cWild);
+    static QString replaceWildChar(QString sString,qint32 nOffset,qint32 nSize,QChar cWild);
     static void printEnabledArchs();
 
 private:
