@@ -34,7 +34,6 @@ XCapstone::XCapstone(QObject *pParent) : QObject(pParent)
 cs_err XCapstone::openHandle(XBinary::DM disasmMode,csh *pHandle,bool bDetails,XBinary::SYNTAX syntax)
 {
 //    printEnabledArchs();
-
     cs_err result=CS_ERR_HANDLE;
 
     if      (disasmMode==XBinary::DM_X86_16)        result=cs_open(CS_ARCH_X86,cs_mode(CS_MODE_16),pHandle);
