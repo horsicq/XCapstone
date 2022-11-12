@@ -27,28 +27,24 @@
 #include <QColor>
 #endif
 
-class XCapstone : public QObject
-{
+class XCapstone : public QObject {
     Q_OBJECT
 
 public:
-    struct DISASM_STRUCT
-    {
+    struct DISASM_STRUCT {
         XADDR nAddress;
         QString sString;
         qint64 nSize;
         qint16 nOpcodeID;
     };
 
-    struct OPCODE_ID
-    {
+    struct OPCODE_ID {
         qint16 nOpcodeID;
         qint64 nSize;
     };
 
-    enum ST
-    {
-        ST_UNKNOWN=0,
+    enum ST {
+        ST_UNKNOWN = 0,
         ST_FULL,
         ST_MASK,
         ST_MASKREL
@@ -56,26 +52,26 @@ public:
 
     // TODO error,info signals
     // TODO non static
-    explicit XCapstone(QObject *pParent=nullptr);
+    explicit XCapstone(QObject *pParent = nullptr);
 
-    static cs_err openHandle(XBinary::DM disasmMode,csh *pHandle,bool bDetails,XBinary::SYNTAX syntax=XBinary::SYNTAX_DEFAULT);
+    static cs_err openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails, XBinary::SYNTAX syntax = XBinary::SYNTAX_DEFAULT);
     static cs_err closeHandle(csh *pHandle);
-    static DISASM_STRUCT disasm(csh handle,XADDR nAddress,char *pData,qint32 nDataSize);
-    static DISASM_STRUCT disasm(csh handle,QIODevice *pDevice,qint64 nOffset,XADDR nAddress);
-    static qint32 getDisasmLength(csh handle,XADDR nAddress,char *pData,qint32 nDataSize);
-    static qint32 getDisasmLength(csh handle,QIODevice *pDevice,qint64 nOffset,XADDR nAddress);
-    static qint64 getNextAddress(csh handle,XADDR nAddress,char *pData,qint32 nDataSize);
-    static qint64 getNextAddress(csh handle,QIODevice *pDevice,qint64 nOffset,XADDR nAddress);
-    static OPCODE_ID getOpcodeID(csh handle,XADDR nAddress,char *pData,qint32 nDataSize);
+    static DISASM_STRUCT disasm(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
+    static DISASM_STRUCT disasm(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress);
+    static qint32 getDisasmLength(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
+    static qint32 getDisasmLength(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress);
+    static qint64 getNextAddress(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
+    static qint64 getNextAddress(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress);
+    static OPCODE_ID getOpcodeID(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
     static bool isJmpOpcode(quint16 nOpcodeID);
     static bool isRetOpcode(quint16 nOpcodeID);
     static bool isCallOpcode(quint16 nOpcodeID);
-    static QString getSignature(QIODevice *pDevice,XBinary::_MEMORY_MAP *pMemoryMap,XADDR nAddress,ST signatureType,qint32 nCount);
-    static QString replaceWildChar(QString sString,qint32 nOffset,qint32 nSize,QChar cWild);
+    static QString getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount);
+    static QString replaceWildChar(QString sString, qint32 nOffset, qint32 nSize, QChar cWild);
     static void printEnabledArchs();
 
 private:
-    static const int N_OPCODE_SIZE=15; // mb TODO rename set/get
+    static const int N_OPCODE_SIZE = 15;  // mb TODO rename set/get
 };
 
-#endif // XCAPSTONE_H
+#endif  // XCAPSTONE_H
