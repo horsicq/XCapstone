@@ -414,8 +414,8 @@ QString XCapstone::replaceWildChar(QString sString, qint32 nOffset, qint32 nSize
 }
 
 void XCapstone::printEnabledArchs() {
-    // TODO Check more
 #ifdef QT_DEBUG
+    // TODO Check more
     if (cs_support(CS_ARCH_ARM)) qDebug("CS_ARCH_ARM");
     if (cs_support(CS_ARCH_ARM64)) qDebug("CS_ARCH_ARM64");
     if (cs_support(CS_ARCH_MIPS)) qDebug("CS_ARCH_MIPS");
