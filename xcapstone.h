@@ -50,6 +50,22 @@ public:
         ST_MASKREL
     };
 
+    struct DISASM_RESULT {
+        bool bIsValid;
+        XADDR nAddress;
+        qint32 nSize;
+        QString sMnemonic;
+        QString sString;
+        bool bRelative;
+        XADDR nXrefToRelative;
+        bool bMemory;
+        XADDR nXrefToMemory;
+    };
+
+    struct DISASM_OPTIONS {
+        bool bIsUppercase;
+    };
+
     // TODO error,info signals
     // TODO non static
     explicit XCapstone(QObject *pParent = nullptr);
@@ -58,6 +74,7 @@ public:
     static cs_err closeHandle(csh *pHandle);
     static DISASM_STRUCT disasm(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
     static DISASM_STRUCT disasm(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress);
+    static DISASM_RESULT disasm_ex(csh handle, XBinary::DM disasmMode, char *pData, qint32 nDataSize, XADDR nAddress, DISASM_OPTIONS disasmOptions);
     static qint32 getDisasmLength(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
     static qint32 getDisasmLength(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress);
     static qint64 getNextAddress(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);

@@ -187,6 +187,124 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, QIODevice *pDevice, qint6
     return disasm(handle, nAddress, baData.data(), baData.size());
 }
 
+XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode, char *pData, qint32 nDataSize, XADDR nAddress, DISASM_OPTIONS disasmOptions)
+{
+    DISASM_RESULT result = {};
+
+    result.nAddress = nAddress;
+
+    if (handle) {
+        cs_insn *pInsn = nullptr;
+
+        quint64 nNumberOfOpcodes = cs_disasm(handle, (uint8_t *)pData, nDataSize, nAddress, 1, &pInsn);
+
+        if (nNumberOfOpcodes > 0) {
+            result.sMnemonic = pInsn->mnemonic;
+            result.sString = pInsn->op_str;
+
+            result.nSize = pInsn->size;
+            result.bIsValid = true;
+
+            // Relatives
+            for (qint32 i = 0; i < pInsn->detail->groups_count; i++) {
+                if (pInsn->detail->groups[i] == CS_GRP_BRANCH_RELATIVE) {
+                    if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_X86) {
+                        for (qint32 j = 0; j < pInsn->detail->x86.op_count; j++) {
+                            if (pInsn->detail->x86.operands[j].type == X86_OP_IMM) {
+                                result.bRelative = true;
+                                result.nXrefToRelative = pInsn->detail->x86.operands[j].imm;
+
+                                break;
+                            }
+                        }
+                    } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
+                        for (qint32 j = 0; j < pInsn->detail->arm.op_count; j++) {
+                            if (pInsn->detail->arm.operands[j].type == ARM_OP_IMM) {
+                                result.bRelative = true;
+                                result.nXrefToRelative = pInsn->detail->arm.operands[j].imm;
+
+                                break;
+                            }
+                        }
+                    } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM64) {
+                        for (qint32 j = 0; j < pInsn->detail->arm64.op_count; j++) {
+                            if (pInsn->detail->arm64.operands[j].type == ARM64_OP_IMM) {
+                                result.bRelative = true;
+                                result.nXrefToRelative = pInsn->detail->arm64.operands[j].imm;
+
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }
+
+            // Memory
+            if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_X86) {
+                for (qint32 i = 0; i < pInsn->detail->x86.op_count; i++) {
+                    if (pInsn->detail->x86.operands[i].type == X86_OP_MEM) {
+
+                        if ((pInsn->detail->x86.operands[i].mem.base == X86_REG_INVALID) &&
+                            (pInsn->detail->x86.operands[i].mem.index == X86_REG_INVALID)) {
+                            result.bMemory = true;
+                            result.nXrefToMemory = pInsn->detail->x86.operands[i].mem.disp;
+
+                            break;
+                        } else if ((pInsn->detail->x86.operands[i].mem.base == X86_REG_RIP) &&
+                                   (pInsn->detail->x86.operands[i].mem.index == X86_REG_INVALID)) {
+                            result.bMemory = true;
+                            result.nXrefToMemory = nAddress + pInsn->size + pInsn->detail->x86.operands[i].mem.disp;
+
+                            QString sOldString;
+                            QString sNewString;
+
+                            // TODO all syntaxes
+                            if (result.sString.contains("rip + 0x")) { // Intel
+                                sOldString = QString("rip + 0x%1").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
+                                sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
+                            } /*else if ("(%rip)") {
+                                sOldString = QString("rip + 0x%1").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
+                                sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
+                            }*/
+
+                            result.sString = result.sString.replace(sOldString, sNewString);
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+//            if (disasmMode == XBinary::DM_X86_64) {
+//                if (result.sString.contains("[rip + 0x")) {
+//                    // TODO
+//                    qint32 nNumberOfOpcodes = pInsn->detail->x86.op_count;
+
+//                    for (qint32 i = 0; i < nNumberOfOpcodes; i++) {
+
+//                    }
+//                }
+//            }
+
+            cs_free(pInsn, nNumberOfOpcodes);
+        } else {
+            result.sMnemonic = tr("Invalid opcode");
+            result.nSize = 1;
+        }
+
+        if (disasmOptions.bIsUppercase) {
+            result.sMnemonic = result.sMnemonic.toUpper();
+            result.sString = result.sString.toUpper();
+        }
+    } else {
+        result.nSize = 1;
+    }
+
+    return result;
+}
+
 qint32 XCapstone::getDisasmLength(csh handle, XADDR nAddress, char *pData, qint32 nDataSize) {
     qint32 nResult = 0;
 
