@@ -293,11 +293,6 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
             result.sMnemonic = tr("Invalid opcode");
             result.nSize = 1;
         }
-
-        if (disasmOptions.bIsUppercase) {
-            result.sMnemonic = result.sMnemonic.toUpper();
-            result.sString = result.sString.toUpper();
-        }
     } else {
         result.nSize = 1;
     }
