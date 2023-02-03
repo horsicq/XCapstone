@@ -250,6 +250,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                             (pInsn->detail->x86.operands[i].mem.index == X86_REG_INVALID)) {
                             result.bMemory = true;
                             result.nXrefToMemory = pInsn->detail->x86.operands[i].mem.disp;
+                            result.nMemorySize = pInsn->detail->x86.operands[i].size;
 
                             break;
                         } else if ((pInsn->detail->x86.operands[i].mem.base == X86_REG_RIP) &&

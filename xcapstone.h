@@ -56,10 +56,11 @@ public:
         qint32 nSize;
         QString sMnemonic;
         QString sString;
-        bool bRelative;
+        bool bRelative; // TODO jmp/jxx/call
         XADDR nXrefToRelative;
         bool bMemory;
         XADDR nXrefToMemory;
+        qint32 nMemorySize;
     };
 
     struct DISASM_OPTIONS {
