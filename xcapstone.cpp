@@ -211,7 +211,41 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                     if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_X86) {
                         for (qint32 j = 0; j < pInsn->detail->x86.op_count; j++) {
                             if (pInsn->detail->x86.operands[j].type == X86_OP_IMM) {
-                                result.bRelative = true;
+                                switch (pInsn->id) {
+                                    case X86_INS_LOOP:
+                                    case X86_INS_LOOPE:
+                                    case X86_INS_LOOPNE:
+                                    case X86_INS_JAE:
+                                    case X86_INS_JA:
+                                    case X86_INS_JBE:
+                                    case X86_INS_JB:
+                                    case X86_INS_JCXZ:
+                                    case X86_INS_JECXZ:
+                                    case X86_INS_JE:
+                                    case X86_INS_JGE:
+                                    case X86_INS_JG:
+                                    case X86_INS_JLE:
+                                    case X86_INS_JL:
+                                    case X86_INS_JNE:
+                                    case X86_INS_JNO:
+                                    case X86_INS_JNP:
+                                    case X86_INS_JNS:
+                                    case X86_INS_JO:
+                                    case X86_INS_JP:
+                                    case X86_INS_JRCXZ:
+                                    case X86_INS_JS:
+                                        result.relType = RELTYPE_JMPCOND;
+                                        break;
+                                    case X86_INS_CALL:
+                                        result.relType = RELTYPE_CALL;
+                                        break;
+                                    case X86_INS_JMP:
+                                        result.relType = RELTYPE_JMP;
+                                        break;
+                                    default:
+                                        result.relType = RELTYPE_JMP; // TODO
+                                }
+
                                 result.nXrefToRelative = pInsn->detail->x86.operands[j].imm;
 
                                 break;
@@ -220,7 +254,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                     } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
                         for (qint32 j = 0; j < pInsn->detail->arm.op_count; j++) {
                             if (pInsn->detail->arm.operands[j].type == ARM_OP_IMM) {
-                                result.bRelative = true;
+                                result.relType = RELTYPE_JMP; // TODO
                                 result.nXrefToRelative = pInsn->detail->arm.operands[j].imm;
 
                                 break;
@@ -229,7 +263,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                     } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM64) {
                         for (qint32 j = 0; j < pInsn->detail->arm64.op_count; j++) {
                             if (pInsn->detail->arm64.operands[j].type == ARM64_OP_IMM) {
-                                result.bRelative = true;
+                                result.relType = RELTYPE_JMP; // TODO
                                 result.nXrefToRelative = pInsn->detail->arm64.operands[j].imm;
 
                                 break;
@@ -248,15 +282,16 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
 
                         if ((pInsn->detail->x86.operands[i].mem.base == X86_REG_INVALID) &&
                             (pInsn->detail->x86.operands[i].mem.index == X86_REG_INVALID)) {
-                            result.bMemory = true;
+                            result.memType = MEMTYPE_READ; // TODO
                             result.nXrefToMemory = pInsn->detail->x86.operands[i].mem.disp;
                             result.nMemorySize = pInsn->detail->x86.operands[i].size;
 
                             break;
                         } else if ((pInsn->detail->x86.operands[i].mem.base == X86_REG_RIP) &&
                                    (pInsn->detail->x86.operands[i].mem.index == X86_REG_INVALID)) {
-                            result.bMemory = true;
+                            result.memType = MEMTYPE_READ; // TODO
                             result.nXrefToMemory = nAddress + pInsn->size + pInsn->detail->x86.operands[i].mem.disp;
+                            result.nMemorySize = pInsn->detail->x86.operands[i].size;
 
                             QString sOldString;
                             QString sNewString;

@@ -50,15 +50,29 @@ public:
         ST_MASKREL
     };
 
+    enum RELTYPE {
+        RELTYPE_NONE = 0,
+        RELTYPE_JMP,
+        RELTYPE_JMPCOND,
+        RELTYPE_CALL
+    };
+
+    enum MEMTYPE {
+        MEMTYPE_NONE = 0,
+        MEMTYPE_READ,
+        MEMTYPE_WRITE,
+        MEMTYPE_ACCESS
+    };
+
     struct DISASM_RESULT {
         bool bIsValid;
         XADDR nAddress;
         qint32 nSize;
         QString sMnemonic;
         QString sString;
-        bool bRelative; // TODO jmp/jxx/call
+        RELTYPE relType;
         XADDR nXrefToRelative;
-        bool bMemory;
+        MEMTYPE memType;
         XADDR nXrefToMemory;
         qint32 nMemorySize;
     };
