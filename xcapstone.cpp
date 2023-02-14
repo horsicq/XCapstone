@@ -234,13 +234,13 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                                     case X86_INS_JP:
                                     case X86_INS_JRCXZ:
                                     case X86_INS_JS:
-                                        result.relType = RELTYPE_JMPCOND;
+                                        result.relType = RELTYPE_JMP_COND;
                                         break;
                                     case X86_INS_CALL:
                                         result.relType = RELTYPE_CALL;
                                         break;
                                     case X86_INS_JMP:
-                                        result.relType = RELTYPE_JMP;
+                                        result.relType = RELTYPE_JMP_UNCOND;
                                         break;
                                     default:
                                         result.relType = RELTYPE_JMP; // TODO
@@ -280,11 +280,17 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                 for (qint32 i = 0; i < pInsn->detail->x86.op_count; i++) {
                     if (pInsn->detail->x86.operands[i].type == X86_OP_MEM) {
 
+                        bool bLEA = (pInsn->id == X86_INS_LEA);
+
                         if ((pInsn->detail->x86.operands[i].mem.base == X86_REG_INVALID) &&
                             (pInsn->detail->x86.operands[i].mem.index == X86_REG_INVALID)) {
                             result.memType = MEMTYPE_READ; // TODO
                             result.nXrefToMemory = pInsn->detail->x86.operands[i].mem.disp;
                             result.nMemorySize = pInsn->detail->x86.operands[i].size;
+
+                            if (bLEA) {
+                                result.nMemorySize = 0;
+                            }
 
                             break;
                         } else if ((pInsn->detail->x86.operands[i].mem.base == X86_REG_RIP) &&
@@ -292,6 +298,10 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                             result.memType = MEMTYPE_READ; // TODO
                             result.nXrefToMemory = nAddress + pInsn->size + pInsn->detail->x86.operands[i].mem.disp;
                             result.nMemorySize = pInsn->detail->x86.operands[i].size;
+
+                            if (bLEA) {
+                                result.nMemorySize = 0;
+                            }
 
                             QString sOldString;
                             QString sNewString;

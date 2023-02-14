@@ -52,9 +52,10 @@ public:
 
     enum RELTYPE {
         RELTYPE_NONE = 0,
-        RELTYPE_JMP,
-        RELTYPE_JMPCOND,
-        RELTYPE_CALL
+        RELTYPE_JMP = 0x10,
+        RELTYPE_JMP_UNCOND,
+        RELTYPE_JMP_COND,
+        RELTYPE_CALL = 0x20
     };
 
     enum MEMTYPE {
