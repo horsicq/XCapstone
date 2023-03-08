@@ -307,6 +307,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                             QString sNewString;
 
                             // TODO all syntaxes
+                            // TODO MASM
                             if (result.sString.contains("rip + 0x")) { // Intel
                                 sOldString = QString("rip + 0x%1").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
                                 sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
