@@ -26,10 +26,12 @@
 #endif
 #endif
 
-XCapstone::XCapstone(QObject *pParent) : QObject(pParent) {
+XCapstone::XCapstone(QObject *pParent) : QObject(pParent)
+{
 }
 
-cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails, XBinary::SYNTAX syntax) {
+cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails, XBinary::SYNTAX syntax)
+{
     //    printEnabledArchs();
     cs_err result = CS_ERR_HANDLE;
 
@@ -145,7 +147,8 @@ cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails
     return result;
 }
 
-cs_err XCapstone::closeHandle(csh *pHandle) {
+cs_err XCapstone::closeHandle(csh *pHandle)
+{
     cs_err result = CS_ERR_HANDLE;
 
     if (*pHandle) {
@@ -156,7 +159,8 @@ cs_err XCapstone::closeHandle(csh *pHandle) {
     return result;
 }
 
-XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, XADDR nAddress, char *pData, qint32 nDataSize) {
+XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
+{
     DISASM_STRUCT result = {};
 
     cs_insn *pInsn = nullptr;
@@ -181,7 +185,8 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, XADDR nAddress, char *pDa
     return result;
 }
 
-XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress) {
+XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress)
+{
     QByteArray baData = XBinary::read_array(pDevice, nOffset, N_OPCODE_SIZE);
 
     return disasm(handle, nAddress, baData.data(), baData.size());
@@ -243,7 +248,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                                         result.relType = RELTYPE_JMP_UNCOND;
                                         break;
                                     default:
-                                        result.relType = RELTYPE_JMP; // TODO
+                                        result.relType = RELTYPE_JMP;  // TODO
                                 }
 
                                 result.nXrefToRelative = pInsn->detail->x86.operands[j].imm;
@@ -254,7 +259,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                     } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
                         for (qint32 j = 0; j < pInsn->detail->arm.op_count; j++) {
                             if (pInsn->detail->arm.operands[j].type == ARM_OP_IMM) {
-                                result.relType = RELTYPE_JMP; // TODO
+                                result.relType = RELTYPE_JMP;  // TODO
                                 result.nXrefToRelative = pInsn->detail->arm.operands[j].imm;
 
                                 break;
@@ -263,7 +268,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                     } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM64) {
                         for (qint32 j = 0; j < pInsn->detail->arm64.op_count; j++) {
                             if (pInsn->detail->arm64.operands[j].type == ARM64_OP_IMM) {
-                                result.relType = RELTYPE_JMP; // TODO
+                                result.relType = RELTYPE_JMP;  // TODO
                                 result.nXrefToRelative = pInsn->detail->arm64.operands[j].imm;
 
                                 break;
@@ -279,12 +284,10 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
             if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_X86) {
                 for (qint32 i = 0; i < pInsn->detail->x86.op_count; i++) {
                     if (pInsn->detail->x86.operands[i].type == X86_OP_MEM) {
-
                         bool bLEA = (pInsn->id == X86_INS_LEA);
 
-                        if ((pInsn->detail->x86.operands[i].mem.base == X86_REG_INVALID) &&
-                            (pInsn->detail->x86.operands[i].mem.index == X86_REG_INVALID)) {
-                            result.memType = MEMTYPE_READ; // TODO
+                        if ((pInsn->detail->x86.operands[i].mem.base == X86_REG_INVALID) && (pInsn->detail->x86.operands[i].mem.index == X86_REG_INVALID)) {
+                            result.memType = MEMTYPE_READ;  // TODO
                             result.nXrefToMemory = pInsn->detail->x86.operands[i].mem.disp;
                             result.nMemorySize = pInsn->detail->x86.operands[i].size;
 
@@ -293,9 +296,8 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                             }
 
                             break;
-                        } else if ((pInsn->detail->x86.operands[i].mem.base == X86_REG_RIP) &&
-                                   (pInsn->detail->x86.operands[i].mem.index == X86_REG_INVALID)) {
-                            result.memType = MEMTYPE_READ; // TODO
+                        } else if ((pInsn->detail->x86.operands[i].mem.base == X86_REG_RIP) && (pInsn->detail->x86.operands[i].mem.index == X86_REG_INVALID)) {
+                            result.memType = MEMTYPE_READ;  // TODO
                             result.nXrefToMemory = nAddress + pInsn->size + pInsn->detail->x86.operands[i].mem.disp;
                             result.nMemorySize = pInsn->detail->x86.operands[i].size;
 
@@ -308,7 +310,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
 
                             // TODO all syntaxes
                             // TODO MASM
-                            if (result.sString.contains("rip + 0x")) { // Intel
+                            if (result.sString.contains("rip + 0x")) {  // Intel
                                 sOldString = QString("rip + 0x%1").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
                                 sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
                             } /*else if ("(%rip)") {
@@ -324,16 +326,16 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                 }
             }
 
-//            if (disasmMode == XBinary::DM_X86_64) {
-//                if (result.sString.contains("[rip + 0x")) {
-//                    // TODO
-//                    qint32 nNumberOfOpcodes = pInsn->detail->x86.op_count;
+            //            if (disasmMode == XBinary::DM_X86_64) {
+            //                if (result.sString.contains("[rip + 0x")) {
+            //                    // TODO
+            //                    qint32 nNumberOfOpcodes = pInsn->detail->x86.op_count;
 
-//                    for (qint32 i = 0; i < nNumberOfOpcodes; i++) {
+            //                    for (qint32 i = 0; i < nNumberOfOpcodes; i++) {
 
-//                    }
-//                }
-//            }
+            //                    }
+            //                }
+            //            }
 
             cs_free(pInsn, nNumberOfOpcodes);
         } else {
@@ -347,7 +349,8 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
     return result;
 }
 
-qint32 XCapstone::getDisasmLength(csh handle, XADDR nAddress, char *pData, qint32 nDataSize) {
+qint32 XCapstone::getDisasmLength(csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
+{
     qint32 nResult = 0;
 
     cs_insn *pInsn = nullptr;
@@ -363,13 +366,15 @@ qint32 XCapstone::getDisasmLength(csh handle, XADDR nAddress, char *pData, qint3
     return nResult;
 }
 
-qint32 XCapstone::getDisasmLength(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress) {
+qint32 XCapstone::getDisasmLength(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress)
+{
     QByteArray baData = XBinary::read_array(pDevice, nOffset, N_OPCODE_SIZE);
 
     return getDisasmLength(handle, nAddress, baData.data(), baData.size());
 }
 
-qint64 XCapstone::getNextAddress(csh handle, XADDR nAddress, char *pData, qint32 nDataSize) {
+qint64 XCapstone::getNextAddress(csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
+{
     qint64 nResult = -1;
 
     cs_insn *pInsn = nullptr;
@@ -394,13 +399,15 @@ qint64 XCapstone::getNextAddress(csh handle, XADDR nAddress, char *pData, qint32
     return nResult;
 }
 
-qint64 XCapstone::getNextAddress(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress) {
+qint64 XCapstone::getNextAddress(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress)
+{
     QByteArray baData = XBinary::read_array(pDevice, nOffset, N_OPCODE_SIZE);
 
     return getNextAddress(handle, nAddress, baData.data(), baData.size());
 }
 
-XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, XADDR nAddress, char *pData, qint32 nDataSize) {
+XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
+{
     OPCODE_ID result = {};
 
     cs_insn *pInsn = nullptr;
@@ -417,7 +424,8 @@ XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, XADDR nAddress, char *pD
     return result;
 }
 
-bool XCapstone::isJmpOpcode(quint16 nOpcodeID) {
+bool XCapstone::isJmpOpcode(quint16 nOpcodeID)
+{
     // TODO another archs
     bool bResult = false;
 
@@ -432,7 +440,8 @@ bool XCapstone::isJmpOpcode(quint16 nOpcodeID) {
     return bResult;
 }
 
-bool XCapstone::isRetOpcode(quint16 nOpcodeID) {
+bool XCapstone::isRetOpcode(quint16 nOpcodeID)
+{
     bool bResult = false;
 
     if ((nOpcodeID == X86_INS_RET) || (nOpcodeID == X86_INS_RETF) || (nOpcodeID == X86_INS_RETFQ)) {
@@ -442,7 +451,8 @@ bool XCapstone::isRetOpcode(quint16 nOpcodeID) {
     return bResult;
 }
 
-bool XCapstone::isCallOpcode(quint16 nOpcodeID) {
+bool XCapstone::isCallOpcode(quint16 nOpcodeID)
+{
     bool bResult = false;
 
     if (nOpcodeID == X86_INS_CALL) {
@@ -452,7 +462,8 @@ bool XCapstone::isCallOpcode(quint16 nOpcodeID) {
     return bResult;
 }
 
-QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount) {
+QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount)
+{
     QString sResult;
 
     csh handle = 0;
@@ -562,7 +573,8 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
     return sResult;
 }
 
-QString XCapstone::replaceWildChar(QString sString, qint32 nOffset, qint32 nSize, QChar cWild) {
+QString XCapstone::replaceWildChar(QString sString, qint32 nOffset, qint32 nSize, QChar cWild)
+{
     QString sResult = sString;
     QString sWild;
 
@@ -573,7 +585,8 @@ QString XCapstone::replaceWildChar(QString sString, qint32 nOffset, qint32 nSize
     return sResult;
 }
 
-void XCapstone::printEnabledArchs() {
+void XCapstone::printEnabledArchs()
+{
 #ifdef QT_DEBUG
     // TODO Check more
     if (cs_support(CS_ARCH_ARM)) qDebug("CS_ARCH_ARM");
