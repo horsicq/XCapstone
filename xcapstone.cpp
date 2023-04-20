@@ -194,6 +194,8 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, QIODevice *pDevice, qint6
 
 XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode, char *pData, qint32 nDataSize, XADDR nAddress, DISASM_OPTIONS disasmOptions)
 {
+    Q_UNUSED(disasmOptions)
+
     DISASM_RESULT result = {};
 
     result.nAddress = nAddress;
