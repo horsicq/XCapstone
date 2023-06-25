@@ -240,17 +240,10 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                                     case X86_INS_JO:
                                     case X86_INS_JP:
                                     case X86_INS_JRCXZ:
-                                    case X86_INS_JS:
-                                        result.relType = RELTYPE_JMP_COND;
-                                        break;
-                                    case X86_INS_CALL:
-                                        result.relType = RELTYPE_CALL;
-                                        break;
-                                    case X86_INS_JMP:
-                                        result.relType = RELTYPE_JMP_UNCOND;
-                                        break;
-                                    default:
-                                        result.relType = RELTYPE_JMP;  // TODO
+                                    case X86_INS_JS: result.relType = RELTYPE_JMP_COND; break;
+                                    case X86_INS_CALL: result.relType = RELTYPE_CALL; break;
+                                    case X86_INS_JMP: result.relType = RELTYPE_JMP_UNCOND; break;
+                                    default: result.relType = RELTYPE_JMP;  // TODO
                                 }
 
                                 result.nXrefToRelative = pInsn->detail->x86.operands[j].imm;
