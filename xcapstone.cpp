@@ -35,90 +35,48 @@ cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails
     //    printEnabledArchs();
     cs_err result = CS_ERR_HANDLE;
 
-    if (disasmMode == XBinary::DM_X86_16)
-        result = cs_open(CS_ARCH_X86, cs_mode(CS_MODE_16), pHandle);
-    else if (disasmMode == XBinary::DM_X86_32)
-        result = cs_open(CS_ARCH_X86, cs_mode(CS_MODE_32), pHandle);
-    else if (disasmMode == XBinary::DM_X86_64)
-        result = cs_open(CS_ARCH_X86, cs_mode(CS_MODE_64), pHandle);
-    else if (disasmMode == XBinary::DM_ARM_LE)
-        result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_LITTLE_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_ARM_BE)
-        result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_BIG_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_ARM64_LE)
-        result = cs_open(CS_ARCH_ARM64, cs_mode(CS_MODE_ARM | CS_MODE_LITTLE_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_ARM64_BE)
-        result = cs_open(CS_ARCH_ARM64, cs_mode(CS_MODE_ARM | CS_MODE_BIG_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_CORTEXM)
-        result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_MCLASS), pHandle);
-    else if (disasmMode == XBinary::DM_THUMB_LE)
-        result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_LITTLE_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_THUMB_BE)
-        result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_BIG_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_MIPS_LE)
-        result = cs_open(CS_ARCH_MIPS, cs_mode(CS_MODE_MIPS32 | CS_MODE_LITTLE_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_MIPS_BE)
-        result = cs_open(CS_ARCH_MIPS, cs_mode(CS_MODE_MIPS32 | CS_MODE_BIG_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_MIPS64_LE)
-        result = cs_open(CS_ARCH_MIPS, cs_mode(CS_MODE_MIPS64 | CS_MODE_LITTLE_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_MIPS64_BE)
-        result = cs_open(CS_ARCH_MIPS, cs_mode(CS_MODE_MIPS64 | CS_MODE_BIG_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_PPC_LE)
-        result = cs_open(CS_ARCH_PPC, cs_mode(CS_MODE_32 | CS_MODE_LITTLE_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_PPC_BE)
-        result = cs_open(CS_ARCH_PPC, cs_mode(CS_MODE_32 | CS_MODE_BIG_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_PPC64_LE)
-        result = cs_open(CS_ARCH_PPC, cs_mode(CS_MODE_64 | CS_MODE_LITTLE_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_PPC64_BE)
-        result = cs_open(CS_ARCH_PPC, cs_mode(CS_MODE_64 | CS_MODE_BIG_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_SPARC)
-        result = cs_open(CS_ARCH_SPARC, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_S390X)
-        result = cs_open(CS_ARCH_SYSZ, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_XCORE)
-        result = cs_open(CS_ARCH_XCORE, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_M68K)
-        result = cs_open(CS_ARCH_M68K, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_M68K40)
-        result = cs_open(CS_ARCH_M68K, cs_mode(CS_MODE_M68K_040), pHandle);
-    else if (disasmMode == XBinary::DM_TMS320C64X)
-        result = cs_open(CS_ARCH_TMS320C64X, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_M6800)
-        result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6800), pHandle);
-    else if (disasmMode == XBinary::DM_M6801)
-        result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6801), pHandle);
-    else if (disasmMode == XBinary::DM_M6805)
-        result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6805), pHandle);
-    else if (disasmMode == XBinary::DM_M6808)
-        result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6808), pHandle);
-    else if (disasmMode == XBinary::DM_M6809)
-        result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6809), pHandle);
-    else if (disasmMode == XBinary::DM_M6811)
-        result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6811), pHandle);
-    else if (disasmMode == XBinary::DM_CPU12)
-        result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_CPU12), pHandle);
-    else if (disasmMode == XBinary::DM_HD6301)
-        result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6301), pHandle);
-    else if (disasmMode == XBinary::DM_HD6309)
-        result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6309), pHandle);
-    else if (disasmMode == XBinary::DM_HCS08)
-        result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_HCS08), pHandle);
-    else if (disasmMode == XBinary::DM_EVM)
-        result = cs_open(CS_ARCH_EVM, cs_mode(0), pHandle);
-    else if (disasmMode == XBinary::DM_WASM)
-        result = cs_open(CS_ARCH_WASM, cs_mode(0), pHandle);
-    else if (disasmMode == XBinary::DM_RISKV32)
-        result = cs_open(CS_ARCH_RISCV, cs_mode(CS_MODE_RISCV32), pHandle);
-    else if (disasmMode == XBinary::DM_RISKV64)
-        result = cs_open(CS_ARCH_RISCV, cs_mode(CS_MODE_RISCV64), pHandle);
-    else if (disasmMode == XBinary::DM_RISKVC)
-        result = cs_open(CS_ARCH_RISCV, cs_mode(CS_MODE_RISCVC), pHandle);
-    else if (disasmMode == XBinary::DM_MOS65XX)
-        result = cs_open(CS_ARCH_M680X, cs_mode(CS_ARCH_MOS65XX), pHandle);
-    else if (disasmMode == XBinary::DM_BPF_LE)
-        result = cs_open(CS_ARCH_BPF, cs_mode(CS_MODE_BPF_CLASSIC | CS_MODE_LITTLE_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_BPF_BE)
-        result = cs_open(CS_ARCH_BPF, cs_mode(CS_MODE_BPF_CLASSIC | CS_MODE_BIG_ENDIAN), pHandle);
+    if (disasmMode == XBinary::DM_X86_16) result = cs_open(CS_ARCH_X86, cs_mode(CS_MODE_16), pHandle);
+    else if (disasmMode == XBinary::DM_X86_32) result = cs_open(CS_ARCH_X86, cs_mode(CS_MODE_32), pHandle);
+    else if (disasmMode == XBinary::DM_X86_64) result = cs_open(CS_ARCH_X86, cs_mode(CS_MODE_64), pHandle);
+    else if (disasmMode == XBinary::DM_ARM_LE) result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_LITTLE_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_ARM_BE) result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_ARM64_LE) result = cs_open(CS_ARCH_ARM64, cs_mode(CS_MODE_ARM | CS_MODE_LITTLE_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_ARM64_BE) result = cs_open(CS_ARCH_ARM64, cs_mode(CS_MODE_ARM | CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_CORTEXM) result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_MCLASS), pHandle);
+    else if (disasmMode == XBinary::DM_THUMB_LE) result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_LITTLE_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_THUMB_BE) result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_MIPS_LE) result = cs_open(CS_ARCH_MIPS, cs_mode(CS_MODE_MIPS32 | CS_MODE_LITTLE_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_MIPS_BE) result = cs_open(CS_ARCH_MIPS, cs_mode(CS_MODE_MIPS32 | CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_MIPS64_LE) result = cs_open(CS_ARCH_MIPS, cs_mode(CS_MODE_MIPS64 | CS_MODE_LITTLE_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_MIPS64_BE) result = cs_open(CS_ARCH_MIPS, cs_mode(CS_MODE_MIPS64 | CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_PPC_LE) result = cs_open(CS_ARCH_PPC, cs_mode(CS_MODE_32 | CS_MODE_LITTLE_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_PPC_BE) result = cs_open(CS_ARCH_PPC, cs_mode(CS_MODE_32 | CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_PPC64_LE) result = cs_open(CS_ARCH_PPC, cs_mode(CS_MODE_64 | CS_MODE_LITTLE_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_PPC64_BE) result = cs_open(CS_ARCH_PPC, cs_mode(CS_MODE_64 | CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_SPARC) result = cs_open(CS_ARCH_SPARC, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_S390X) result = cs_open(CS_ARCH_SYSZ, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_XCORE) result = cs_open(CS_ARCH_XCORE, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_M68K) result = cs_open(CS_ARCH_M68K, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_M68K40) result = cs_open(CS_ARCH_M68K, cs_mode(CS_MODE_M68K_040), pHandle);
+    else if (disasmMode == XBinary::DM_TMS320C64X) result = cs_open(CS_ARCH_TMS320C64X, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_M6800) result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6800), pHandle);
+    else if (disasmMode == XBinary::DM_M6801) result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6801), pHandle);
+    else if (disasmMode == XBinary::DM_M6805) result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6805), pHandle);
+    else if (disasmMode == XBinary::DM_M6808) result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6808), pHandle);
+    else if (disasmMode == XBinary::DM_M6809) result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6809), pHandle);
+    else if (disasmMode == XBinary::DM_M6811) result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6811), pHandle);
+    else if (disasmMode == XBinary::DM_CPU12) result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_CPU12), pHandle);
+    else if (disasmMode == XBinary::DM_HD6301) result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6301), pHandle);
+    else if (disasmMode == XBinary::DM_HD6309) result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6309), pHandle);
+    else if (disasmMode == XBinary::DM_HCS08) result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_HCS08), pHandle);
+    else if (disasmMode == XBinary::DM_EVM) result = cs_open(CS_ARCH_EVM, cs_mode(0), pHandle);
+    else if (disasmMode == XBinary::DM_WASM) result = cs_open(CS_ARCH_WASM, cs_mode(0), pHandle);
+    else if (disasmMode == XBinary::DM_RISKV32) result = cs_open(CS_ARCH_RISCV, cs_mode(CS_MODE_RISCV32), pHandle);
+    else if (disasmMode == XBinary::DM_RISKV64) result = cs_open(CS_ARCH_RISCV, cs_mode(CS_MODE_RISCV64), pHandle);
+    else if (disasmMode == XBinary::DM_RISKVC) result = cs_open(CS_ARCH_RISCV, cs_mode(CS_MODE_RISCVC), pHandle);
+    else if (disasmMode == XBinary::DM_MOS65XX) result = cs_open(CS_ARCH_M680X, cs_mode(CS_ARCH_MOS65XX), pHandle);
+    else if (disasmMode == XBinary::DM_BPF_LE) result = cs_open(CS_ARCH_BPF, cs_mode(CS_MODE_BPF_CLASSIC | CS_MODE_LITTLE_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_BPF_BE) result = cs_open(CS_ARCH_BPF, cs_mode(CS_MODE_BPF_CLASSIC | CS_MODE_BIG_ENDIAN), pHandle);
     // TODO Check more
 
     if (result == CS_ERR_OK) {
