@@ -293,7 +293,14 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
             cs_free(pInsn, nNumberOfOpcodes);
         } else {
             result.sMnemonic = tr("Invalid opcode");
-            result.nSize = 1;
+
+            if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
+                result.nSize = 4;
+            } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
+                result.nSize = 4;
+            } else {
+                result.nSize = 1;
+            }
         }
     } else {
         result.nSize = 1;
