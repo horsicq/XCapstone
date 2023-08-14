@@ -150,7 +150,7 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, QIODevice *pDevice, qint6
     return disasm(handle, nAddress, baData.data(), baData.size());
 }
 
-XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode, char *pData, qint32 nDataSize, XADDR nAddress, DISASM_OPTIONS disasmOptions)
+XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode, char *pData, qint32 nDataSize, XADDR nAddress, const DISASM_OPTIONS &disasmOptions)
 {
     Q_UNUSED(disasmOptions)
 
