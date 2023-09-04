@@ -164,6 +164,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
         quint64 nNumberOfOpcodes = cs_disasm(handle, (uint8_t *)pData, nDataSize, nAddress, 1, &pInsn);
 
         if (nNumberOfOpcodes > 0) {
+            result.nOpcode = pInsn->id;
             result.sMnemonic = pInsn->mnemonic;
             result.sString = pInsn->op_str;
 
@@ -333,7 +334,7 @@ qint32 XCapstone::getDisasmLength(csh handle, QIODevice *pDevice, qint64 nOffset
     return getDisasmLength(handle, nAddress, baData.data(), baData.size());
 }
 
-qint64 XCapstone::getNextAddress(csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
+qint64 XCapstone::getNextAddress(XBinary::DMFAMILY dmFamily, csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
 {
     qint64 nResult = -1;
 
@@ -344,11 +345,13 @@ qint64 XCapstone::getNextAddress(csh handle, XADDR nAddress, char *pData, qint32
     if (nNumberOfOpcodes > 0) {
         nResult = nAddress + pInsn->size;
 
-        if (isJmpOpcode(pInsn->id) || isCallOpcode(pInsn->id)) {
+        if (isJmpOpcode(dmFamily, pInsn->id) || isCallOpcode(dmFamily, pInsn->id)) {
             // TODO other archs !!! ARM/ARM64
-            for (qint32 i = 0; i < pInsn->detail->x86.op_count; i++) {
-                if (pInsn->detail->x86.operands[i].type == X86_OP_IMM) {
-                    nResult = pInsn->detail->x86.operands[i].imm;
+            if (dmFamily == XBinary::DMFAMILY_X86) {
+                for (qint32 i = 0; i < pInsn->detail->x86.op_count; i++) {
+                    if (pInsn->detail->x86.operands[i].type == X86_OP_IMM) {
+                        nResult = pInsn->detail->x86.operands[i].imm;
+                    }
                 }
             }
         }
@@ -359,11 +362,11 @@ qint64 XCapstone::getNextAddress(csh handle, XADDR nAddress, char *pData, qint32
     return nResult;
 }
 
-qint64 XCapstone::getNextAddress(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress)
+qint64 XCapstone::getNextAddress(XBinary::DMFAMILY dmFamily, csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress)
 {
     QByteArray baData = XBinary::read_array(pDevice, nOffset, N_OPCODE_SIZE);
 
-    return getNextAddress(handle, nAddress, baData.data(), baData.size());
+    return getNextAddress(dmFamily, handle, nAddress, baData.data(), baData.size());
 }
 
 XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
@@ -384,39 +387,70 @@ XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, XADDR nAddress, char *pD
     return result;
 }
 
-bool XCapstone::isJmpOpcode(quint16 nOpcodeID)
+bool XCapstone::isJmpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
 {
-    // TODO another archs
     bool bResult = false;
 
-    if ((nOpcodeID == X86_INS_JMP) || (nOpcodeID == X86_INS_JA) || (nOpcodeID == X86_INS_JAE) || (nOpcodeID == X86_INS_JB) || (nOpcodeID == X86_INS_JBE) ||
-        (nOpcodeID == X86_INS_JCXZ) || (nOpcodeID == X86_INS_JE) || (nOpcodeID == X86_INS_JECXZ) || (nOpcodeID == X86_INS_JG) || (nOpcodeID == X86_INS_JGE) ||
-        (nOpcodeID == X86_INS_JL) || (nOpcodeID == X86_INS_JLE) || (nOpcodeID == X86_INS_JNE) || (nOpcodeID == X86_INS_JNO) || (nOpcodeID == X86_INS_JNP) ||
-        (nOpcodeID == X86_INS_JNS) || (nOpcodeID == X86_INS_JO) || (nOpcodeID == X86_INS_JP) || (nOpcodeID == X86_INS_JRCXZ) || (nOpcodeID == X86_INS_JS) ||
-        (nOpcodeID == X86_INS_LOOP) || (nOpcodeID == X86_INS_LOOPE) || (nOpcodeID == X86_INS_LOOPNE)) {
-        bResult = true;
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if ((nOpcodeID == X86_INS_JMP) || (nOpcodeID == X86_INS_JA) || (nOpcodeID == X86_INS_JAE) || (nOpcodeID == X86_INS_JB) || (nOpcodeID == X86_INS_JBE) ||
+            (nOpcodeID == X86_INS_JCXZ) || (nOpcodeID == X86_INS_JE) || (nOpcodeID == X86_INS_JECXZ) || (nOpcodeID == X86_INS_JG) || (nOpcodeID == X86_INS_JGE) ||
+            (nOpcodeID == X86_INS_JL) || (nOpcodeID == X86_INS_JLE) || (nOpcodeID == X86_INS_JNE) || (nOpcodeID == X86_INS_JNO) || (nOpcodeID == X86_INS_JNP) ||
+            (nOpcodeID == X86_INS_JNS) || (nOpcodeID == X86_INS_JO) || (nOpcodeID == X86_INS_JP) || (nOpcodeID == X86_INS_JRCXZ) || (nOpcodeID == X86_INS_JS) ||
+            (nOpcodeID == X86_INS_LOOP) || (nOpcodeID == X86_INS_LOOPE) || (nOpcodeID == X86_INS_LOOPNE)) {
+            bResult = true;
+        }
     }
 
     return bResult;
 }
 
-bool XCapstone::isRetOpcode(quint16 nOpcodeID)
+bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
 {
     bool bResult = false;
 
-    if ((nOpcodeID == X86_INS_RET) || (nOpcodeID == X86_INS_RETF) || (nOpcodeID == X86_INS_RETFQ)) {
-        bResult = true;
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if ((nOpcodeID == X86_INS_RET) || (nOpcodeID == X86_INS_RETF) || (nOpcodeID == X86_INS_RETFQ)) {
+            bResult = true;
+        }
     }
 
     return bResult;
 }
 
-bool XCapstone::isCallOpcode(quint16 nOpcodeID)
+bool XCapstone::isCallOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
 {
     bool bResult = false;
 
-    if (nOpcodeID == X86_INS_CALL) {
-        bResult = true;
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if (nOpcodeID == X86_INS_CALL) {
+            bResult = true;
+        }
+    }
+
+    return bResult;
+}
+
+bool XCapstone::isNopOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
+{
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if (nOpcodeID == X86_INS_NOP) {
+            bResult = true;
+        }
+    }
+
+    return bResult;
+}
+
+bool XCapstone::isInt3Opcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
+{
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if (nOpcodeID == X86_INS_INT3) {
+            bResult = true;
+        }
     }
 
     return bResult;
@@ -429,6 +463,7 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
     csh handle = 0;
 
     XBinary::DM disasmMode = XBinary::getDisasmMode(pMemoryMap);
+    XBinary::DMFAMILY dmFamily = XBinary::getDisasmFamily(disasmMode);
 
     openHandle(disasmMode, &handle, true);
 
@@ -480,9 +515,9 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
                 } else if (signatureType == ST_MASKREL) {
                     bool bIsJump = false;
 
-                    if (isJmpOpcode(pInsn->id) || isCallOpcode(pInsn->id)) {
+                    if (isJmpOpcode(dmFamily, pInsn->id) || isCallOpcode(dmFamily, pInsn->id)) {
                         // TODO another archs !!!
-                        if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_X86) {
+                        if (dmFamily == XBinary::DMFAMILY_X86) {
                             for (qint32 i = 0; i < pInsn->detail->x86.op_count; i++) {
                                 if (pInsn->detail->x86.operands[i].type == X86_OP_IMM)  // TODO another archs !!!
                                 {

@@ -52,6 +52,7 @@ public:
 
     enum RELTYPE {
         RELTYPE_NONE = 0,
+        RELTYPE_ALL,
         RELTYPE_JMP = 0x10,
         RELTYPE_JMP_UNCOND,
         RELTYPE_JMP_COND,
@@ -69,6 +70,7 @@ public:
         bool bIsValid;
         XADDR nAddress;
         qint32 nSize;
+        quint32 nOpcode;
         QString sMnemonic;
         QString sString;
         RELTYPE relType;
@@ -94,12 +96,14 @@ public:
                                    const DISASM_OPTIONS &disasmOptions = DISASM_OPTIONS());
     static qint32 getDisasmLength(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
     static qint32 getDisasmLength(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress);
-    static qint64 getNextAddress(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
-    static qint64 getNextAddress(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress);
+    static qint64 getNextAddress(XBinary::DMFAMILY dmFamily, csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
+    static qint64 getNextAddress(XBinary::DMFAMILY dmFamily, csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress);
     static OPCODE_ID getOpcodeID(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
-    static bool isJmpOpcode(quint16 nOpcodeID);
-    static bool isRetOpcode(quint16 nOpcodeID);
-    static bool isCallOpcode(quint16 nOpcodeID);
+    static bool isJmpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
+    static bool isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
+    static bool isCallOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
+    static bool isNopOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
+    static bool isInt3Opcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
     static QString getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount);
     static QString replaceWildChar(const QString &sString, qint32 nOffset, qint32 nSize, QChar cWild);
     static void printEnabledArchs();
