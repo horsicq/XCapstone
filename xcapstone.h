@@ -99,7 +99,8 @@ public:
     static qint64 getNextAddress(XBinary::DMFAMILY dmFamily, csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
     static qint64 getNextAddress(XBinary::DMFAMILY dmFamily, csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress);
     static OPCODE_ID getOpcodeID(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
-    static bool isJmpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
+    static bool isBranchOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
+    static bool isJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
     static bool isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
     static bool isCallOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
     static bool isNopOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);

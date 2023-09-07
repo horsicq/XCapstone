@@ -345,7 +345,7 @@ qint64 XCapstone::getNextAddress(XBinary::DMFAMILY dmFamily, csh handle, XADDR n
     if (nNumberOfOpcodes > 0) {
         nResult = nAddress + pInsn->size;
 
-        if (isJmpOpcode(dmFamily, pInsn->id) || isCallOpcode(dmFamily, pInsn->id)) {
+        if (isBranchOpcode(dmFamily, pInsn->id)) {
             // TODO other archs !!! ARM/ARM64
             if (dmFamily == XBinary::DMFAMILY_X86) {
                 for (qint32 i = 0; i < pInsn->detail->x86.op_count; i++) {
@@ -387,7 +387,7 @@ XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, XADDR nAddress, char *pD
     return result;
 }
 
-bool XCapstone::isJmpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
+bool XCapstone::isBranchOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
 {
     bool bResult = false;
 
@@ -396,7 +396,20 @@ bool XCapstone::isJmpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
             (nOpcodeID == X86_INS_JCXZ) || (nOpcodeID == X86_INS_JE) || (nOpcodeID == X86_INS_JECXZ) || (nOpcodeID == X86_INS_JG) || (nOpcodeID == X86_INS_JGE) ||
             (nOpcodeID == X86_INS_JL) || (nOpcodeID == X86_INS_JLE) || (nOpcodeID == X86_INS_JNE) || (nOpcodeID == X86_INS_JNO) || (nOpcodeID == X86_INS_JNP) ||
             (nOpcodeID == X86_INS_JNS) || (nOpcodeID == X86_INS_JO) || (nOpcodeID == X86_INS_JP) || (nOpcodeID == X86_INS_JRCXZ) || (nOpcodeID == X86_INS_JS) ||
-            (nOpcodeID == X86_INS_LOOP) || (nOpcodeID == X86_INS_LOOPE) || (nOpcodeID == X86_INS_LOOPNE)) {
+            (nOpcodeID == X86_INS_LOOP) || (nOpcodeID == X86_INS_LOOPE) || (nOpcodeID == X86_INS_LOOPNE) || (nOpcodeID == X86_INS_CALL)) {
+            bResult = true;
+        }
+    }
+
+    return bResult;
+}
+
+bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
+{
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if (nOpcodeID == X86_INS_JMP) {
             bResult = true;
         }
     }
@@ -515,7 +528,7 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
                 } else if (signatureType == ST_MASKREL) {
                     bool bIsJump = false;
 
-                    if (isJmpOpcode(dmFamily, pInsn->id) || isCallOpcode(dmFamily, pInsn->id)) {
+                    if (isBranchOpcode(dmFamily, pInsn->id)) {
                         // TODO another archs !!!
                         if (dmFamily == XBinary::DMFAMILY_X86) {
                             for (qint32 i = 0; i < pInsn->detail->x86.op_count; i++) {
