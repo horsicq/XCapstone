@@ -443,7 +443,7 @@ bool XCapstone::isCallOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
     return bResult;
 }
 
-bool XCapstone::isNopOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
+bool XCapstone::isNoOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
 {
     bool bResult = false;
 
