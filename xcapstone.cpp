@@ -400,6 +400,7 @@ bool XCapstone::isBranchOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
             bResult = true;
         }
     }
+    // TODO Other archs
 
     return bResult;
 }
@@ -413,6 +414,7 @@ bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
             bResult = true;
         }
     }
+    // TODO Other archs
 
     return bResult;
 }
@@ -426,6 +428,7 @@ bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
             bResult = true;
         }
     }
+    // TODO Other archs
 
     return bResult;
 }
@@ -439,6 +442,7 @@ bool XCapstone::isCallOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
             bResult = true;
         }
     }
+    // TODO Other archs
 
     return bResult;
 }
@@ -452,6 +456,7 @@ bool XCapstone::isNoOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
             bResult = true;
         }
     }
+    // TODO Other archs
 
     return bResult;
 }
@@ -465,6 +470,7 @@ bool XCapstone::isInt3Opcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
             bResult = true;
         }
     }
+    // TODO Other archs
 
     return bResult;
 }
