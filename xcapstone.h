@@ -105,6 +105,7 @@ public:
     static bool isCallOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
     static bool isNoOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
     static bool isInt3Opcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
+    // TODO rep opcode
     static QString getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount);
     static QString replaceWildChar(const QString &sString, qint32 nOffset, qint32 nSize, QChar cWild);
     static void printEnabledArchs();
