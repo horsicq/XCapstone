@@ -447,12 +447,44 @@ bool XCapstone::isCallOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
     return bResult;
 }
 
+bool XCapstone::isCallOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if (sOpcode == "call") {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
 bool XCapstone::isNoOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
 {
     bool bResult = false;
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
         if (nOpcodeID == X86_INS_NOP) {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
+bool XCapstone::isNoOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if (sOpcode == "nop") {
             bResult = true;
         }
     }
