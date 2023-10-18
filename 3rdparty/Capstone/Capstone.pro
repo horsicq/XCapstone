@@ -12,12 +12,6 @@ CONFIG += staticlib
 
 include(../../build.pri)
 
-CONFIG(debug, debug|release) {
-    TARGET = capstoned
-} else {
-    TARGET = capstone
-}
-
 win32{
     TARGET = capstone-win-$${QT_ARCH}
 }
