@@ -419,12 +419,44 @@ bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
     return bResult;
 }
 
+bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if (sOpcode == "jmp") {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
 bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
 {
     bool bResult = false;
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
         if ((nOpcodeID == X86_INS_RET) || (nOpcodeID == X86_INS_RETF) || (nOpcodeID == X86_INS_RETFQ)) {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
+bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if ((sOpcode == "ret") || (sOpcode == "retf") || (sOpcode == "retfq")) {
             bResult = true;
         }
     }
@@ -463,7 +495,23 @@ bool XCapstone::isCallOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinar
     return bResult;
 }
 
-bool XCapstone::isNoOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
+bool XCapstone::isJccOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if ((sOpcode == "je") || (sOpcode == "jne") || (sOpcode == "jz") || (sOpcode == "jnz") || (sOpcode == "ja") || (sOpcode == "jc")) {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
+bool XCapstone::isNopOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
 {
     bool bResult = false;
 
@@ -477,7 +525,7 @@ bool XCapstone::isNoOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
     return bResult;
 }
 
-bool XCapstone::isNoOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isNopOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
@@ -499,6 +547,106 @@ bool XCapstone::isInt3Opcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
         if (nOpcodeID == X86_INS_INT3) {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
+bool XCapstone::isInt3Opcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if (sOpcode == "int3") {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
+bool XCapstone::isSyscallOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if (sOpcode == "syscall") {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
+bool XCapstone::isPushOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if (sOpcode == "push") {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
+bool XCapstone::isPopOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if (sOpcode == "pop") {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
+bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if ((sOpcode == "al") || (sOpcode == "ah") || (sOpcode == "bl") || (sOpcode == "bh") || (sOpcode == "cl") || (sOpcode == "ch") || (sOpcode == "dl") || (sOpcode == "dh") ||
+            (sOpcode == "ax") || (sOpcode == "bx") || (sOpcode == "cx") || (sOpcode == "dx") || (sOpcode == "si") || (sOpcode == "di") || (sOpcode == "sp") || (sOpcode == "bp") ||
+            (sOpcode == "eax") || (sOpcode == "ebx") || (sOpcode == "ecx") || (sOpcode == "edx") || (sOpcode == "esi") || (sOpcode == "edi") || (sOpcode == "esp") || (sOpcode == "ebp") ||
+            (sOpcode == "rax") || (sOpcode == "rbx") || (sOpcode == "rcx") || (sOpcode == "rdx") || (sOpcode == "rsi") || (sOpcode == "rdi") || (sOpcode == "rsp") || (sOpcode == "rbp") ||
+            (sOpcode == "r8") || (sOpcode == "r9") || (sOpcode == "r10") || (sOpcode == "r11") || (sOpcode == "r12") || (sOpcode == "r13") || (sOpcode == "r14") || (sOpcode == "r15")) {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
+bool XCapstone::isSegmentRegister(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if ((sOpcode == "es") || (sOpcode == "gs") || (sOpcode == "ss") || (sOpcode == "ds") || (sOpcode == "cs") || (sOpcode == "fs")) {
             bResult = true;
         }
     }
