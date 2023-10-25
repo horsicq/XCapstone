@@ -419,7 +419,7 @@ bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
     return bResult;
 }
 
-bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
@@ -449,7 +449,7 @@ bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
     return bResult;
 }
 
-bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
@@ -485,7 +485,7 @@ bool XCapstone::isCallOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
     return bResult;
 }
 
-bool XCapstone::isCallOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isCallOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
@@ -507,7 +507,7 @@ bool XCapstone::isCallOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinar
     return bResult;
 }
 
-bool XCapstone::isJccOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isJccOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
@@ -515,7 +515,8 @@ bool XCapstone::isJccOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
         if ((sOpcode == "je") || (sOpcode == "jne") || (sOpcode == "jz") || (sOpcode == "jnz") || (sOpcode == "ja") || (sOpcode == "jc") || (sOpcode == "jb") ||
-            (sOpcode == "jo") || (sOpcode == "jno") || (sOpcode == "js")) {
+            (sOpcode == "jo") || (sOpcode == "jno") || (sOpcode == "js") || (sOpcode == "jns") ||
+            (sOpcode == "jae") || (sOpcode == "jbe") || (sOpcode == "jl") || (sOpcode == "jge") || (sOpcode == "jg") || (sOpcode == "jb")) {
             bResult = true;
         }
     }
@@ -538,7 +539,7 @@ bool XCapstone::isNopOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
     return bResult;
 }
 
-bool XCapstone::isNopOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isNopOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
@@ -574,7 +575,7 @@ bool XCapstone::isInt3Opcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
     return bResult;
 }
 
-bool XCapstone::isInt3Opcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isInt3Opcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
@@ -590,7 +591,7 @@ bool XCapstone::isInt3Opcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinar
     return bResult;
 }
 
-bool XCapstone::isSyscallOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isSyscallOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
@@ -606,7 +607,7 @@ bool XCapstone::isSyscallOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBi
     return bResult;
 }
 
-bool XCapstone::isPushOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isPushOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
@@ -628,7 +629,7 @@ bool XCapstone::isPushOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinar
     return bResult;
 }
 
-bool XCapstone::isPopOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isPopOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
@@ -650,19 +651,37 @@ bool XCapstone::isPopOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary
     return bResult;
 }
 
-bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
-    Q_UNUSED(syntax)
+    QString _sOpcode = sOpcode;
 
     bool bResult = false;
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
-        if ((sOpcode == "al") || (sOpcode == "ah") || (sOpcode == "bl") || (sOpcode == "bh") || (sOpcode == "cl") || (sOpcode == "ch") || (sOpcode == "dl") || (sOpcode == "dh") ||
-            (sOpcode == "ax") || (sOpcode == "bx") || (sOpcode == "cx") || (sOpcode == "dx") || (sOpcode == "si") || (sOpcode == "di") || (sOpcode == "sp") || (sOpcode == "bp") ||
-            (sOpcode == "eax") || (sOpcode == "ebx") || (sOpcode == "ecx") || (sOpcode == "edx") || (sOpcode == "esi") || (sOpcode == "edi") || (sOpcode == "esp") || (sOpcode == "ebp") ||
-            (sOpcode == "rax") || (sOpcode == "rbx") || (sOpcode == "rcx") || (sOpcode == "rdx") || (sOpcode == "rsi") || (sOpcode == "rdi") || (sOpcode == "rsp") || (sOpcode == "rbp") ||
-            (sOpcode == "r8") || (sOpcode == "r9") || (sOpcode == "r10") || (sOpcode == "r11") || (sOpcode == "r12") || (sOpcode == "r13") || (sOpcode == "r14") || (sOpcode == "r15")) {
-            bResult = true;
+        bool bPrefix = false;
+
+        if (syntax == XBinary::SYNTAX_ATT) {
+            qint32 nSize = _sOpcode.size();
+            if (nSize >= 3) {
+                if (_sOpcode.at(0) == QChar('%')) {
+                    bPrefix = true;
+                    _sOpcode = _sOpcode.right(nSize - 1);
+                }
+            }
+        } else {
+            bPrefix = true;
+        }
+
+        if (bPrefix) {
+            if ((_sOpcode == "al") || (_sOpcode == "ah") || (_sOpcode == "bl") || (_sOpcode == "bh") || (_sOpcode == "cl") || (_sOpcode == "ch") || (_sOpcode == "dl") || (_sOpcode == "dh") ||
+                (_sOpcode == "ax") || (_sOpcode == "bx") || (_sOpcode == "cx") || (_sOpcode == "dx") || (_sOpcode == "si") || (_sOpcode == "di") || (_sOpcode == "sp") || (_sOpcode == "bp") ||
+                (_sOpcode == "eax") || (_sOpcode == "ebx") || (_sOpcode == "ecx") || (_sOpcode == "edx") || (_sOpcode == "esi") || (_sOpcode == "edi") || (_sOpcode == "esp") || (_sOpcode == "ebp") ||
+                (_sOpcode == "rax") || (_sOpcode == "rbx") || (_sOpcode == "rcx") || (_sOpcode == "rdx") || (_sOpcode == "rsi") || (_sOpcode == "rdi") || (_sOpcode == "rsp") || (_sOpcode == "rbp") ||
+                (_sOpcode == "r8") || (_sOpcode == "r9") || (_sOpcode == "r10") || (_sOpcode == "r11") || (_sOpcode == "r12") || (_sOpcode == "r13") || (_sOpcode == "r14") || (_sOpcode == "r15") ||
+                (_sOpcode == "r8b") || (_sOpcode == "r9b") || (_sOpcode == "r10b") || (_sOpcode == "r11b") || (_sOpcode == "r12b") || (_sOpcode == "r13b") || (_sOpcode == "r14b") || (_sOpcode == "r15b") ||
+                (_sOpcode == "r8d") || (_sOpcode == "r9d") || (_sOpcode == "r10d") || (_sOpcode == "r11d") || (_sOpcode == "r12d") || (_sOpcode == "r13d") || (_sOpcode == "r14d") || (_sOpcode == "r15d")) {
+                bResult = true;
+            }
         }
     }
     // TODO Other archs
@@ -670,7 +689,7 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, QString sOpcode, X
     return bResult;
 }
 
-bool XCapstone::isSegmentRegister(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isSegmentRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 

@@ -101,21 +101,21 @@ public:
     static OPCODE_ID getOpcodeID(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
     static bool isBranchOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);  // mb TODO rename
     static bool isJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
-    static bool isJumpOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax);
+    static bool isJumpOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
     static bool isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
-    static bool isRetOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax);
+    static bool isRetOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
     static bool isCallOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
-    static bool isCallOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax);
-    static bool isJccOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax);
+    static bool isCallOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
+    static bool isJccOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
     static bool isNopOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
-    static bool isNopOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax);
+    static bool isNopOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
     static bool isInt3Opcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
-    static bool isInt3Opcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax);
-    static bool isSyscallOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax);
-    static bool isPushOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax);
-    static bool isPopOpcode(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax);
-    static bool isGeneralRegister(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax);
-    static bool isSegmentRegister(XBinary::DMFAMILY dmFamily, QString sOpcode, XBinary::SYNTAX syntax);
+    static bool isInt3Opcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
+    static bool isSyscallOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
+    static bool isPushOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
+    static bool isPopOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
+    static bool isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
+    static bool isSegmentRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
     // TODO rep opcode
     static QString getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount);
     static QString replaceWildChar(const QString &sString, qint32 nOffset, qint32 nSize, QChar cWild);
