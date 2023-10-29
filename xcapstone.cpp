@@ -293,7 +293,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
 
             cs_free(pInsn, nNumberOfOpcodes);
         } else {
-            result.sMnemonic = tr("Invalid opcode"); // mb TODO db
+            result.sMnemonic = tr("Invalid opcode");  // mb TODO db
 
             if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
                 result.nSize = 4;
@@ -515,8 +515,8 @@ bool XCapstone::isJccOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, 
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
         if ((sOpcode == "je") || (sOpcode == "jne") || (sOpcode == "jz") || (sOpcode == "jnz") || (sOpcode == "ja") || (sOpcode == "jc") || (sOpcode == "jb") ||
-            (sOpcode == "jo") || (sOpcode == "jno") || (sOpcode == "js") || (sOpcode == "jns") ||
-            (sOpcode == "jae") || (sOpcode == "jbe") || (sOpcode == "jl") || (sOpcode == "jge") || (sOpcode == "jg") || (sOpcode == "jb")) {
+            (sOpcode == "jo") || (sOpcode == "jno") || (sOpcode == "js") || (sOpcode == "jns") || (sOpcode == "jae") || (sOpcode == "jbe") || (sOpcode == "jl") ||
+            (sOpcode == "jge") || (sOpcode == "jg") || (sOpcode == "jb")) {
             bResult = true;
         }
     }
@@ -673,13 +673,15 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sOp
         }
 
         if (bPrefix) {
-            if ((_sOpcode == "al") || (_sOpcode == "ah") || (_sOpcode == "bl") || (_sOpcode == "bh") || (_sOpcode == "cl") || (_sOpcode == "ch") || (_sOpcode == "dl") || (_sOpcode == "dh") ||
-                (_sOpcode == "ax") || (_sOpcode == "bx") || (_sOpcode == "cx") || (_sOpcode == "dx") || (_sOpcode == "si") || (_sOpcode == "di") || (_sOpcode == "sp") || (_sOpcode == "bp") ||
-                (_sOpcode == "eax") || (_sOpcode == "ebx") || (_sOpcode == "ecx") || (_sOpcode == "edx") || (_sOpcode == "esi") || (_sOpcode == "edi") || (_sOpcode == "esp") || (_sOpcode == "ebp") ||
-                (_sOpcode == "rax") || (_sOpcode == "rbx") || (_sOpcode == "rcx") || (_sOpcode == "rdx") || (_sOpcode == "rsi") || (_sOpcode == "rdi") || (_sOpcode == "rsp") || (_sOpcode == "rbp") ||
-                (_sOpcode == "r8") || (_sOpcode == "r9") || (_sOpcode == "r10") || (_sOpcode == "r11") || (_sOpcode == "r12") || (_sOpcode == "r13") || (_sOpcode == "r14") || (_sOpcode == "r15") ||
-                (_sOpcode == "r8b") || (_sOpcode == "r9b") || (_sOpcode == "r10b") || (_sOpcode == "r11b") || (_sOpcode == "r12b") || (_sOpcode == "r13b") || (_sOpcode == "r14b") || (_sOpcode == "r15b") ||
-                (_sOpcode == "r8d") || (_sOpcode == "r9d") || (_sOpcode == "r10d") || (_sOpcode == "r11d") || (_sOpcode == "r12d") || (_sOpcode == "r13d") || (_sOpcode == "r14d") || (_sOpcode == "r15d")) {
+            if ((_sOpcode == "al") || (_sOpcode == "ah") || (_sOpcode == "bl") || (_sOpcode == "bh") || (_sOpcode == "cl") || (_sOpcode == "ch") || (_sOpcode == "dl") ||
+                (_sOpcode == "dh") || (_sOpcode == "ax") || (_sOpcode == "bx") || (_sOpcode == "cx") || (_sOpcode == "dx") || (_sOpcode == "si") || (_sOpcode == "di") ||
+                (_sOpcode == "sp") || (_sOpcode == "bp") || (_sOpcode == "eax") || (_sOpcode == "ebx") || (_sOpcode == "ecx") || (_sOpcode == "edx") ||
+                (_sOpcode == "esi") || (_sOpcode == "edi") || (_sOpcode == "esp") || (_sOpcode == "ebp") || (_sOpcode == "rax") || (_sOpcode == "rbx") ||
+                (_sOpcode == "rcx") || (_sOpcode == "rdx") || (_sOpcode == "rsi") || (_sOpcode == "rdi") || (_sOpcode == "rsp") || (_sOpcode == "rbp") ||
+                (_sOpcode == "r8") || (_sOpcode == "r9") || (_sOpcode == "r10") || (_sOpcode == "r11") || (_sOpcode == "r12") || (_sOpcode == "r13") ||
+                (_sOpcode == "r14") || (_sOpcode == "r15") || (_sOpcode == "r8b") || (_sOpcode == "r9b") || (_sOpcode == "r10b") || (_sOpcode == "r11b") ||
+                (_sOpcode == "r12b") || (_sOpcode == "r13b") || (_sOpcode == "r14b") || (_sOpcode == "r15b") || (_sOpcode == "r8d") || (_sOpcode == "r9d") ||
+                (_sOpcode == "r10d") || (_sOpcode == "r11d") || (_sOpcode == "r12d") || (_sOpcode == "r13d") || (_sOpcode == "r14d") || (_sOpcode == "r15d")) {
                 bResult = true;
             }
         }
