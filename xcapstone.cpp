@@ -707,6 +707,22 @@ bool XCapstone::isSegmentRegister(XBinary::DMFAMILY dmFamily, const QString &sOp
     return bResult;
 }
 
+bool XCapstone::isDebugRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if ((sOpcode == "dr0") || (sOpcode == "dr1") || (sOpcode == "dr2") || (sOpcode == "dr3") || (sOpcode == "dr6") || (sOpcode == "dr7")) {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
 QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount)
 {
     QString sResult;
