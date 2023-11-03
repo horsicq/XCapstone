@@ -687,6 +687,8 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sOp
         }
     } else if (dmFamily == XBinary::DMFAMILY_ARM) {
         // TODO
+    } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
+        // TODO
     }
     // TODO Other archs
 
