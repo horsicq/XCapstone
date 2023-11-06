@@ -727,6 +727,38 @@ bool XCapstone::isDebugRegister(XBinary::DMFAMILY dmFamily, const QString &sOpco
     return bResult;
 }
 
+bool XCapstone::isInstructionPointerRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if ((sOpcode == "ip") || (sOpcode == "eip") || (sOpcode == "rip")) {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
+bool XCapstone::isFlagsRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if ((sOpcode == "flags") || (sOpcode == "eflags") || (sOpcode == "rflags")) {
+            bResult = true;
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
 QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount)
 {
     QString sResult;
