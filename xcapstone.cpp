@@ -759,13 +759,28 @@ bool XCapstone::isFlagsRegister(XBinary::DMFAMILY dmFamily, const QString &sOpco
     return bResult;
 }
 
+bool XCapstone::isFPURegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        // TODO
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
 bool XCapstone::isRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
-    return (isGeneralRegister(dmFamily, sOpcode, syntax) ||
-            isSegmentRegister(dmFamily, sOpcode, syntax) ||
-            isDebugRegister(dmFamily, sOpcode, syntax) ||
-            isInstructionPointerRegister(dmFamily, sOpcode, syntax) ||
-            isFlagsRegister(dmFamily, sOpcode, syntax));
+    return (    isGeneralRegister(dmFamily, sOpcode, syntax) ||
+                isSegmentRegister(dmFamily, sOpcode, syntax) ||
+                isDebugRegister(dmFamily, sOpcode, syntax) ||
+                isInstructionPointerRegister(dmFamily, sOpcode, syntax) ||
+                isFlagsRegister(dmFamily, sOpcode, syntax) ||
+                isFPURegister(dmFamily, sOpcode, syntax));
 }
 
 QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount)
@@ -804,7 +819,7 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
                     nDispSize = pInsn->detail->x86.encoding.disp_size;
                     nImmOffset = pInsn->detail->x86.encoding.imm_offset;
                     nImmSize = pInsn->detail->x86.encoding.imm_size;
-                } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_X86) {
+                } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
                     // TODO
                 }
 
