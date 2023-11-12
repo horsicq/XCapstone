@@ -775,12 +775,8 @@ bool XCapstone::isFPURegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode
 
 bool XCapstone::isRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
-    return (    isGeneralRegister(dmFamily, sOpcode, syntax) ||
-                isSegmentRegister(dmFamily, sOpcode, syntax) ||
-                isDebugRegister(dmFamily, sOpcode, syntax) ||
-                isInstructionPointerRegister(dmFamily, sOpcode, syntax) ||
-                isFlagsRegister(dmFamily, sOpcode, syntax) ||
-                isFPURegister(dmFamily, sOpcode, syntax));
+    return (isGeneralRegister(dmFamily, sOpcode, syntax) || isSegmentRegister(dmFamily, sOpcode, syntax) || isDebugRegister(dmFamily, sOpcode, syntax) ||
+            isInstructionPointerRegister(dmFamily, sOpcode, syntax) || isFlagsRegister(dmFamily, sOpcode, syntax) || isFPURegister(dmFamily, sOpcode, syntax));
 }
 
 QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount)
