@@ -784,6 +784,27 @@ bool XCapstone::isRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister,
             isInstructionPointerRegister(dmFamily, sRegister, syntax) || isFlagsRegister(dmFamily, sRegister, syntax) || isFPURegister(dmFamily, sRegister, syntax));
 }
 
+bool XCapstone::isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBinary::SYNTAX syntax)
+{
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if ((syntax == XBinary::SYNTAX_DEFAULT) || (syntax == XBinary::SYNTAX_INTEL)) {
+            qint32 nSize = sNumber.size();
+            if (nSize == 1) {
+                bResult = true;
+            } else if (nSize > 2) {
+                if (sNumber.left(2) == "0x") {
+                    bResult = true;
+                }
+            }
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
 QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount)
 {
     QString sResult;
