@@ -655,9 +655,9 @@ bool XCapstone::isPopOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, 
     return bResult;
 }
 
-bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
 {
-    QString _sOpcode = sOpcode;
+    QString _sRegister = sRegister;
 
     bool bResult = false;
 
@@ -665,11 +665,11 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sOp
         bool bPrefix = false;
 
         if (syntax == XBinary::SYNTAX_ATT) {
-            qint32 nSize = _sOpcode.size();
+            qint32 nSize = _sRegister.size();
             if (nSize >= 3) {
-                if (_sOpcode.at(0) == QChar('%')) {
+                if (_sRegister.at(0) == QChar('%')) {
                     bPrefix = true;
-                    _sOpcode = _sOpcode.right(nSize - 1);
+                    _sRegister = _sRegister.right(nSize - 1);
                 }
             }
         } else {
@@ -677,15 +677,15 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sOp
         }
 
         if (bPrefix) {
-            if ((_sOpcode == "al") || (_sOpcode == "ah") || (_sOpcode == "bl") || (_sOpcode == "bh") || (_sOpcode == "cl") || (_sOpcode == "ch") || (_sOpcode == "dl") ||
-                (_sOpcode == "dh") || (_sOpcode == "ax") || (_sOpcode == "bx") || (_sOpcode == "cx") || (_sOpcode == "dx") || (_sOpcode == "si") || (_sOpcode == "di") ||
-                (_sOpcode == "sp") || (_sOpcode == "bp") || (_sOpcode == "eax") || (_sOpcode == "ebx") || (_sOpcode == "ecx") || (_sOpcode == "edx") ||
-                (_sOpcode == "esi") || (_sOpcode == "edi") || (_sOpcode == "esp") || (_sOpcode == "ebp") || (_sOpcode == "rax") || (_sOpcode == "rbx") ||
-                (_sOpcode == "rcx") || (_sOpcode == "rdx") || (_sOpcode == "rsi") || (_sOpcode == "rdi") || (_sOpcode == "rsp") || (_sOpcode == "rbp") ||
-                (_sOpcode == "r8") || (_sOpcode == "r9") || (_sOpcode == "r10") || (_sOpcode == "r11") || (_sOpcode == "r12") || (_sOpcode == "r13") ||
-                (_sOpcode == "r14") || (_sOpcode == "r15") || (_sOpcode == "r8b") || (_sOpcode == "r9b") || (_sOpcode == "r10b") || (_sOpcode == "r11b") ||
-                (_sOpcode == "r12b") || (_sOpcode == "r13b") || (_sOpcode == "r14b") || (_sOpcode == "r15b") || (_sOpcode == "r8d") || (_sOpcode == "r9d") ||
-                (_sOpcode == "r10d") || (_sOpcode == "r11d") || (_sOpcode == "r12d") || (_sOpcode == "r13d") || (_sOpcode == "r14d") || (_sOpcode == "r15d")) {
+            if ((_sRegister == "al") || (_sRegister == "ah") || (_sRegister == "bl") || (_sRegister == "bh") || (_sRegister == "cl") || (_sRegister == "ch") || (_sRegister == "dl") ||
+                (_sRegister == "dh") || (_sRegister == "ax") || (_sRegister == "bx") || (_sRegister == "cx") || (_sRegister == "dx") || (_sRegister == "si") || (_sRegister == "di") ||
+                (_sRegister == "sp") || (_sRegister == "bp") || (_sRegister == "eax") || (_sRegister == "ebx") || (_sRegister == "ecx") || (_sRegister == "edx") ||
+                (_sRegister == "esi") || (_sRegister == "edi") || (_sRegister == "esp") || (_sRegister == "ebp") || (_sRegister == "rax") || (_sRegister == "rbx") ||
+                (_sRegister == "rcx") || (_sRegister == "rdx") || (_sRegister == "rsi") || (_sRegister == "rdi") || (_sRegister == "rsp") || (_sRegister == "rbp") ||
+                (_sRegister == "r8") || (_sRegister == "r9") || (_sRegister == "r10") || (_sRegister == "r11") || (_sRegister == "r12") || (_sRegister == "r13") ||
+                (_sRegister == "r14") || (_sRegister == "r15") || (_sRegister == "r8b") || (_sRegister == "r9b") || (_sRegister == "r10b") || (_sRegister == "r11b") ||
+                (_sRegister == "r12b") || (_sRegister == "r13b") || (_sRegister == "r14b") || (_sRegister == "r15b") || (_sRegister == "r8d") || (_sRegister == "r9d") ||
+                (_sRegister == "r10d") || (_sRegister == "r11d") || (_sRegister == "r12d") || (_sRegister == "r13d") || (_sRegister == "r14d") || (_sRegister == "r15d")) {
                 bResult = true;
             }
         }
@@ -699,14 +699,14 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sOp
     return bResult;
 }
 
-bool XCapstone::isSegmentRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isSegmentRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
     bool bResult = false;
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
-        if ((sOpcode == "es") || (sOpcode == "gs") || (sOpcode == "ss") || (sOpcode == "ds") || (sOpcode == "cs") || (sOpcode == "fs")) {
+        if ((sRegister == "es") || (sRegister == "gs") || (sRegister == "ss") || (sRegister == "ds") || (sRegister == "cs") || (sRegister == "fs")) {
             bResult = true;
         }
     }
@@ -715,14 +715,14 @@ bool XCapstone::isSegmentRegister(XBinary::DMFAMILY dmFamily, const QString &sOp
     return bResult;
 }
 
-bool XCapstone::isDebugRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isDebugRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
     bool bResult = false;
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
-        if ((sOpcode == "dr0") || (sOpcode == "dr1") || (sOpcode == "dr2") || (sOpcode == "dr3") || (sOpcode == "dr6") || (sOpcode == "dr7")) {
+        if ((sRegister == "dr0") || (sRegister == "dr1") || (sRegister == "dr2") || (sRegister == "dr3") || (sRegister == "dr6") || (sRegister == "dr7")) {
             bResult = true;
         }
     }
@@ -731,14 +731,14 @@ bool XCapstone::isDebugRegister(XBinary::DMFAMILY dmFamily, const QString &sOpco
     return bResult;
 }
 
-bool XCapstone::isInstructionPointerRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isInstructionPointerRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
     bool bResult = false;
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
-        if ((sOpcode == "ip") || (sOpcode == "eip") || (sOpcode == "rip")) {
+        if ((sRegister == "ip") || (sRegister == "eip") || (sRegister == "rip")) {
             bResult = true;
         }
     }
@@ -747,14 +747,14 @@ bool XCapstone::isInstructionPointerRegister(XBinary::DMFAMILY dmFamily, const Q
     return bResult;
 }
 
-bool XCapstone::isFlagsRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isFlagsRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
     bool bResult = false;
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
-        if ((sOpcode == "flags") || (sOpcode == "eflags") || (sOpcode == "rflags")) {
+        if ((sRegister == "flags") || (sRegister == "eflags") || (sRegister == "rflags")) {
             bResult = true;
         }
     }
@@ -763,9 +763,10 @@ bool XCapstone::isFlagsRegister(XBinary::DMFAMILY dmFamily, const QString &sOpco
     return bResult;
 }
 
-bool XCapstone::isFPURegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isFPURegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
+    Q_UNUSED(sRegister)
 
     bool bResult = false;
 
@@ -777,10 +778,10 @@ bool XCapstone::isFPURegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode
     return bResult;
 }
 
-bool XCapstone::isRegister(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
 {
-    return (isGeneralRegister(dmFamily, sOpcode, syntax) || isSegmentRegister(dmFamily, sOpcode, syntax) || isDebugRegister(dmFamily, sOpcode, syntax) ||
-            isInstructionPointerRegister(dmFamily, sOpcode, syntax) || isFlagsRegister(dmFamily, sOpcode, syntax) || isFPURegister(dmFamily, sOpcode, syntax));
+    return (isGeneralRegister(dmFamily, sRegister, syntax) || isSegmentRegister(dmFamily, sRegister, syntax) || isDebugRegister(dmFamily, sRegister, syntax) ||
+            isInstructionPointerRegister(dmFamily, sRegister, syntax) || isFlagsRegister(dmFamily, sRegister, syntax) || isFPURegister(dmFamily, sRegister, syntax));
 }
 
 QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount)
