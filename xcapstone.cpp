@@ -798,6 +798,18 @@ bool XCapstone::isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBi
                     bResult = true;
                 }
             }
+        } else if (syntax == XBinary::SYNTAX_MASM) {
+            qint32 nSize = sNumber.size();
+
+            if (nSize == 1) {
+                bResult = true;
+            } else if (nSize > 1) {
+                if (sNumber.right(1) == "h") {
+                    bResult = true;
+                }
+            }
+        } else if (syntax == XBinary::SYNTAX_ATT) {
+            // TODO
         }
     }
     // TODO Other archs
