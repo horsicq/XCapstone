@@ -677,15 +677,16 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sRe
         }
 
         if (bPrefix) {
-            if ((_sRegister == "al") || (_sRegister == "ah") || (_sRegister == "bl") || (_sRegister == "bh") || (_sRegister == "cl") || (_sRegister == "ch") || (_sRegister == "dl") ||
-                (_sRegister == "dh") || (_sRegister == "ax") || (_sRegister == "bx") || (_sRegister == "cx") || (_sRegister == "dx") || (_sRegister == "si") || (_sRegister == "di") ||
-                (_sRegister == "sp") || (_sRegister == "bp") || (_sRegister == "eax") || (_sRegister == "ebx") || (_sRegister == "ecx") || (_sRegister == "edx") ||
-                (_sRegister == "esi") || (_sRegister == "edi") || (_sRegister == "esp") || (_sRegister == "ebp") || (_sRegister == "rax") || (_sRegister == "rbx") ||
-                (_sRegister == "rcx") || (_sRegister == "rdx") || (_sRegister == "rsi") || (_sRegister == "rdi") || (_sRegister == "rsp") || (_sRegister == "rbp") ||
-                (_sRegister == "r8") || (_sRegister == "r9") || (_sRegister == "r10") || (_sRegister == "r11") || (_sRegister == "r12") || (_sRegister == "r13") ||
-                (_sRegister == "r14") || (_sRegister == "r15") || (_sRegister == "r8b") || (_sRegister == "r9b") || (_sRegister == "r10b") || (_sRegister == "r11b") ||
-                (_sRegister == "r12b") || (_sRegister == "r13b") || (_sRegister == "r14b") || (_sRegister == "r15b") || (_sRegister == "r8d") || (_sRegister == "r9d") ||
-                (_sRegister == "r10d") || (_sRegister == "r11d") || (_sRegister == "r12d") || (_sRegister == "r13d") || (_sRegister == "r14d") || (_sRegister == "r15d")) {
+            if ((_sRegister == "al") || (_sRegister == "ah") || (_sRegister == "bl") || (_sRegister == "bh") || (_sRegister == "cl") || (_sRegister == "ch") ||
+                (_sRegister == "dl") || (_sRegister == "dh") || (_sRegister == "ax") || (_sRegister == "bx") || (_sRegister == "cx") || (_sRegister == "dx") ||
+                (_sRegister == "si") || (_sRegister == "di") || (_sRegister == "sp") || (_sRegister == "bp") || (_sRegister == "eax") || (_sRegister == "ebx") ||
+                (_sRegister == "ecx") || (_sRegister == "edx") || (_sRegister == "esi") || (_sRegister == "edi") || (_sRegister == "esp") || (_sRegister == "ebp") ||
+                (_sRegister == "rax") || (_sRegister == "rbx") || (_sRegister == "rcx") || (_sRegister == "rdx") || (_sRegister == "rsi") || (_sRegister == "rdi") ||
+                (_sRegister == "rsp") || (_sRegister == "rbp") || (_sRegister == "r8") || (_sRegister == "r9") || (_sRegister == "r10") || (_sRegister == "r11") ||
+                (_sRegister == "r12") || (_sRegister == "r13") || (_sRegister == "r14") || (_sRegister == "r15") || (_sRegister == "r8b") || (_sRegister == "r9b") ||
+                (_sRegister == "r10b") || (_sRegister == "r11b") || (_sRegister == "r12b") || (_sRegister == "r13b") || (_sRegister == "r14b") ||
+                (_sRegister == "r15b") || (_sRegister == "r8d") || (_sRegister == "r9d") || (_sRegister == "r10d") || (_sRegister == "r11d") || (_sRegister == "r12d") ||
+                (_sRegister == "r13d") || (_sRegister == "r14d") || (_sRegister == "r15d")) {
                 bResult = true;
             }
         }
