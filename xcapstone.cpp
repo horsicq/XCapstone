@@ -779,10 +779,30 @@ bool XCapstone::isFPURegister(XBinary::DMFAMILY dmFamily, const QString &sRegist
     return bResult;
 }
 
+bool XCapstone::isXMMRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(syntax)
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        qint32 nSize = sRegister.size();
+        if (nSize >= 4) {
+            if (sRegister.left(3) == "xmm") {
+                bResult = true;
+            }
+        }
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
 bool XCapstone::isRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
 {
     return (isGeneralRegister(dmFamily, sRegister, syntax) || isSegmentRegister(dmFamily, sRegister, syntax) || isDebugRegister(dmFamily, sRegister, syntax) ||
-            isInstructionPointerRegister(dmFamily, sRegister, syntax) || isFlagsRegister(dmFamily, sRegister, syntax) || isFPURegister(dmFamily, sRegister, syntax));
+            isInstructionPointerRegister(dmFamily, sRegister, syntax) || isFlagsRegister(dmFamily, sRegister, syntax) || isFPURegister(dmFamily, sRegister, syntax) ||
+            isXMMRegister(dmFamily, sRegister, syntax));
 }
 
 bool XCapstone::isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBinary::SYNTAX syntax)
