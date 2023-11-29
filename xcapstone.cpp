@@ -800,8 +800,12 @@ bool XCapstone::isXMMRegister(XBinary::DMFAMILY dmFamily, const QString &sRegist
 
 bool XCapstone::isRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
 {
-    return (isGeneralRegister(dmFamily, sRegister, syntax) || isSegmentRegister(dmFamily, sRegister, syntax) || isDebugRegister(dmFamily, sRegister, syntax) ||
-            isInstructionPointerRegister(dmFamily, sRegister, syntax) || isFlagsRegister(dmFamily, sRegister, syntax) || isFPURegister(dmFamily, sRegister, syntax) ||
+    return (isGeneralRegister(dmFamily, sRegister, syntax) ||
+            isSegmentRegister(dmFamily, sRegister, syntax) ||
+            isDebugRegister(dmFamily, sRegister, syntax) ||
+            isInstructionPointerRegister(dmFamily, sRegister, syntax) ||
+            isFlagsRegister(dmFamily, sRegister, syntax) ||
+            isFPURegister(dmFamily, sRegister, syntax) ||
             isXMMRegister(dmFamily, sRegister, syntax));
 }
 
