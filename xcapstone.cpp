@@ -825,7 +825,6 @@ bool XCapstone::isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBi
             }
         } else if (syntax == XBinary::SYNTAX_MASM) {
             qint32 nSize = sNumber.size();
-
             if (nSize == 1) {
                 bResult = true;
             } else if (nSize > 1) {
@@ -834,7 +833,12 @@ bool XCapstone::isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBi
                 }
             }
         } else if (syntax == XBinary::SYNTAX_ATT) {
-            // TODO
+            qint32 nSize = sNumber.size();
+            if (nSize > 3) {
+                if (sNumber.right(3) == "$0x") {
+                    bResult = true;
+                }
+            }
         }
     }
     // TODO Other archs
