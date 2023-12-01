@@ -150,7 +150,7 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, QIODevice *pDevice, qint6
     return disasm(handle, nAddress, baData.data(), baData.size());
 }
 
-XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode, char *pData, qint32 nDataSize, XADDR nAddress, const DISASM_OPTIONS &disasmOptions)
+XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode, XBinary::SYNTAX syntax, char *pData, qint32 nDataSize, XADDR nAddress, const DISASM_OPTIONS &disasmOptions)
 {
     Q_UNUSED(disasmOptions)
 
@@ -264,10 +264,14 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
 
                             // TODO all syntaxes
                             // TODO MASM
-                            if (result.sString.contains("rip + 0x")) {  // Intel
-                                sOldString = QString("rip + 0x%1").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
-                                sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
-                            } /*else if ("(%rip)") {
+                            if ((syntax == XBinary::SYNTAX_DEFAULT) || (syntax == XBinary::SYNTAX_INTEL)) {
+                                if (result.sString.contains("rip + 0x")) {
+                                    sOldString = QString("rip + 0x%1").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
+                                    sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
+                                }
+                            }
+
+                             /*else if ("(%rip)") {
                                 sOldString = QString("rip + 0x%1").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
                                 sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
                             }*/
@@ -293,11 +297,12 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
 
             cs_free(pInsn, nNumberOfOpcodes);
         } else {
-            result.sMnemonic = tr("Invalid opcode");  // mb TODO db
 
             if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
+                result.sMnemonic = tr("Invalid opcode");
                 result.nSize = 4;
             } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
+                result.sMnemonic = tr("Invalid opcode");
                 result.nSize = 4;
             } else {
                 result.nSize = 1;
