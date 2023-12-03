@@ -150,7 +150,8 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, QIODevice *pDevice, qint6
     return disasm(handle, nAddress, baData.data(), baData.size());
 }
 
-XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode, XBinary::SYNTAX syntax, char *pData, qint32 nDataSize, XADDR nAddress, const DISASM_OPTIONS &disasmOptions)
+XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode, XBinary::SYNTAX syntax, char *pData, qint32 nDataSize, XADDR nAddress,
+                                              const DISASM_OPTIONS &disasmOptions)
 {
     Q_UNUSED(disasmOptions)
 
@@ -271,10 +272,10 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                                 }
                             }
 
-                             /*else if ("(%rip)") {
-                                sOldString = QString("rip + 0x%1").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
-                                sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
-                            }*/
+                            /*else if ("(%rip)") {
+                               sOldString = QString("rip + 0x%1").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
+                               sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
+                           }*/
 
                             result.sString = result.sString.replace(sOldString, sNewString);
 
@@ -297,7 +298,6 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
 
             cs_free(pInsn, nNumberOfOpcodes);
         } else {
-
             if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
                 result.sMnemonic = tr("Invalid opcode");
                 result.nSize = 4;
@@ -805,12 +805,8 @@ bool XCapstone::isXMMRegister(XBinary::DMFAMILY dmFamily, const QString &sRegist
 
 bool XCapstone::isRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
 {
-    return (isGeneralRegister(dmFamily, sRegister, syntax) ||
-            isSegmentRegister(dmFamily, sRegister, syntax) ||
-            isDebugRegister(dmFamily, sRegister, syntax) ||
-            isInstructionPointerRegister(dmFamily, sRegister, syntax) ||
-            isFlagsRegister(dmFamily, sRegister, syntax) ||
-            isFPURegister(dmFamily, sRegister, syntax) ||
+    return (isGeneralRegister(dmFamily, sRegister, syntax) || isSegmentRegister(dmFamily, sRegister, syntax) || isDebugRegister(dmFamily, sRegister, syntax) ||
+            isInstructionPointerRegister(dmFamily, sRegister, syntax) || isFlagsRegister(dmFamily, sRegister, syntax) || isFPURegister(dmFamily, sRegister, syntax) ||
             isXMMRegister(dmFamily, sRegister, syntax));
 }
 
