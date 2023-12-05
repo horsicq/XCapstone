@@ -705,6 +705,43 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sRe
     return bResult;
 }
 
+bool XCapstone::isStackRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
+{
+    QString _sRegister = sRegister;
+
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        bool bPrefix = false;
+
+        if (syntax == XBinary::SYNTAX_ATT) {
+            qint32 nSize = _sRegister.size();
+            if (nSize >= 3) {
+                if (_sRegister.at(0) == QChar('%')) {
+                    bPrefix = true;
+                    _sRegister = _sRegister.right(nSize - 1);
+                }
+            }
+        } else {
+            bPrefix = true;
+        }
+
+        if (bPrefix) {
+            if ((_sRegister == "sp") || (_sRegister == "bp") || (_sRegister == "esp") || (_sRegister == "ebp") ||
+                (_sRegister == "rsp") || (_sRegister == "rbp")) {
+                bResult = true;
+            }
+        }
+    } else if (dmFamily == XBinary::DMFAMILY_ARM) {
+        // TODO
+    } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
+        // TODO
+    }
+    // TODO Other archs
+
+    return bResult;
+}
+
 bool XCapstone::isSegmentRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
@@ -745,6 +782,10 @@ bool XCapstone::isInstructionPointerRegister(XBinary::DMFAMILY dmFamily, const Q
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
         if ((sRegister == "ip") || (sRegister == "eip") || (sRegister == "rip")) {
+            bResult = true;
+        }
+    } else if ((dmFamily == XBinary::DMFAMILY_ARM) || (dmFamily == XBinary::DMFAMILY_ARM64)) {
+        if (sRegister == "pc") {
             bResult = true;
         }
     }
