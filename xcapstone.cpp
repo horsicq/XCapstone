@@ -727,8 +727,7 @@ bool XCapstone::isStackRegister(XBinary::DMFAMILY dmFamily, const QString &sRegi
         }
 
         if (bPrefix) {
-            if ((_sRegister == "sp") || (_sRegister == "bp") || (_sRegister == "esp") || (_sRegister == "ebp") ||
-                (_sRegister == "rsp") || (_sRegister == "rbp")) {
+            if ((_sRegister == "sp") || (_sRegister == "bp") || (_sRegister == "esp") || (_sRegister == "ebp") || (_sRegister == "rsp") || (_sRegister == "rbp")) {
                 bResult = true;
             }
         }
