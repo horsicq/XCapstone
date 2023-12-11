@@ -859,8 +859,10 @@ bool XCapstone::isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBi
             qint32 nSize = sNumber.size();
             if (nSize == 1) {
                 bResult = true;
-            } else if (nSize > 2) {
+            } else if (nSize >= 2) {
                 if (sNumber.left(2) == "0x") {
+                    bResult = true;
+                } else if (sNumber.at(0) == "-") {
                     bResult = true;
                 }
             }
