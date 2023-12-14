@@ -81,7 +81,7 @@ public:
     };
 
     struct DISASM_OPTIONS {
-        bool bDummy;
+        bool bIsUppercase;
     };
 
     // TODO error,info signals
