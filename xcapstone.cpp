@@ -241,6 +241,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                     if (pInsn->detail->x86.operands[i].type == X86_OP_MEM) {
                         bool bLEA = (pInsn->id == X86_INS_LEA);
 
+                        // mb TODO flag
                         if ((pInsn->detail->x86.operands[i].mem.base == X86_REG_INVALID) && (pInsn->detail->x86.operands[i].mem.index == X86_REG_INVALID)) {
                             result.memType = MEMTYPE_READ;  // TODO
                             result.nXrefToMemory = pInsn->detail->x86.operands[i].mem.disp;
@@ -263,19 +264,23 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                             QString sOldString;
                             QString sNewString;
 
-                            // TODO all syntaxes
-                            // TODO MASM
+                            // TODO Check
                             if ((syntax == XBinary::SYNTAX_DEFAULT) || (syntax == XBinary::SYNTAX_INTEL)) {
                                 if (result.sString.contains("rip + 0x")) {
                                     sOldString = QString("rip + 0x%1").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
                                     sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
                                 }
+                            } else if (syntax == XBinary::SYNTAX_MASM) {
+                                if (result.sString.contains("rip + ")) {
+                                    sOldString = QString("rip + %1h").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
+                                    sNewString = QString("%1h").arg(result.nXrefToMemory, 0, 16);
+                                }
+                            } else if (syntax == XBinary::SYNTAX_ATT) {
+                                if (result.sString.contains("(%rip)")) {
+                                    sOldString = QString("0x%1(%rip)").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
+                                    sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
+                                }
                             }
-
-                            /*else if ("(%rip)") {
-                               sOldString = QString("rip + 0x%1").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
-                               sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
-                           }*/
 
                             result.sString = result.sString.replace(sOldString, sNewString);
 
