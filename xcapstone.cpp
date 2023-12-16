@@ -265,22 +265,17 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                             QString sNewString;
 
                             // TODO Check
-                            if ((syntax == XBinary::SYNTAX_DEFAULT) || (syntax == XBinary::SYNTAX_INTEL)) {
-                                if (result.sString.contains("rip + 0x")) {
-                                    sOldString = QString("rip + 0x%1").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
-                                    sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
-                                }
-                            } else if (syntax == XBinary::SYNTAX_MASM) {
+                            if ((syntax == XBinary::SYNTAX_DEFAULT) || (syntax == XBinary::SYNTAX_INTEL) || (syntax == XBinary::SYNTAX_MASM)) {
                                 if (result.sString.contains("rip + ")) {
-                                    sOldString = QString("rip + %1h").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
-                                    sNewString = QString("%1h").arg(result.nXrefToMemory, 0, 16);
+                                    sOldString = QString("rip + %1").arg(getNumberString(disasmMode, pInsn->detail->x86.operands[i].mem.disp, syntax));
                                 }
                             } else if (syntax == XBinary::SYNTAX_ATT) {
                                 if (result.sString.contains("(%rip)")) {
-                                    sOldString = QString("0x%1(%rip)").arg(pInsn->detail->x86.operands[i].mem.disp, 0, 16);
-                                    sNewString = QString("0x%1").arg(result.nXrefToMemory, 0, 16);
+                                    sOldString = QString("%1(%rip)").arg(getNumberString(disasmMode, pInsn->detail->x86.operands[i].mem.disp, syntax));
                                 }
                             }
+
+                            sNewString = getNumberString(disasmMode, result.nXrefToMemory, syntax);
 
                             result.sString = result.sString.replace(sOldString, sNewString);
 
@@ -310,6 +305,8 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                 result.sMnemonic = tr("Invalid opcode");
                 result.nSize = 4;
             } else {
+                result.sMnemonic = "db";
+                result.sString = getNumberString(disasmMode, *((uint8_t *)pData), syntax);
                 result.nSize = 1;
             }
         }
@@ -895,6 +892,25 @@ bool XCapstone::isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBi
     // TODO Other archs
 
     return bResult;
+}
+
+QString XCapstone::getNumberString(XBinary::DM disasmMode, qint64 nNumber, XBinary::SYNTAX syntax)
+{
+    QString sResult;
+
+    XBinary::DMFAMILY dmFamily = XBinary::getDisasmFamily(disasmMode);
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if ((syntax == XBinary::SYNTAX_DEFAULT) || (syntax == XBinary::SYNTAX_INTEL)) {
+            sResult = QString("0x%1").arg(QString::number(nNumber, 16));
+        } else if (syntax == XBinary::SYNTAX_MASM) {
+            sResult = QString("%1h").arg(QString::number(nNumber, 16));
+        } else if (syntax == XBinary::SYNTAX_ATT) {
+            sResult = QString("0x%1").arg(QString::number(nNumber, 16));
+        }
+    }
+
+    return sResult;
 }
 
 QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount)
