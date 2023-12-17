@@ -884,7 +884,7 @@ bool XCapstone::isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBi
             }
         } else if (syntax == XBinary::SYNTAX_ATT) {
             qint32 nSize = sNumber.size();
-            if ((nSize >= 2) && (sNumber.at(0) == "$")){
+            if ((nSize >= 2) && (sNumber.at(0) == "$")) {
                 bResult = true;
             }
         }
