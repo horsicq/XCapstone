@@ -901,12 +901,19 @@ QString XCapstone::getNumberString(XBinary::DM disasmMode, qint64 nNumber, XBina
     XBinary::DMFAMILY dmFamily = XBinary::getDisasmFamily(disasmMode);
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
-        if ((syntax == XBinary::SYNTAX_DEFAULT) || (syntax == XBinary::SYNTAX_INTEL)) {
-            sResult = QString("0x%1").arg(QString::number(nNumber, 16));
-        } else if (syntax == XBinary::SYNTAX_MASM) {
-            sResult = QString("%1h").arg(QString::number(nNumber, 16));
-        } else if (syntax == XBinary::SYNTAX_ATT) {
-            sResult = QString("0x%1").arg(QString::number(nNumber, 16));
+        if (nNumber < 0) {
+            sResult += "- ";
+        }
+        nNumber = qAbs(nNumber);
+
+        if (nNumber < 10) {
+            sResult += QString::number(nNumber);
+        } else {
+            if ((syntax == XBinary::SYNTAX_DEFAULT) || (syntax == XBinary::SYNTAX_INTEL) || (syntax == XBinary::SYNTAX_ATT)) {
+                sResult += QString("0x%1").arg(QString::number(nNumber, 16));
+            } else if (syntax == XBinary::SYNTAX_MASM) {
+                sResult += QString("%1h").arg(QString::number(nNumber, 16));
+            }
         }
     }
 
