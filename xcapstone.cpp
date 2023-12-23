@@ -845,7 +845,6 @@ bool XCapstone::isXMMRegister(XBinary::DMFAMILY dmFamily, const QString &sRegist
             }
         }
     }
-    // TODO Other archs
 
     return bResult;
 }
@@ -888,6 +887,8 @@ bool XCapstone::isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBi
                 bResult = true;
             }
         }
+    } else if ((dmFamily == XBinary::DMFAMILY_ARM) || (dmFamily == XBinary::DMFAMILY_ARM64)) {
+        // TODO
     }
     // TODO Other archs
 
