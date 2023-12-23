@@ -868,7 +868,7 @@ bool XCapstone::isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBi
             } else if (nSize >= 2) {
                 if (sNumber.left(2) == "0x") {
                     bResult = true;
-                } else if (sNumber.at(0) == "-") {
+                } else if (sNumber.at(0) == QChar('-')) {
                     bResult = true;
                 }
             }
@@ -883,7 +883,7 @@ bool XCapstone::isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBi
             }
         } else if (syntax == XBinary::SYNTAX_ATT) {
             qint32 nSize = sNumber.size();
-            if ((nSize >= 2) && (sNumber.at(0) == "$")) {
+            if ((nSize >= 2) && (sNumber.at(0) == QChar('$'))) {
                 bResult = true;
             }
         }
