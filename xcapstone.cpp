@@ -481,6 +481,10 @@ bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, 
                 bResult = true;
             }
         }
+    } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
+        if (sOpcode == "ret") {
+            bResult = true;
+        }
     }
     // TODO Other archs
 
