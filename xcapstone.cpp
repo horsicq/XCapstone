@@ -920,6 +920,8 @@ QString XCapstone::getNumberString(XBinary::DM disasmMode, qint64 nNumber, XBina
                 sResult += QString("%1h").arg(QString::number(nNumber, 16));
             }
         }
+    } else {
+        sResult += QString("0x%1").arg(QString::number(nNumber, 16));
     }
 
     return sResult;
