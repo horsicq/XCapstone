@@ -275,9 +275,10 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                                 }
                             }
 
-                            sNewString = getNumberString(disasmMode, result.nXrefToMemory, syntax);
-
-                            result.sString = result.sString.replace(sOldString, sNewString);
+                            if (sOldString != "") {
+                                sNewString = getNumberString(disasmMode, result.nXrefToMemory, syntax);
+                                result.sString = result.sString.replace(sOldString, sNewString);
+                            }
 
                             break;
                         }
