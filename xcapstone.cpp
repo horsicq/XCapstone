@@ -844,9 +844,18 @@ bool XCapstone::isXMMRegister(XBinary::DMFAMILY dmFamily, const QString &sRegist
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
         qint32 nSize = sRegister.size();
-        if (nSize >= 4) {
-            if (sRegister.left(3) == "xmm") {
-                bResult = true;
+
+        if (syntax == XBinary::SYNTAX_ATT) {
+            if (nSize >= 5) {
+                if (sRegister.left(4) == "%xmm") {
+                    bResult = true;
+                }
+            }
+        } else {
+            if (nSize >= 4) {
+                if (sRegister.left(3) == "xmm") {
+                    bResult = true;
+                }
             }
         }
     }
@@ -888,7 +897,7 @@ bool XCapstone::isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBi
             }
         } else if (syntax == XBinary::SYNTAX_ATT) {
             qint32 nSize = sNumber.size();
-            if ((nSize >= 2) && (sNumber.at(0) == QChar('$'))) {
+            if ((nSize >= 2) && (sNumber.at(0) == QChar('$')) && (!sNumber.contains(", "))) {
                 bResult = true;
             }
         }
