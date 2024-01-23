@@ -710,7 +710,13 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sRe
     } else if (dmFamily == XBinary::DMFAMILY_ARM) {
         // TODO
     } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
-        // TODO
+        qint32 nSize = sRegister.size();
+
+        if (nSize >= 2) {
+            if (sRegister.at(0) == "x") {
+                bResult = true;
+            }
+        }
     }
     // TODO Other archs
 
@@ -746,7 +752,9 @@ bool XCapstone::isStackRegister(XBinary::DMFAMILY dmFamily, const QString &sRegi
     } else if (dmFamily == XBinary::DMFAMILY_ARM) {
         // TODO
     } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
-        // TODO
+        if (_sRegister == "sp") {
+            bResult = true;
+        }
     }
     // TODO Other archs
 

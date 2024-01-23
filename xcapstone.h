@@ -84,6 +84,11 @@ public:
         bool bIsUppercase;
     };
 
+    struct DISASM_OPERANDS {
+        QList<QString> listOperands;
+        QString sSeparator;
+    };
+
     // TODO error,info signals
     // TODO non static
     explicit XCapstone(QObject *pParent = nullptr);
