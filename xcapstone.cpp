@@ -713,7 +713,7 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sRe
         qint32 nSize = sRegister.size();
 
         if (nSize >= 2) {
-            if (sRegister.at(0) == "x") {
+            if (sRegister.at(0) == QChar('x')) {
                 bResult = true;
             }
         }
