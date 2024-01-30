@@ -878,6 +878,20 @@ bool XCapstone::isRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister,
             isXMMRegister(dmFamily, sRegister, syntax));
 }
 
+bool XCapstone::isRef(XBinary::DMFAMILY dmFamily, const QString &sOperand, XBinary::SYNTAX syntax)
+{
+    bool bResult = false;
+
+    Q_UNUSED(dmFamily)
+    Q_UNUSED(syntax)
+
+    if (sOperand.contains("<")) {
+        bResult = true;
+    }
+
+    return bResult;
+}
+
 bool XCapstone::isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBinary::SYNTAX syntax)
 {
     bool bResult = false;
@@ -943,6 +957,55 @@ QString XCapstone::getNumberString(XBinary::DM disasmMode, qint64 nNumber, XBina
     }
 
     return sResult;
+}
+
+void XCapstone::_addOperandPart(QList<OPERANDPART> *pListOperandParts, QString sString, bool bIsMain)
+{
+    if (sString != "") {
+        OPERANDPART record = {};
+        record.sString = sString;
+        record.bIsMain = bIsMain;
+
+        pListOperandParts->append(record);
+    }
+}
+
+QList<XCapstone::OPERANDPART> XCapstone::getOperandParts(XBinary::DMFAMILY dmFamily, const QString &sString, XBinary::SYNTAX syntax)
+{
+    Q_UNUSED(dmFamily)
+    Q_UNUSED(syntax)
+
+    QList<XCapstone::OPERANDPART> listResult;
+
+    qint32 nNumberOfSymbols = sString.count();
+
+    QString sBuffer;
+
+    for (qint32 i = 0; i < nNumberOfSymbols; i++) {
+        QChar cChar = sString.at(i);
+
+        bool bNewPart = false;
+
+        if ((cChar == QChar(' ')) ||
+            (cChar == QChar(',')) ||
+            (cChar == QChar('[')) ||
+            (cChar == QChar(']')) ||
+            (cChar == QChar('!'))){
+            bNewPart = true;
+        }
+
+        if (bNewPart) {
+            _addOperandPart(&listResult, sBuffer, true);
+            _addOperandPart(&listResult, cChar, false);
+            sBuffer = "";
+        } else {
+            sBuffer += cChar;
+        }
+    }
+
+    _addOperandPart(&listResult, sBuffer, true);
+
+    return listResult;
 }
 
 QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount)
