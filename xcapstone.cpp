@@ -988,8 +988,11 @@ QList<XCapstone::OPERANDPART> XCapstone::getOperandParts(XBinary::DMFAMILY dmFam
 
         if ((cChar == QChar(' ')) ||
             (cChar == QChar(',')) ||
+            (cChar == QChar(':')) ||
             (cChar == QChar('[')) ||
             (cChar == QChar(']')) ||
+            (cChar == QChar('(')) ||
+            (cChar == QChar(')')) ||
             (cChar == QChar('!'))){
             bNewPart = true;
         }
