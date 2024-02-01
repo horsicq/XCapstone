@@ -708,7 +708,13 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sRe
             }
         }
     } else if (dmFamily == XBinary::DMFAMILY_ARM) {
-        // TODO
+        qint32 nSize = sRegister.size();
+
+        if (nSize >= 2) {
+            if (sRegister.at(0) == QChar('r')) {
+                bResult = true;
+            }
+        }
     } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
         qint32 nSize = sRegister.size();
 
@@ -991,6 +997,8 @@ QList<XCapstone::OPERANDPART> XCapstone::getOperandParts(XBinary::DMFAMILY dmFam
             (cChar == QChar(':')) ||
             (cChar == QChar('[')) ||
             (cChar == QChar(']')) ||
+            (cChar == QChar('{')) ||
+            (cChar == QChar('}')) ||
             (cChar == QChar('(')) ||
             (cChar == QChar(')')) ||
             (cChar == QChar('!'))){
