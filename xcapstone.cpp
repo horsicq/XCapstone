@@ -755,10 +755,8 @@ bool XCapstone::isStackRegister(XBinary::DMFAMILY dmFamily, const QString &sRegi
                 bResult = true;
             }
         }
-    } else if (dmFamily == XBinary::DMFAMILY_ARM) {
-        // TODO
-    } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
-        if (_sRegister == "sp") {
+    } else if ((dmFamily == XBinary::DMFAMILY_ARM) || (dmFamily == XBinary::DMFAMILY_ARM64)) {
+        if (sRegister == "sp") {
             bResult = true;
         }
     }
