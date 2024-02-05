@@ -679,21 +679,16 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sRe
     bool bResult = false;
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
-        bool bPrefix = false;
-
         if (syntax == XBinary::SYNTAX_ATT) {
-            qint32 nSize = _sRegister.size();
-            if (nSize >= 3) {
-                if (_sRegister.at(0) == QChar('%')) {
-                    bPrefix = true;
-                    _sRegister = _sRegister.right(nSize - 1);
-                }
+            if (_sRegister.begin() == QChar('%')) {
+                bResult = true;
+                _sRegister = _sRegister.right(_sRegister.size() - 1);
             }
         } else {
-            bPrefix = true;
+            bResult = true;
         }
 
-        if (bPrefix) {
+        if (bResult) {
             if ((_sRegister == "al") || (_sRegister == "ah") || (_sRegister == "bl") || (_sRegister == "bh") || (_sRegister == "cl") || (_sRegister == "ch") ||
                 (_sRegister == "dl") || (_sRegister == "dh") || (_sRegister == "ax") || (_sRegister == "bx") || (_sRegister == "cx") || (_sRegister == "dx") ||
                 (_sRegister == "si") || (_sRegister == "di") || (_sRegister == "sp") || (_sRegister == "bp") || (_sRegister == "eax") || (_sRegister == "ebx") ||
@@ -705,6 +700,8 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sRe
                 (_sRegister == "r15b") || (_sRegister == "r8d") || (_sRegister == "r9d") || (_sRegister == "r10d") || (_sRegister == "r11d") || (_sRegister == "r12d") ||
                 (_sRegister == "r13d") || (_sRegister == "r14d") || (_sRegister == "r15d")) {
                 bResult = true;
+            } else {
+                bResult = false;
             }
         }
     } else if (dmFamily == XBinary::DMFAMILY_ARM) {
@@ -736,21 +733,16 @@ bool XCapstone::isStackRegister(XBinary::DMFAMILY dmFamily, const QString &sRegi
     bool bResult = false;
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
-        bool bPrefix = false;
-
         if (syntax == XBinary::SYNTAX_ATT) {
-            qint32 nSize = _sRegister.size();
-            if (nSize >= 3) {
-                if (_sRegister.at(0) == QChar('%')) {
-                    bPrefix = true;
-                    _sRegister = _sRegister.right(nSize - 1);
-                }
+            if (_sRegister.begin() == QChar('%')) {
+                bResult = true;
+                _sRegister = _sRegister.right(_sRegister.size() - 1);
             }
         } else {
-            bPrefix = true;
+            bResult = true;
         }
 
-        if (bPrefix) {
+        if (bResult) {
             if ((_sRegister == "sp") || (_sRegister == "bp") || (_sRegister == "esp") || (_sRegister == "ebp") || (_sRegister == "rsp") || (_sRegister == "rbp")) {
                 bResult = true;
             }
