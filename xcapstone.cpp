@@ -738,9 +738,13 @@ bool XCapstone::isStackRegister(XBinary::DMFAMILY dmFamily, const QString &sRegi
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
         if (syntax == XBinary::SYNTAX_ATT) {
-            if (_sRegister.begin() == QChar('%')) {
-                bResult = true;
-                _sRegister = _sRegister.right(_sRegister.size() - 1);
+            qint32 nSize = sRegister.size();
+
+            if (nSize >= 2) {
+                if (_sRegister.at(0) == QChar('%')) {
+                    bResult = true;
+                    _sRegister = _sRegister.right(_sRegister.size() - 1);
+                }
             }
         } else {
             bResult = true;
