@@ -674,11 +674,11 @@ bool XCapstone::isPopOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, 
 
 bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
 {
-    QString _sRegister = sRegister;
-
     bool bResult = false;
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
+        QString _sRegister = sRegister;
+
         if (syntax == XBinary::SYNTAX_ATT) {
             qint32 nSize = sRegister.size();
 
@@ -732,11 +732,11 @@ bool XCapstone::isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sRe
 
 bool XCapstone::isStackRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax)
 {
-    QString _sRegister = sRegister;
-
     bool bResult = false;
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
+        QString _sRegister = sRegister;
+
         if (syntax == XBinary::SYNTAX_ATT) {
             qint32 nSize = sRegister.size();
 
@@ -753,6 +753,8 @@ bool XCapstone::isStackRegister(XBinary::DMFAMILY dmFamily, const QString &sRegi
         if (bResult) {
             if ((_sRegister == "sp") || (_sRegister == "bp") || (_sRegister == "esp") || (_sRegister == "ebp") || (_sRegister == "rsp") || (_sRegister == "rbp")) {
                 bResult = true;
+            } else {
+                bResult = false;
             }
         }
     } else if ((dmFamily == XBinary::DMFAMILY_ARM) || (dmFamily == XBinary::DMFAMILY_ARM64)) {
@@ -772,8 +774,27 @@ bool XCapstone::isSegmentRegister(XBinary::DMFAMILY dmFamily, const QString &sRe
     bool bResult = false;
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
-        if ((sRegister == "es") || (sRegister == "gs") || (sRegister == "ss") || (sRegister == "ds") || (sRegister == "cs") || (sRegister == "fs")) {
+        QString _sRegister = sRegister;
+
+        if (syntax == XBinary::SYNTAX_ATT) {
+            qint32 nSize = sRegister.size();
+
+            if (nSize >= 2) {
+                if (_sRegister.at(0) == QChar('%')) {
+                    bResult = true;
+                    _sRegister = _sRegister.right(_sRegister.size() - 1);
+                }
+            }
+        } else {
             bResult = true;
+        }
+
+        if (bResult) {
+            if ((sRegister == "es") || (sRegister == "gs") || (sRegister == "ss") || (sRegister == "ds") || (sRegister == "cs") || (sRegister == "fs")) {
+                bResult = true;
+            } else {
+                bResult = false;
+            }
         }
     }
     // TODO Other archs
