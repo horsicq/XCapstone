@@ -446,6 +446,10 @@ bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode,
         if (sOpcode == "jmp") {
             bResult = true;
         }
+    } else if (dmFamily == XBinary::DMFAMILY_ARM) {
+        if (sOpcode == "b") {
+            bResult = true;
+        }
     }
     // TODO Other archs
 
