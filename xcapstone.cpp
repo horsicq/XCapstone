@@ -145,9 +145,10 @@ XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, XADDR nAddress, char *pDa
 
 XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress)
 {
-    QByteArray baData = XBinary::read_array(pDevice, nOffset, N_OPCODE_SIZE);
+    char buffer[N_OPCODE_SIZE];
+    qint32 nSize = XBinary::read_array(pDevice, nOffset, buffer, N_OPCODE_SIZE);
 
-    return disasm(handle, nAddress, baData.data(), baData.size());
+    return disasm(handle, nAddress, buffer, nSize);
 }
 
 XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode, XBinary::SYNTAX syntax, char *pData, qint32 nDataSize, XADDR nAddress,
