@@ -413,6 +413,10 @@ bool XCapstone::isBranchOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
             (nOpcodeID == X86_INS_LOOP) || (nOpcodeID == X86_INS_LOOPE) || (nOpcodeID == X86_INS_LOOPNE) || (nOpcodeID == X86_INS_CALL)) {
             bResult = true;
         }
+    } else if (dmFamily == XBinary::DMFAMILY_ARM) {
+        if ((nOpcodeID == ARM_INS_B) || (nOpcodeID == ARM_INS_BL)) {
+            bResult = true;
+        }
     }
     // TODO Other archs
 
@@ -463,6 +467,10 @@ bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
 
     if (dmFamily == XBinary::DMFAMILY_X86) {
         if ((nOpcodeID == X86_INS_RET) || (nOpcodeID == X86_INS_RETF) || (nOpcodeID == X86_INS_RETFQ)) {
+            bResult = true;
+        }
+    } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
+        if (nOpcodeID == ARM64_INS_RET) {
             bResult = true;
         }
     }

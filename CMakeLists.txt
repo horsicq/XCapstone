@@ -114,3 +114,7 @@ add_library(capstone STATIC
 
 set_target_properties(capstone PROPERTIES LINKER_LANGUAGE C)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
