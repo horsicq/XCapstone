@@ -111,7 +111,8 @@ public:
     static bool isRetOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
     static bool isCallOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
     static bool isCallOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
-    static bool isJccOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
+    static bool isCondJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
+    static bool isCondJumpOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
     static bool isNopOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
     static bool isNopOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
     static bool isInt3Opcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);

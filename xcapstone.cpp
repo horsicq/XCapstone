@@ -403,24 +403,7 @@ XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, XADDR nAddress, char *pD
 
 bool XCapstone::isBranchOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
 {
-    bool bResult = false;
-
-    if (dmFamily == XBinary::DMFAMILY_X86) {
-        if ((nOpcodeID == X86_INS_JMP) || (nOpcodeID == X86_INS_JA) || (nOpcodeID == X86_INS_JAE) || (nOpcodeID == X86_INS_JB) || (nOpcodeID == X86_INS_JBE) ||
-            (nOpcodeID == X86_INS_JCXZ) || (nOpcodeID == X86_INS_JE) || (nOpcodeID == X86_INS_JECXZ) || (nOpcodeID == X86_INS_JG) || (nOpcodeID == X86_INS_JGE) ||
-            (nOpcodeID == X86_INS_JL) || (nOpcodeID == X86_INS_JLE) || (nOpcodeID == X86_INS_JNE) || (nOpcodeID == X86_INS_JNO) || (nOpcodeID == X86_INS_JNP) ||
-            (nOpcodeID == X86_INS_JNS) || (nOpcodeID == X86_INS_JO) || (nOpcodeID == X86_INS_JP) || (nOpcodeID == X86_INS_JRCXZ) || (nOpcodeID == X86_INS_JS) ||
-            (nOpcodeID == X86_INS_LOOP) || (nOpcodeID == X86_INS_LOOPE) || (nOpcodeID == X86_INS_LOOPNE) || (nOpcodeID == X86_INS_CALL)) {
-            bResult = true;
-        }
-    } else if (dmFamily == XBinary::DMFAMILY_ARM) {
-        if ((nOpcodeID == ARM_INS_B) || (nOpcodeID == ARM_INS_BL)) {
-            bResult = true;
-        }
-    }
-    // TODO Other archs
-
-    return bResult;
+    return isJumpOpcode(dmFamily, nOpcodeID) || isJumpOpcode(dmFamily, nOpcodeID) || isCallOpcode(dmFamily, nOpcodeID);
 }
 
 bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
@@ -541,7 +524,24 @@ bool XCapstone::isCallOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode,
     return bResult;
 }
 
-bool XCapstone::isJccOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
+bool XCapstone::isCondJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
+{
+    bool bResult = false;
+
+    if (dmFamily == XBinary::DMFAMILY_X86) {
+        if ((nOpcodeID == X86_INS_JA) || (nOpcodeID == X86_INS_JAE) || (nOpcodeID == X86_INS_JB) || (nOpcodeID == X86_INS_JBE) ||
+            (nOpcodeID == X86_INS_JCXZ) || (nOpcodeID == X86_INS_JE) || (nOpcodeID == X86_INS_JECXZ) || (nOpcodeID == X86_INS_JG) || (nOpcodeID == X86_INS_JGE) ||
+            (nOpcodeID == X86_INS_JL) || (nOpcodeID == X86_INS_JLE) || (nOpcodeID == X86_INS_JNE) || (nOpcodeID == X86_INS_JNO) || (nOpcodeID == X86_INS_JNP) ||
+            (nOpcodeID == X86_INS_JNS) || (nOpcodeID == X86_INS_JO) || (nOpcodeID == X86_INS_JP) || (nOpcodeID == X86_INS_JRCXZ) || (nOpcodeID == X86_INS_JS) ||
+            (nOpcodeID == X86_INS_LOOP) || (nOpcodeID == X86_INS_LOOPE) || (nOpcodeID == X86_INS_LOOPNE)) {
+            bResult = true;
+        }
+    }
+
+    return bResult;
+}
+
+bool XCapstone::isCondJumpOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax)
 {
     Q_UNUSED(syntax)
 
@@ -550,7 +550,7 @@ bool XCapstone::isJccOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, 
     if (dmFamily == XBinary::DMFAMILY_X86) {
         if ((sOpcode == "je") || (sOpcode == "jne") || (sOpcode == "jz") || (sOpcode == "jnz") || (sOpcode == "ja") || (sOpcode == "jc") || (sOpcode == "jb") ||
             (sOpcode == "jo") || (sOpcode == "jno") || (sOpcode == "js") || (sOpcode == "jns") || (sOpcode == "jae") || (sOpcode == "jbe") || (sOpcode == "jl") ||
-            (sOpcode == "jge") || (sOpcode == "jg") || (sOpcode == "jb")) {
+            (sOpcode == "jge") || (sOpcode == "jg") || (sOpcode == "jb") || (sOpcode == "loop") || (sOpcode == "loopne") || (sOpcode == "loope")) {
             bResult = true;
         }
     }
