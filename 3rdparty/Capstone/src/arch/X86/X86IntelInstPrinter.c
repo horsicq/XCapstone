@@ -515,12 +515,12 @@ static void printDstIdx(MCInst *MI, unsigned Op, SStream *O)
 
 	// DI accesses are always ES-based on non-64bit mode
 	if (MI->csh->mode != CS_MODE_64) {
-		SStream_concat(O, "es:[");
+		SStream_concat0(O, "es:[");
 		if (MI->csh->detail) {
 			MI->flat_insn->detail->x86.operands[MI->flat_insn->detail->x86.op_count].mem.segment = X86_REG_ES;
 		}
 	} else
-		SStream_concat(O, "[");
+		SStream_concat0(O, "[");
 
 	set_mem_access(MI, true);
 	printOperand(MI, Op, O);
@@ -709,7 +709,7 @@ void X86_Intel_printInst(MCInst *MI, SStream *O, void *Info)
 	}
 
 	X86_lockrep(MI, O);
-	printInstruction(MI, O);
+    printInstruction(MI, O);
 
 	reg = X86_insn_reg_intel(MCInst_getOpcode(MI), &access1);
 	if (MI->csh->detail) {
@@ -1035,7 +1035,6 @@ static void printanymem(MCInst *MI, unsigned OpNo, SStream *O)
 		case X86_LEA64r:
 				 MI->x86opsize = 8;
 				 break;
-#ifndef CAPSTONE_X86_REDUCE
 		case X86_BNDCL32rm:
 		case X86_BNDCN32rm:
 		case X86_BNDCU32rm:
@@ -1046,7 +1045,6 @@ static void printanymem(MCInst *MI, unsigned OpNo, SStream *O)
 		case X86_BNDCU64rm:
 				 MI->x86opsize = 16;
 				 break;
-#endif
 	}
 
 	printMemReference(MI, OpNo, O);

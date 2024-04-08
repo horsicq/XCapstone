@@ -68,7 +68,7 @@ enum RoundingMode {
   	RISCVFPRndMode_Invalid
 };
 
-static const char *roundingModeToString(enum RoundingMode RndMode)
+inline static const char *roundingModeToString(enum RoundingMode RndMode) 
 {
   	switch (RndMode) {
   	default:
@@ -88,7 +88,7 @@ static const char *roundingModeToString(enum RoundingMode RndMode)
   	}
 }
 
-static bool RISCVFPRndMode_isValidRoundingMode(unsigned Mode)
+inline static bool RISCVFPRndMode_isValidRoundingMode(unsigned Mode) 
 {
   	switch (Mode) {
   	default:

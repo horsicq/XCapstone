@@ -55,6 +55,7 @@ INCLUDEPATH += $$PWD/src/
 DEPENDPATH += $$PWD/src/
 
 SOURCES += \
+    src/Mapping.c \
     src/MCInst.c \
     src/MCInstrDesc.c \
     src/MCRegisterInfo.c \
