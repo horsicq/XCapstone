@@ -53,9 +53,10 @@ DEFINES += "_LIB"
 
 INCLUDEPATH += $$PWD/src/
 DEPENDPATH += $$PWD/src/
+INCLUDEPATH += $$PWD/src/include
+DEPENDPATH += $$PWD/src/include
 
 SOURCES += \
-    src/Mapping.c \
     src/MCInst.c \
     src/MCInstrDesc.c \
     src/MCRegisterInfo.c \

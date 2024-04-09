@@ -40,7 +40,6 @@ add_definitions(
 include_directories(${PROJECT_SOURCE_DIR}/3rdparty/Capstone/src/include)
 
 add_library(capstone STATIC
-    ${PROJECT_SOURCE_DIR}/3rdparty/Capstone/src/Mapping.c
     ${PROJECT_SOURCE_DIR}/3rdparty/Capstone/src/MCInst.c
     ${PROJECT_SOURCE_DIR}/3rdparty/Capstone/src/MCInstrDesc.c
     ${PROJECT_SOURCE_DIR}/3rdparty/Capstone/src/MCRegisterInfo.c

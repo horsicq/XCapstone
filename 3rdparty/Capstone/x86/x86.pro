@@ -44,6 +44,8 @@ DEFINES += "_LIB"
 
 INCLUDEPATH += $$PWD/../src/
 DEPENDPATH += $$PWD/../src/
+INCLUDEPATH += $$PWD/src/include
+DEPENDPATH += $$PWD/src/include
 
 SOURCES += \
     ../src/MCInst.c \
