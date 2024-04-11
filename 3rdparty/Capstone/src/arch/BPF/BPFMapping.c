@@ -98,7 +98,6 @@ static const name_map insn_name_maps[BPF_INS_ENDING] = {
 	{ BPF_INS_JSGT,	"jsgt" },
 	{ BPF_INS_JSGE,	"jsge" },
 	{ BPF_INS_CALL,	"call" },
-	{ BPF_INS_CALLX, "callx" },
 	{ BPF_INS_EXIT,	"exit" },
 	{ BPF_INS_JLT, "jlt" },
 	{ BPF_INS_JLE, "jle" },
@@ -255,10 +254,6 @@ static bpf_insn op2insn_alu(unsigned opcode)
 
 static bpf_insn op2insn_jmp(unsigned opcode)
 {
-	if (opcode == (BPF_CLASS_JMP | BPF_JUMP_CALL | BPF_SRC_X)) {
-		return BPF_INS_CALLX;
-	}
-
 #define CASE(c) case BPF_JUMP_##c: return BPF_INS_##c
 	switch (BPF_OP(opcode)) {
 	case BPF_JUMP_JA:
@@ -297,7 +292,7 @@ static void update_regs_access(cs_struct *ud, cs_detail *detail,
 	} while (0)
 	/*
 	 * In eBPF mode, only these instructions have implicit registers access:
-	 * - legacy ld{w,h,b,dw} * // w: r0
+	 * - ld{w,h,b,dw} * // w: r0
 	 * - exit // r: r0
 	 */
 	if (EBPF_MODE(ud)) {
@@ -308,9 +303,7 @@ static void update_regs_access(cs_struct *ud, cs_detail *detail,
 		case BPF_INS_LDH:
 		case BPF_INS_LDB:
 		case BPF_INS_LDDW:
-			if (BPF_MODE(opcode) == BPF_MODE_ABS || BPF_MODE(opcode) == BPF_MODE_IND) {
-				PUSH_WRITE(BPF_REG_R0);
-			}
+			PUSH_WRITE(BPF_REG_R0);
 			break;
 		case BPF_INS_EXIT:
 			PUSH_READ(BPF_REG_R0);
@@ -401,7 +394,7 @@ void BPF_get_insn_id(cs_struct *ud, cs_insn *insn, unsigned int opcode)
 	case BPF_CLASS_JMP:
 		grp = BPF_GRP_JUMP;
 		id = op2insn_jmp(opcode);
-		if (id == BPF_INS_CALL || id == BPF_INS_CALLX)
+		if (id == BPF_INS_CALL)
 			grp = BPF_GRP_CALL;
 		else if (id == BPF_INS_EXIT)
 			grp = BPF_GRP_RETURN;

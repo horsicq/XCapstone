@@ -20,6 +20,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#if defined (WIN32) || defined (WIN64) || defined (_WIN32) || defined (_WIN64)
+#pragma warning(disable:28719)		// disable MSVC's warning on strncpy()
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -354,9 +358,8 @@ void Sparc_printInst(MCInst *MI, SStream *O, void *Info)
 	mnem = printAliasInstr(MI, O, Info);
 	if (mnem) {
 		// fixup instruction id due to the change in alias instruction
-		unsigned cpy_len = sizeof(instr) < strlen(mnem) ? sizeof(instr) : strlen(mnem);
-		memcpy(instr, mnem, cpy_len);
-		instr[cpy_len - 1] = '\0';
+		strncpy(instr, mnem, sizeof(instr));
+		instr[sizeof(instr) - 1] = '\0';
 		// does this contains hint with a coma?
 		p = strchr(instr, ',');
 		if (p)
