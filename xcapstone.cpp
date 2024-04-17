@@ -456,6 +456,10 @@ bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
         if (nOpcodeID == ARM64_INS_RET) {
             bResult = true;
         }
+    } else if (dmFamily == XBinary::DMFAMILY_BPF) {
+        if (nOpcodeID == BPF_INS_RET) {
+            bResult = true;
+        }
     }
     // TODO Other archs
 
@@ -1019,7 +1023,7 @@ QList<XCapstone::OPERANDPART> XCapstone::getOperandParts(XBinary::DMFAMILY dmFam
 
     QList<XCapstone::OPERANDPART> listResult;
 
-    qint32 nNumberOfSymbols = sString.count();
+    qint32 nNumberOfSymbols = sString.size();
 
     QString sBuffer;
 
