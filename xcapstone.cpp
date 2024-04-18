@@ -460,6 +460,10 @@ bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
         if (nOpcodeID == BPF_INS_RET) {
             bResult = true;
         }
+    } else if (dmFamily == XBinary::DMFAMILY_SPARC) {
+        if (nOpcodeID == SPARC_INS_RET) {
+            bResult = true;
+        }
     }
     // TODO Other archs
 
