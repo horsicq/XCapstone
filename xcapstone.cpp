@@ -583,6 +583,10 @@ bool XCapstone::isNopOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
         if (nOpcodeID == MOS65XX_INS_NOP) {
             bResult = true;
         }
+    } else if (dmFamily == XBinary::DMFAMILY_MIPS) {
+        if (nOpcodeID == MIPS_INS_NOP) {
+            bResult = true;
+        }
     }
     // TODO Other archs
 
