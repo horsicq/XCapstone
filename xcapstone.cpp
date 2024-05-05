@@ -596,7 +596,6 @@ bool XCapstone::isNopOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
             bResult = true;
         }
     }
-    // TODO Other archs
 
     return bResult;
 }
