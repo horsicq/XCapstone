@@ -1024,7 +1024,7 @@ QString XCapstone::getNumberString(XBinary::DM disasmMode, qint64 nNumber, XBina
     return sResult;
 }
 
-void XCapstone::_addOperandPart(QList<OPERANDPART> *pListOperandParts, QString sString, bool bIsMain)
+void XCapstone::_addOperandPart(QList<OPERANDPART> *pListOperandParts, const QString &sString, bool bIsMain)
 {
     if (sString != "") {
         OPERANDPART record = {};

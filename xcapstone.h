@@ -138,7 +138,7 @@ public:
         QString sString;
     };
 
-    static void _addOperandPart(QList<OPERANDPART> *pListOperandParts, QString sString, bool bIsMain);
+    static void _addOperandPart(QList<OPERANDPART> *pListOperandParts, const QString &sString, bool bIsMain);
     static QList<OPERANDPART> getOperandParts(XBinary::DMFAMILY dmFamily, const QString &sString, XBinary::SYNTAX syntax);
     // TODO rep opcode
     static QString getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount);
