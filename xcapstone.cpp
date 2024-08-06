@@ -418,7 +418,20 @@ bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
         if (nOpcodeID == ARM_INS_B) {
             bResult = true;
         }
+    } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
+        if (nOpcodeID == ARM64_INS_B) {
+            bResult = true;
+        }
+    } else if (dmFamily == XBinary::DMFAMILY_BPF) {
+        if (nOpcodeID == BPF_INS_JMP) {
+            bResult = true;
+        }
+    } else if (dmFamily == XBinary::DMFAMILY_SPARC) {
+        if (nOpcodeID == SPARC_INS_JMP) {
+            bResult = true;
+        }
     }
+
     // TODO Other archs
 
     return bResult;
