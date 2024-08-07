@@ -178,6 +178,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                 if (pInsn->detail->groups[i] == CS_GRP_BRANCH_RELATIVE) {
                     if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_X86) {
                         for (qint32 j = 0; j < pInsn->detail->x86.op_count; j++) {
+                            // TODO mb use groups
                             if (pInsn->detail->x86.operands[j].type == X86_OP_IMM) {
                                 switch (pInsn->id) {
                                     case X86_INS_LOOP:
