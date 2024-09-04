@@ -416,6 +416,10 @@ bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
         if (nOpcodeID == SPARC_INS_JMP) {
             bResult = true;
         }
+    } else if (dmFamily == XBinary::DMFAMILY_MIPS) {
+        if ((nOpcodeID == MIPS_INS_J) || (nOpcodeID == MIPS_INS_JAL)) {
+            bResult = true;
+        }
     }
 
     // TODO Other archs
