@@ -441,6 +441,22 @@ bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode,
         if (sOpcode == "b") {
             bResult = true;
         }
+    } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
+        if (sOpcode == "b") {
+            bResult = true;
+        }
+    } else if (dmFamily == XBinary::DMFAMILY_BPF) {
+        if (sOpcode == "jmp") {
+            bResult = true;
+        }
+    } else if (dmFamily == XBinary::DMFAMILY_SPARC) {
+        if (sOpcode == "jmp") {
+            bResult = true;
+        }
+    } else if (dmFamily == XBinary::DMFAMILY_MIPS) {
+        if ((sOpcode == "j") || (sOpcode == "jal")) {
+            bResult = true;
+        }
     }
     // TODO Other archs
 
