@@ -182,7 +182,6 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                         for (qint32 j = 0; j < pInsn->detail->x86.op_count; j++) {
                             // TODO mb use groups
                             if (pInsn->detail->x86.operands[j].type == X86_OP_IMM) {
-
                                 if (isCallOpcode(dmFamily, pInsn->id)) {
                                     result.relType = RELTYPE_CALL;
                                 } else if (isJumpOpcode(dmFamily, pInsn->id)) {
