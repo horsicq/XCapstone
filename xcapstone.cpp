@@ -482,6 +482,10 @@ bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
         if (nOpcodeID == SPARC_INS_RET) {
             bResult = true;
         }
+    } else if (dmFamily == XBinary::DMFAMILY_MIPS) {
+        if (nOpcodeID == MIPS_INS_JR) {
+            bResult = true;
+        }
     }
     // TODO Other archs
 
