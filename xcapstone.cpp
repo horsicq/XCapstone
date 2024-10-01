@@ -291,6 +291,9 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
             } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
                 result.sMnemonic = tr("Invalid opcode");
                 result.nSize = 4;
+            } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_M68K) {
+                result.sMnemonic = tr("Invalid opcode");
+                result.nSize = 2;
             } else {
                 result.sMnemonic = "db";
                 result.sString = getNumberString(disasmMode, *((uint8_t *)pData), syntax);
