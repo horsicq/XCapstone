@@ -426,6 +426,10 @@ bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
         if (nOpcodeID == MOS65XX_INS_JMP) {
             bResult = true;
         }
+    } else if (dmFamily == XBinary::DMFAMILY_M68K) {
+        if (nOpcodeID == M68K_INS_BRA) {
+            bResult = true;
+        }
     }
 
     // TODO Other archs
@@ -463,6 +467,10 @@ bool XCapstone::isJumpOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode,
         if ((sOpcode == "j") || (sOpcode == "jal")) {
             bResult = true;
         }
+    } else if (dmFamily == XBinary::DMFAMILY_M68K) {
+        if (sOpcode == "bra") {
+            bResult = true;
+        }
     }
     // TODO Other archs
 
@@ -493,6 +501,10 @@ bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
         if (nOpcodeID == MIPS_INS_JR) {
             bResult = true;
         }
+    } else if (dmFamily == XBinary::DMFAMILY_M68K) {
+        if ((nOpcodeID == M68K_INS_RTS) || (nOpcodeID == M68K_INS_RTE) || (nOpcodeID == M68K_INS_RTR) || (nOpcodeID == M68K_INS_RTD)){
+            bResult = true;
+        }
     }
     // TODO Other archs
 
@@ -517,6 +529,10 @@ bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, 
         }
     } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
         if (sOpcode == "ret") {
+            bResult = true;
+        }
+    } else if (dmFamily == XBinary::DMFAMILY_M68K) {
+        if ((sOpcode == "rte") || (sOpcode == "rts") || (sOpcode == "rtr")  || (sOpcode == "rtd") ) {
             bResult = true;
         }
     }
