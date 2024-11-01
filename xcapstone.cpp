@@ -502,7 +502,7 @@ bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID)
             bResult = true;
         }
     } else if (dmFamily == XBinary::DMFAMILY_M68K) {
-        if ((nOpcodeID == M68K_INS_RTS) || (nOpcodeID == M68K_INS_RTE) || (nOpcodeID == M68K_INS_RTR) || (nOpcodeID == M68K_INS_RTD)){
+        if ((nOpcodeID == M68K_INS_RTS) || (nOpcodeID == M68K_INS_RTE) || (nOpcodeID == M68K_INS_RTR) || (nOpcodeID == M68K_INS_RTD)) {
             bResult = true;
         }
     }
@@ -532,7 +532,7 @@ bool XCapstone::isRetOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, 
             bResult = true;
         }
     } else if (dmFamily == XBinary::DMFAMILY_M68K) {
-        if ((sOpcode == "rte") || (sOpcode == "rts") || (sOpcode == "rtr")  || (sOpcode == "rtd") ) {
+        if ((sOpcode == "rte") || (sOpcode == "rts") || (sOpcode == "rtr") || (sOpcode == "rtd")) {
             bResult = true;
         }
     }
