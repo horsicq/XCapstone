@@ -89,6 +89,17 @@ public:
         QString sSeparator;
     };
 
+    struct SIGNATURE_RECORD {
+        XADDR nAddress;
+        QString sOpcode;
+        QByteArray baOpcode;
+        qint32 nDispOffset;
+        qint32 nDispSize;
+        qint32 nImmOffset;
+        qint32 nImmSize;
+        bool bIsConst;
+    };
+
     // TODO error,info signals
     // TODO non static
     explicit XCapstone(QObject *pParent = nullptr);
@@ -144,6 +155,8 @@ public:
     static QString getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount);
     static QString replaceWildChar(const QString &sString, qint32 nOffset, qint32 nSize, QChar cWild);
     static void printEnabledArchs();
+
+    static QList<XCapstone::SIGNATURE_RECORD> getSignatureRecords(csh g_handle, QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, qint64 nOffsetd, qint32 nCount, qint32 nMetho);
 
 private:
     static const qint32 N_OPCODE_SIZE = 16;  // mb TODO rename set/get

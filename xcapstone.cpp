@@ -1261,3 +1261,102 @@ void XCapstone::printEnabledArchs()
     if (cs_support(CS_ARCH_RISCV)) qDebug("CS_ARCH_RISCV");
 #endif
 }
+
+QList<XCapstone::SIGNATURE_RECORD> XCapstone::getSignatureRecords(csh g_handle, QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, qint64 nOffsetd, qint32 nCount, qint32 nMetho)
+{
+    QList<SIGNATURE_RECORD> listResult;
+
+    XBinary::DMFAMILY dmFamily = XBinary::getDisasmFamily(pMemoryMap);
+
+    bool bStopBranch = false;
+
+    for (qint32 i = 0; (i < nCount) && (!bStopBranch); i++) {
+        if (nOffsetd != -1) {
+            char opcode[N_OPCODE_SIZE];
+            XBinary::_zeroMemory(opcode, N_OPCODE_SIZE);
+
+            size_t nDataSize = XBinary::read_array(pDevice, nOffsetd, opcode, N_OPCODE_SIZE);
+
+            uint8_t *pData = (uint8_t *)opcode;
+
+            XADDR nAddress = XBinary::offsetToAddress(pMemoryMap, nOffsetd);
+
+            cs_insn *pInsn = nullptr;
+            size_t count = cs_disasm(g_handle, pData, nDataSize, nAddress, 1, &pInsn);
+
+            if (count > 0) {
+                if (pInsn->size > 1) {
+                    bStopBranch = !XBinary::isOffsetValid(pMemoryMap, nOffsetd + pInsn->size - 1);
+                }
+
+                if (!bStopBranch) {
+                    XCapstone::SIGNATURE_RECORD record = {};
+
+                    record.nAddress = nAddress;
+                    record.sOpcode = pInsn->mnemonic;
+                    QString sArgs = pInsn->op_str;
+
+                    if (sArgs != "") {
+                        record.sOpcode += " " + sArgs;
+                    }
+
+                    record.baOpcode = QByteArray(opcode, pInsn->size);
+
+                    if (pInsn->detail) {
+                        // TODO Another archs !!!
+                        if (dmFamily == XBinary::DMFAMILY_X86) {
+                            record.nDispOffset = pInsn->detail->x86.encoding.disp_offset;
+                            record.nDispSize = pInsn->detail->x86.encoding.disp_size;
+                            record.nImmOffset = pInsn->detail->x86.encoding.imm_offset;
+                            record.nImmSize = pInsn->detail->x86.encoding.imm_size;
+                        } else if (dmFamily == XBinary::DMFAMILY_ARM) {
+                            // TODO !!!
+                        } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
+                            // TODO !!!
+                        }
+
+                        nAddress += pInsn->size;
+
+                        if (nMetho == 1) {
+                            qint32 nNumberOfGroups = pInsn->detail->groups_count;
+
+                            for (qint32 i = 0; i < nNumberOfGroups; i++) {
+                                if (pInsn->detail->groups[i] == CS_GRP_BRANCH_RELATIVE) {
+                                    if (dmFamily == XBinary::DMFAMILY_X86) {
+                                        for (qint32 i = 0; i < pInsn->detail->x86.op_count; i++) {
+                                            if (pInsn->detail->x86.operands[i].type == X86_OP_IMM) {
+                                                qint64 nImm = pInsn->detail->x86.operands[i].imm;
+
+                                                nAddress = nImm;
+
+                                                if ((pMemoryMap->fileType == XBinary::FT_COM) && (pInsn->detail->x86.encoding.imm_size == 2)) {
+                                                    if (nAddress > 0xFFFF) {
+                                                        nAddress &= 0xFFFF;
+                                                    }
+                                                }
+
+                                                record.bIsConst = true;
+                                            }
+                                        }
+                                    }
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    listResult.append(record);
+                }
+
+                cs_free(pInsn, count);
+
+                nOffsetd = XBinary::addressToOffset(pMemoryMap, nAddress);
+            } else {
+                bStopBranch = true;
+            }
+        }
+    }
+
+    return listResult;
+}
