@@ -1262,7 +1262,8 @@ void XCapstone::printEnabledArchs()
 #endif
 }
 
-QList<XCapstone::SIGNATURE_RECORD> XCapstone::getSignatureRecords(csh g_handle, QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, qint64 nOffsetd, qint32 nCount, qint32 nMetho)
+QList<XCapstone::SIGNATURE_RECORD> XCapstone::getSignatureRecords(csh g_handle, QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, qint64 nOffsetd, qint32 nCount,
+                                                                  qint32 nMetho)
 {
     QList<SIGNATURE_RECORD> listResult;
 

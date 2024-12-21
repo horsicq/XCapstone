@@ -156,7 +156,8 @@ public:
     static QString replaceWildChar(const QString &sString, qint32 nOffset, qint32 nSize, QChar cWild);
     static void printEnabledArchs();
 
-    static QList<XCapstone::SIGNATURE_RECORD> getSignatureRecords(csh g_handle, QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, qint64 nOffsetd, qint32 nCount, qint32 nMetho);
+    static QList<XCapstone::SIGNATURE_RECORD> getSignatureRecords(csh g_handle, QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, qint64 nOffsetd, qint32 nCount,
+                                                                  qint32 nMetho);
 
 private:
     static const qint32 N_OPCODE_SIZE = 16;  // mb TODO rename set/get
