@@ -35,13 +35,14 @@ cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails
     //    printEnabledArchs();
     cs_err result = CS_ERR_HANDLE;
 
+    // https://github.com/capstone-engine/capstone/blob/9907b22d33693f3beb4b8b7ba261fbdd219afee3/cstool/cstool.c
     if (disasmMode == XBinary::DM_X86_16) result = cs_open(CS_ARCH_X86, cs_mode(CS_MODE_16), pHandle);
     else if (disasmMode == XBinary::DM_X86_32) result = cs_open(CS_ARCH_X86, cs_mode(CS_MODE_32), pHandle);
     else if (disasmMode == XBinary::DM_X86_64) result = cs_open(CS_ARCH_X86, cs_mode(CS_MODE_64), pHandle);
     else if (disasmMode == XBinary::DM_ARM_LE) result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_LITTLE_ENDIAN), pHandle);
     else if (disasmMode == XBinary::DM_ARM_BE) result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_BIG_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_ARM64_LE) result = cs_open(CS_ARCH_ARM64, cs_mode(CS_MODE_ARM | CS_MODE_LITTLE_ENDIAN), pHandle);
-    else if (disasmMode == XBinary::DM_ARM64_BE) result = cs_open(CS_ARCH_ARM64, cs_mode(CS_MODE_ARM | CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_AARCH64_LE) result = cs_open(CS_ARCH_ARM64, cs_mode(CS_MODE_ARM | CS_MODE_LITTLE_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_AARCH64_BE) result = cs_open(CS_ARCH_ARM64, cs_mode(CS_MODE_ARM | CS_MODE_BIG_ENDIAN), pHandle);
     else if (disasmMode == XBinary::DM_CORTEXM) result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_MCLASS), pHandle);
     else if (disasmMode == XBinary::DM_THUMB_LE) result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_LITTLE_ENDIAN), pHandle);
     else if (disasmMode == XBinary::DM_THUMB_BE) result = cs_open(CS_ARCH_ARM, cs_mode(CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_BIG_ENDIAN), pHandle);
@@ -54,6 +55,7 @@ cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails
     else if (disasmMode == XBinary::DM_PPC64_LE) result = cs_open(CS_ARCH_PPC, cs_mode(CS_MODE_64 | CS_MODE_LITTLE_ENDIAN), pHandle);
     else if (disasmMode == XBinary::DM_PPC64_BE) result = cs_open(CS_ARCH_PPC, cs_mode(CS_MODE_64 | CS_MODE_BIG_ENDIAN), pHandle);
     else if (disasmMode == XBinary::DM_SPARC) result = cs_open(CS_ARCH_SPARC, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_SPARCV9) result = cs_open(CS_ARCH_SPARC, cs_mode(CS_MODE_BIG_ENDIAN | CS_MODE_V9), pHandle);
     else if (disasmMode == XBinary::DM_S390X) result = cs_open(CS_ARCH_SYSZ, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
     else if (disasmMode == XBinary::DM_XCORE) result = cs_open(CS_ARCH_XCORE, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
     else if (disasmMode == XBinary::DM_M68K) result = cs_open(CS_ARCH_M68K, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
