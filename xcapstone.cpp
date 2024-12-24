@@ -59,7 +59,12 @@ cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails
     else if (disasmMode == XBinary::DM_S390X) result = cs_open(CS_ARCH_SYSZ, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
     else if (disasmMode == XBinary::DM_XCORE) result = cs_open(CS_ARCH_XCORE, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
     else if (disasmMode == XBinary::DM_M68K) result = cs_open(CS_ARCH_M68K, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_M68K00) result = cs_open(CS_ARCH_M68K, cs_mode(CS_MODE_M68K_000), pHandle);
+    else if (disasmMode == XBinary::DM_M68K10) result = cs_open(CS_ARCH_M68K, cs_mode(CS_MODE_M68K_010), pHandle);
+    else if (disasmMode == XBinary::DM_M68K20) result = cs_open(CS_ARCH_M68K, cs_mode(CS_MODE_M68K_020), pHandle);
+    else if (disasmMode == XBinary::DM_M68K30) result = cs_open(CS_ARCH_M68K, cs_mode(CS_MODE_M68K_030), pHandle);
     else if (disasmMode == XBinary::DM_M68K40) result = cs_open(CS_ARCH_M68K, cs_mode(CS_MODE_M68K_040), pHandle);
+    else if (disasmMode == XBinary::DM_M68K60) result = cs_open(CS_ARCH_M68K, cs_mode(CS_MODE_M68K_060), pHandle);
     else if (disasmMode == XBinary::DM_TMS320C64X) result = cs_open(CS_ARCH_TMS320C64X, cs_mode(CS_MODE_BIG_ENDIAN), pHandle);
     else if (disasmMode == XBinary::DM_M6800) result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6800), pHandle);
     else if (disasmMode == XBinary::DM_M6801) result = cs_open(CS_ARCH_M680X, cs_mode(CS_MODE_M680X_6801), pHandle);
