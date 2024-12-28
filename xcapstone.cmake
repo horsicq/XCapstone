@@ -8,7 +8,6 @@ endif()
 
 set(XCAPSTONE_SOURCES
     ${XCAPSTONE_SOURCES}
-    ${XBINARY_SOURCES}
     ${CMAKE_CURRENT_LIST_DIR}/xcapstone.cpp
     ${CMAKE_CURRENT_LIST_DIR}/xcapstone.h
 )
