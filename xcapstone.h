@@ -31,23 +31,12 @@ class XCapstone : public QObject {
     Q_OBJECT
 
 public:
-    struct DISASM_STRUCT {
-        XADDR nAddress;
-        QString sString;
-        qint64 nSize;
-        qint16 nOpcodeID;
-    };
-
-    struct OPCODE_ID {
-        qint16 nOpcodeID;
-        qint64 nSize;
-    };
 
     enum ST {
         ST_UNKNOWN = 0,
         ST_FULL,
         ST_MASK,
-        ST_MASKREL
+        ST_REL
     };
 
     enum RELTYPE {
@@ -78,9 +67,17 @@ public:
         MEMTYPE memType;
         XADDR nXrefToMemory;
         qint32 nMemorySize;
+        XADDR nNextAddress;
+        bool bIsConst; // For signatures
+        quint32 nDispOffset = 0;
+        quint32 nDispSize = 0;
+        quint32 nImmOffset = 0;
+        quint32 nImmSize = 0;
     };
 
     struct DISASM_OPTIONS {
+        XBinary::DM disasmMode;
+        XBinary::SYNTAX syntax;
         bool bIsUppercase;
     };
 
@@ -106,15 +103,8 @@ public:
 
     static cs_err openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails, XBinary::SYNTAX syntax = XBinary::SYNTAX_DEFAULT);
     static cs_err closeHandle(csh *pHandle);
-    static DISASM_STRUCT disasm(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
-    static DISASM_STRUCT disasm(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress);
-    static DISASM_RESULT disasm_ex(csh handle, XBinary::DM disasmMode, XBinary::SYNTAX syntax, char *pData, qint32 nDataSize, XADDR nAddress,
-                                   const DISASM_OPTIONS &disasmOptions = DISASM_OPTIONS());
-    static qint32 getDisasmLength(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
-    static qint32 getDisasmLength(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress);
-    static qint64 getNextAddress(XBinary::DMFAMILY dmFamily, csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
-    static qint64 getNextAddress(XBinary::DMFAMILY dmFamily, csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress);
-    static OPCODE_ID getOpcodeID(csh handle, XADDR nAddress, char *pData, qint32 nDataSize);
+    static DISASM_RESULT disasm_ex(csh handle, char *pData, qint32 nDataSize, XADDR nAddress, const DISASM_OPTIONS &disasmOptions);
+    static DISASM_RESULT disasm_ex(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress, const DISASM_OPTIONS &disasmOptions);
     static bool isBranchOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);  // mb TODO rename
     static bool isJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
     static bool isJumpOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
@@ -153,11 +143,11 @@ public:
     static QList<OPERANDPART> getOperandParts(XBinary::DMFAMILY dmFamily, const QString &sString, XBinary::SYNTAX syntax);
     // TODO rep opcode
     static QString getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount);
-    static QString replaceWildChar(const QString &sString, qint32 nOffset, qint32 nSize, QChar cWild);
+    static QString replaceWildChar(const QString &sString, qint32 nOffset, qint32 nSize, QChar cWild); // Move to XBinary
     static void printEnabledArchs();
 
-    static QList<XCapstone::SIGNATURE_RECORD> getSignatureRecords(csh g_handle, QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, qint64 nOffsetd, qint32 nCount,
-                                                                  qint32 nMetho);
+    static QList<XCapstone::SIGNATURE_RECORD> getSignatureRecords(csh handle, QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, qint64 nOffset, qint32 nCount,
+                                                                  ST signatureType);
 
 private:
     static const qint32 N_OPCODE_SIZE = 16;  // mb TODO rename set/get

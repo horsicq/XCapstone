@@ -84,29 +84,34 @@ cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails
     else if (disasmMode == XBinary::DM_MOS65XX) result = cs_open(CS_ARCH_M680X, cs_mode(CS_ARCH_MOS65XX), pHandle);
     else if (disasmMode == XBinary::DM_BPF_LE) result = cs_open(CS_ARCH_BPF, cs_mode(CS_MODE_BPF_CLASSIC | CS_MODE_LITTLE_ENDIAN), pHandle);
     else if (disasmMode == XBinary::DM_BPF_BE) result = cs_open(CS_ARCH_BPF, cs_mode(CS_MODE_BPF_CLASSIC | CS_MODE_BIG_ENDIAN), pHandle);
+    else if (disasmMode == XBinary::DM_CUSTOM_MACH_REBASE) result = CS_ERR_OK;
     // TODO Check more
 
-    if (result == CS_ERR_OK) {
-        if (bDetails) {
-            cs_option(*pHandle, CS_OPT_DETAIL, CS_OPT_ON);
-        }
+    if (disasmMode < XBinary::DM_CUSTOM) {
+        if (result == CS_ERR_OK) {
+            if (bDetails) {
+                cs_option(*pHandle, CS_OPT_DETAIL, CS_OPT_ON);
+            }
 
-        if (syntax != XBinary::SYNTAX_DEFAULT) {
-            if (syntax == XBinary::SYNTAX_ATT) {
-                cs_option(*pHandle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
-            } else if (syntax == XBinary::SYNTAX_INTEL) {
-                cs_option(*pHandle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_INTEL);
+            if (syntax != XBinary::SYNTAX_DEFAULT) {
+                if (syntax == XBinary::SYNTAX_ATT) {
+                    cs_option(*pHandle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
+                } else if (syntax == XBinary::SYNTAX_INTEL) {
+                    cs_option(*pHandle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_INTEL);
+                }
+                if (syntax == XBinary::SYNTAX_MASM) {
+                    cs_option(*pHandle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_MASM);
+                }
+                if (syntax == XBinary::SYNTAX_MOTOROLA) {
+                    cs_option(*pHandle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_MOTOROLA);
+                }
+                // TODO Check more
             }
-            if (syntax == XBinary::SYNTAX_MASM) {
-                cs_option(*pHandle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_MASM);
-            }
-            if (syntax == XBinary::SYNTAX_MOTOROLA) {
-                cs_option(*pHandle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_MOTOROLA);
-            }
-            // TODO Check more
+        } else {
+            *pHandle = 0;
         }
     } else {
-        *pHandle = 0;
+        *pHandle = disasmMode;
     }
 
     return result;
@@ -117,57 +122,32 @@ cs_err XCapstone::closeHandle(csh *pHandle)
     cs_err result = CS_ERR_HANDLE;
 
     if (*pHandle) {
-        result = cs_close(pHandle);
-        *pHandle = 0;
+        if ((*pHandle > XBinary::DM_CUSTOM) &&(*pHandle < XBinary::DM_ALL)) {
+            result = CS_ERR_OK;
+        } else {
+            result = cs_close(pHandle);
+        }
     }
+
+    *pHandle = 0;
 
     return result;
 }
 
-XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
+XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress, const DISASM_OPTIONS &disasmOptions)
 {
-    DISASM_STRUCT result = {};
+    QByteArray baData = XBinary::read_array(pDevice, nOffset, N_OPCODE_SIZE);
 
-    cs_insn *pInsn = nullptr;
-
-    size_t nNumberOfOpcodes = cs_disasm(handle, (uint8_t *)pData, nDataSize, nAddress, 1, &pInsn);
-
-    if (nNumberOfOpcodes > 0) {
-        result.nAddress = nAddress;
-        result.nSize = pInsn->size;
-        result.nOpcodeID = pInsn->id;
-
-        QString sMnemonic = pInsn->mnemonic;
-        QString sStr = pInsn->op_str;
-
-        result.sString += sMnemonic;
-
-        if (sStr != "") result.sString += QString(" %1").arg(sStr);
-
-        cs_free(pInsn, nNumberOfOpcodes);
-    }
-
-    return result;
+    return disasm_ex(handle, baData.data(), baData.size(), nAddress, disasmOptions);
 }
 
-XCapstone::DISASM_STRUCT XCapstone::disasm(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress)
-{
-    char buffer[N_OPCODE_SIZE];
-    qint32 nSize = XBinary::read_array(pDevice, nOffset, buffer, N_OPCODE_SIZE);
-
-    return disasm(handle, nAddress, buffer, nSize);
-}
-
-XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode, XBinary::SYNTAX syntax, char *pData, qint32 nDataSize, XADDR nAddress,
-                                              const DISASM_OPTIONS &disasmOptions)
-{
-    Q_UNUSED(disasmOptions)
-
+XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, char *pData, qint32 nDataSize, XADDR nAddress, const DISASM_OPTIONS &disasmOptions)
+{    
     DISASM_RESULT result = {};
 
     result.nAddress = nAddress;
 
-    XBinary::DMFAMILY dmFamily = XBinary::getDisasmFamily(disasmMode);
+    XBinary::DMFAMILY dmFamily = XBinary::getDisasmFamily(disasmOptions.disasmMode);
 
     if (handle) {
         cs_insn *pInsn = nullptr;
@@ -178,14 +158,21 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
             result.nOpcode = pInsn->id;
             result.sMnemonic = pInsn->mnemonic;
             result.sString = pInsn->op_str;
-
             result.nSize = pInsn->size;
             result.bIsValid = true;
+            result.nNextAddress = nAddress + result.nSize;
+
+            if (dmFamily == XBinary::DMFAMILY_X86) {
+                result.nDispOffset = pInsn->detail->x86.encoding.disp_offset;
+                result.nDispSize = pInsn->detail->x86.encoding.disp_size;
+                result.nImmOffset = pInsn->detail->x86.encoding.imm_offset;
+                result.nImmSize = pInsn->detail->x86.encoding.imm_size;
+            }
 
             // Relatives
             for (qint32 i = 0; i < pInsn->detail->groups_count; i++) {
                 if (pInsn->detail->groups[i] == CS_GRP_BRANCH_RELATIVE) {
-                    if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_X86) {
+                    if (dmFamily == XBinary::DMFAMILY_X86) {
                         for (qint32 j = 0; j < pInsn->detail->x86.op_count; j++) {
                             // TODO mb use groups
                             if (pInsn->detail->x86.operands[j].type == X86_OP_IMM) {
@@ -200,24 +187,30 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                                 }
 
                                 result.nXrefToRelative = pInsn->detail->x86.operands[j].imm;
+                                result.nNextAddress = result.nXrefToRelative;
+                                result.bIsConst = true;
 
                                 break;
                             }
                         }
-                    } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
+                    } else if (dmFamily == XBinary::DMFAMILY_ARM) {
                         for (qint32 j = 0; j < pInsn->detail->arm.op_count; j++) {
                             if (pInsn->detail->arm.operands[j].type == ARM_OP_IMM) {
                                 result.relType = RELTYPE_JMP;  // TODO
                                 result.nXrefToRelative = pInsn->detail->arm.operands[j].imm;
+                                result.nNextAddress = result.nXrefToRelative;
+                                result.bIsConst = true;
 
                                 break;
                             }
                         }
-                    } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM64) {
+                    } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
                         for (qint32 j = 0; j < pInsn->detail->arm64.op_count; j++) {
                             if (pInsn->detail->arm64.operands[j].type == ARM64_OP_IMM) {
                                 result.relType = RELTYPE_JMP;  // TODO
                                 result.nXrefToRelative = pInsn->detail->arm64.operands[j].imm;
+                                result.nNextAddress = result.nXrefToRelative;
+                                result.bIsConst = true;
 
                                 break;
                             }
@@ -229,7 +222,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
             }
 
             // Memory
-            if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_X86) {
+            if (dmFamily == XBinary::DMFAMILY_X86) {
                 for (qint32 i = 0; i < pInsn->detail->x86.op_count; i++) {
                     if (pInsn->detail->x86.operands[i].type == X86_OP_MEM) {
                         bool bLEA = (pInsn->id == X86_INS_LEA);
@@ -258,18 +251,18 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
                             QString sNewString;
 
                             // TODO Check
-                            if ((syntax == XBinary::SYNTAX_DEFAULT) || (syntax == XBinary::SYNTAX_INTEL) || (syntax == XBinary::SYNTAX_MASM)) {
+                            if ((disasmOptions.syntax == XBinary::SYNTAX_DEFAULT) || (disasmOptions.syntax == XBinary::SYNTAX_INTEL) || (disasmOptions.syntax == XBinary::SYNTAX_MASM)) {
                                 if (result.sString.contains("rip + ")) {
-                                    sOldString = QString("rip + %1").arg(getNumberString(disasmMode, pInsn->detail->x86.operands[i].mem.disp, syntax));
+                                    sOldString = QString("rip + %1").arg(getNumberString(disasmOptions.disasmMode, pInsn->detail->x86.operands[i].mem.disp, disasmOptions.syntax));
                                 }
-                            } else if (syntax == XBinary::SYNTAX_ATT) {
+                            } else if (disasmOptions.syntax == XBinary::SYNTAX_ATT) {
                                 if (result.sString.contains("(%rip)")) {
-                                    sOldString = QString("%1(%rip)").arg(getNumberString(disasmMode, pInsn->detail->x86.operands[i].mem.disp, syntax));
+                                    sOldString = QString("%1(%rip)").arg(getNumberString(disasmOptions.disasmMode, pInsn->detail->x86.operands[i].mem.disp, disasmOptions.syntax));
                                 }
                             }
 
                             if (sOldString != "") {
-                                sNewString = getNumberString(disasmMode, result.nXrefToMemory, syntax);
+                                sNewString = getNumberString(disasmOptions.disasmMode, result.nXrefToMemory, disasmOptions.syntax);
                                 result.sString = result.sString.replace(sOldString, sNewString);
                             }
 
@@ -292,18 +285,18 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
 
             cs_free(pInsn, nNumberOfOpcodes);
         } else {
-            if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
+            if (dmFamily == XBinary::DMFAMILY_ARM) {
                 result.sMnemonic = tr("Invalid opcode");
                 result.nSize = 4;
-            } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
+            } else if (dmFamily == XBinary::DMFAMILY_ARM) {
                 result.sMnemonic = tr("Invalid opcode");
                 result.nSize = 4;
-            } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_M68K) {
+            } else if (dmFamily == XBinary::DMFAMILY_M68K) {
                 result.sMnemonic = tr("Invalid opcode");
                 result.nSize = 2;
             } else {
                 result.sMnemonic = "db";
-                result.sString = getNumberString(disasmMode, *((uint8_t *)pData), syntax);
+                result.sString = getNumberString(disasmOptions.disasmMode, *((uint8_t *)pData), disasmOptions.syntax);
                 result.nSize = 1;
             }
         }
@@ -314,83 +307,6 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, XBinary::DM disasmMode
     if (disasmOptions.bIsUppercase) {
         result.sMnemonic = result.sMnemonic.toUpper();
         result.sString = result.sString.toUpper();
-    }
-
-    return result;
-}
-
-qint32 XCapstone::getDisasmLength(csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
-{
-    qint32 nResult = 0;
-
-    cs_insn *pInsn = nullptr;
-
-    size_t nNumberOfOpcodes = cs_disasm(handle, (uint8_t *)pData, nDataSize, nAddress, 1, &pInsn);
-
-    if (nNumberOfOpcodes > 0) {
-        nResult = pInsn->size;
-
-        cs_free(pInsn, nNumberOfOpcodes);
-    }
-
-    return nResult;
-}
-
-qint32 XCapstone::getDisasmLength(csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress)
-{
-    QByteArray baData = XBinary::read_array(pDevice, nOffset, N_OPCODE_SIZE);
-
-    return getDisasmLength(handle, nAddress, baData.data(), baData.size());
-}
-
-qint64 XCapstone::getNextAddress(XBinary::DMFAMILY dmFamily, csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
-{
-    qint64 nResult = -1;
-
-    cs_insn *pInsn = nullptr;
-
-    size_t nNumberOfOpcodes = cs_disasm(handle, (uint8_t *)pData, nDataSize, nAddress, 1, &pInsn);
-
-    if (nNumberOfOpcodes > 0) {
-        nResult = nAddress + pInsn->size;
-
-        if (isBranchOpcode(dmFamily, pInsn->id)) {
-            // TODO other archs !!! ARM/ARM64
-            if (dmFamily == XBinary::DMFAMILY_X86) {
-                for (qint32 i = 0; i < pInsn->detail->x86.op_count; i++) {
-                    if (pInsn->detail->x86.operands[i].type == X86_OP_IMM) {
-                        nResult = pInsn->detail->x86.operands[i].imm;
-                    }
-                }
-            }
-        }
-
-        cs_free(pInsn, nNumberOfOpcodes);
-    }
-
-    return nResult;
-}
-
-qint64 XCapstone::getNextAddress(XBinary::DMFAMILY dmFamily, csh handle, QIODevice *pDevice, qint64 nOffset, XADDR nAddress)
-{
-    QByteArray baData = XBinary::read_array(pDevice, nOffset, N_OPCODE_SIZE);
-
-    return getNextAddress(dmFamily, handle, nAddress, baData.data(), baData.size());
-}
-
-XCapstone::OPCODE_ID XCapstone::getOpcodeID(csh handle, XADDR nAddress, char *pData, qint32 nDataSize)
-{
-    OPCODE_ID result = {};
-
-    cs_insn *pInsn = nullptr;
-
-    size_t nNumberOfOpcodes = cs_disasm(handle, (uint8_t *)pData, nDataSize, nAddress, 1, &pInsn);
-
-    if (nNumberOfOpcodes > 0) {
-        result.nSize = pInsn->size;
-        result.nOpcodeID = pInsn->id;
-
-        cs_free(pInsn, nNumberOfOpcodes);
     }
 
     return result;
@@ -1131,6 +1047,10 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
     XBinary::DM disasmMode = XBinary::getDisasmMode(pMemoryMap);
     XBinary::DMFAMILY dmFamily = XBinary::getDisasmFamily(disasmMode);
 
+    XCapstone::DISASM_OPTIONS disasmOptions = {};
+    disasmOptions.disasmMode = disasmMode;
+    disasmOptions.syntax = XBinary::SYNTAX_DEFAULT;
+
     openHandle(disasmMode, &handle, true);
 
     if (handle) {
@@ -1143,84 +1063,59 @@ QString XCapstone::getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemor
 
             QByteArray baData = XBinary::read_array(pDevice, nOffset, 15);
 
-            cs_insn *pInsn = 0;
+            DISASM_RESULT _disasmResult = disasm_ex(handle, baData.data(), baData.size(), nAddress, disasmOptions);
 
-            size_t nNumberOfOpcodes = cs_disasm(handle, (uint8_t *)baData.data(), baData.size(), nAddress, 1, &pInsn);
-
-            if (nNumberOfOpcodes > 0) {
-                quint32 nDispOffset = 0;
-                quint32 nDispSize = 0;
-                quint32 nImmOffset = 0;
-                quint32 nImmSize = 0;
-
-                if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_X86) {
-                    nDispOffset = pInsn->detail->x86.encoding.disp_offset;
-                    nDispSize = pInsn->detail->x86.encoding.disp_size;
-                    nImmOffset = pInsn->detail->x86.encoding.imm_offset;
-                    nImmSize = pInsn->detail->x86.encoding.imm_size;
-                } else if (XBinary::getDisasmFamily(disasmMode) == XBinary::DMFAMILY_ARM) {
-                    // TODO
-                }
-
-                baData.resize(pInsn->size);
+            if (_disasmResult.bIsValid) {
+                baData.resize(_disasmResult.nSize);
 
                 QString sHEX = baData.toHex().data();
 
                 if ((signatureType == ST_FULL) || (signatureType == ST_MASK)) {
-                    nAddress += pInsn->size;
+                    nAddress += _disasmResult.nSize;
 
                     if (signatureType == ST_MASK) {
-                        if (nDispSize) {
-                            sHEX = replaceWildChar(sHEX, nDispOffset, nDispSize, '.');
+                        if (_disasmResult.nDispSize) {
+                            sHEX = replaceWildChar(sHEX, _disasmResult.nDispOffset, _disasmResult.nDispSize, '.');
                         }
 
-                        if (nImmSize) {
-                            sHEX = replaceWildChar(sHEX, nImmOffset, nImmSize, '.');
+                        if (_disasmResult.nImmSize) {
+                            sHEX = replaceWildChar(sHEX, _disasmResult.nImmOffset, _disasmResult.nImmSize, '.');
                         }
                     }
-                } else if (signatureType == ST_MASKREL) {
+                } else if (signatureType == ST_REL) {
                     bool bIsJump = false;
 
-                    if (isBranchOpcode(dmFamily, pInsn->id)) {
+                    nAddress = _disasmResult.nNextAddress;
+
+                    if ((pMemoryMap->fileType == XBinary::FT_COM) && (_disasmResult.nImmSize == 2)) {
+                        if (nAddress > 0xFFFF) {
+                            nAddress &= 0xFFFF;
+                        }
+                    }
+
+                    if (isBranchOpcode(dmFamily, _disasmResult.nOpcode)) {
                         // TODO another archs !!!
                         if (dmFamily == XBinary::DMFAMILY_X86) {
-                            for (qint32 i = 0; i < pInsn->detail->x86.op_count; i++) {
-                                if (pInsn->detail->x86.operands[i].type == X86_OP_IMM)  // TODO another archs !!!
-                                {
-                                    nAddress = pInsn->detail->x86.operands[i].imm;
-
-                                    if ((pMemoryMap->fileType == XBinary::FT_COM) && (pInsn->detail->x86.encoding.imm_size == 2)) {
-                                        if (nAddress > 0xFFFF) {
-                                            nAddress &= 0xFFFF;
-                                        }
-                                    }
-
-                                    sHEX = replaceWildChar(sHEX, nImmOffset, nImmSize, '$');
-
-                                    bIsJump = true;
-                                }
+                            if (_disasmResult.nImmSize) {
+                                sHEX = replaceWildChar(sHEX, _disasmResult.nImmOffset, _disasmResult.nImmSize, '$');
                             }
-                        } else {
-                            nAddress += pInsn->size;
+
+                            bIsJump = true;
                         }
-                    } else {
-                        nAddress += pInsn->size;
                     }
 
                     if (!bIsJump) {
-                        if (nDispSize) {
-                            sHEX = replaceWildChar(sHEX, nDispOffset, nDispSize, '.');
+                        if (_disasmResult.nDispSize) {
+                            sHEX = replaceWildChar(sHEX, _disasmResult.nDispOffset, _disasmResult.nDispSize, '.');
                         }
 
-                        if (nImmSize) {
-                            sHEX = replaceWildChar(sHEX, nImmOffset, nImmSize, '.');
+                        if (_disasmResult.nImmSize) {
+                            sHEX = replaceWildChar(sHEX, _disasmResult.nImmOffset, _disasmResult.nImmSize, '.');
                         }
                     }
                 }
 
                 sResult += sHEX;
-
-                cs_free(pInsn, nNumberOfOpcodes);
             } else {
                 break;
             }
@@ -1269,100 +1164,69 @@ void XCapstone::printEnabledArchs()
 #endif
 }
 
-QList<XCapstone::SIGNATURE_RECORD> XCapstone::getSignatureRecords(csh g_handle, QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, qint64 nOffsetd, qint32 nCount,
-                                                                  qint32 nMetho)
+QList<XCapstone::SIGNATURE_RECORD> XCapstone::getSignatureRecords(csh handle, QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, qint64 nOffset, qint32 nCount,
+                                                                  ST signatureType)
 {
     QList<SIGNATURE_RECORD> listResult;
 
-    XBinary::DMFAMILY dmFamily = XBinary::getDisasmFamily(pMemoryMap);
+    XBinary::DM disasmMode = XBinary::getDisasmMode(pMemoryMap);
+
+    XCapstone::DISASM_OPTIONS disasmOptions = {};
+    disasmOptions.disasmMode = disasmMode;
+    disasmOptions.syntax = XBinary::SYNTAX_DEFAULT;
 
     bool bStopBranch = false;
 
     for (qint32 i = 0; (i < nCount) && (!bStopBranch); i++) {
-        if (nOffsetd != -1) {
-            char opcode[N_OPCODE_SIZE];
-            XBinary::_zeroMemory(opcode, N_OPCODE_SIZE);
+        if (nOffset != -1) {
+            XADDR nAddress = XBinary::offsetToAddress(pMemoryMap, nOffset);
 
-            size_t nDataSize = XBinary::read_array(pDevice, nOffsetd, opcode, N_OPCODE_SIZE);
+            QByteArray baData = XBinary::read_array(pDevice, nOffset, 15);
 
-            uint8_t *pData = (uint8_t *)opcode;
+            DISASM_RESULT _disasmResult = disasm_ex(handle, baData.data(), baData.size(), nAddress, disasmOptions);
 
-            XADDR nAddress = XBinary::offsetToAddress(pMemoryMap, nOffsetd);
-
-            cs_insn *pInsn = nullptr;
-            size_t count = cs_disasm(g_handle, pData, nDataSize, nAddress, 1, &pInsn);
-
-            if (count > 0) {
-                if (pInsn->size > 1) {
-                    bStopBranch = !XBinary::isOffsetValid(pMemoryMap, nOffsetd + pInsn->size - 1);
-                }
+            if (_disasmResult.bIsValid) {
+                bStopBranch = !XBinary::isOffsetValid(pMemoryMap, nOffset + _disasmResult.nSize - 1);
 
                 if (!bStopBranch) {
                     XCapstone::SIGNATURE_RECORD record = {};
 
                     record.nAddress = nAddress;
-                    record.sOpcode = pInsn->mnemonic;
-                    QString sArgs = pInsn->op_str;
+                    record.sOpcode = _disasmResult.sMnemonic;
 
-                    if (sArgs != "") {
-                        record.sOpcode += " " + sArgs;
+                    if (_disasmResult.sString != "") {
+                        record.sOpcode += " " + _disasmResult.sString;
                     }
 
-                    record.baOpcode = QByteArray(opcode, pInsn->size);
+                    baData.resize(_disasmResult.nSize);
 
-                    if (pInsn->detail) {
-                        // TODO Another archs !!!
-                        if (dmFamily == XBinary::DMFAMILY_X86) {
-                            record.nDispOffset = pInsn->detail->x86.encoding.disp_offset;
-                            record.nDispSize = pInsn->detail->x86.encoding.disp_size;
-                            record.nImmOffset = pInsn->detail->x86.encoding.imm_offset;
-                            record.nImmSize = pInsn->detail->x86.encoding.imm_size;
-                        } else if (dmFamily == XBinary::DMFAMILY_ARM) {
-                            // TODO !!!
-                        } else if (dmFamily == XBinary::DMFAMILY_ARM64) {
-                            // TODO !!!
-                        }
+                    record.baOpcode = baData;
 
-                        nAddress += pInsn->size;
+                    record.nDispOffset = _disasmResult.nDispOffset;
+                    record.nDispSize = _disasmResult.nDispSize;
+                    record.nImmOffset = _disasmResult.nImmOffset;
+                    record.nImmSize = _disasmResult.nImmSize;
 
-                        if (nMetho == 1) {
-                            qint32 nNumberOfGroups = pInsn->detail->groups_count;
+                    if ((signatureType == ST_FULL) || (signatureType == ST_MASK)) {
+                        nAddress += _disasmResult.nSize;
+                    } else if (signatureType == ST_REL) {
+                        nAddress = _disasmResult.nNextAddress;
+                        record.bIsConst = _disasmResult.bIsConst;
+                    }
 
-                            for (qint32 i = 0; i < nNumberOfGroups; i++) {
-                                if (pInsn->detail->groups[i] == CS_GRP_BRANCH_RELATIVE) {
-                                    if (dmFamily == XBinary::DMFAMILY_X86) {
-                                        for (qint32 i = 0; i < pInsn->detail->x86.op_count; i++) {
-                                            if (pInsn->detail->x86.operands[i].type == X86_OP_IMM) {
-                                                qint64 nImm = pInsn->detail->x86.operands[i].imm;
-
-                                                nAddress = nImm;
-
-                                                if ((pMemoryMap->fileType == XBinary::FT_COM) && (pInsn->detail->x86.encoding.imm_size == 2)) {
-                                                    if (nAddress > 0xFFFF) {
-                                                        nAddress &= 0xFFFF;
-                                                    }
-                                                }
-
-                                                record.bIsConst = true;
-                                            }
-                                        }
-                                    }
-
-                                    break;
-                                }
-                            }
+                    if ((pMemoryMap->fileType == XBinary::FT_COM) && (_disasmResult.nImmSize == 2)) {
+                        if (nAddress > 0xFFFF) {
+                            nAddress &= 0xFFFF;
                         }
                     }
 
                     listResult.append(record);
                 }
-
-                cs_free(pInsn, count);
-
-                nOffsetd = XBinary::addressToOffset(pMemoryMap, nAddress);
             } else {
                 bStopBranch = true;
             }
+
+            nOffset = XBinary::addressToOffset(pMemoryMap, nAddress);
         }
     }
 
