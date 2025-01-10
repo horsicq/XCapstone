@@ -122,7 +122,7 @@ cs_err XCapstone::closeHandle(csh *pHandle)
     cs_err result = CS_ERR_HANDLE;
 
     if (*pHandle) {
-        if ((*pHandle > XBinary::DM_CUSTOM) &&(*pHandle < XBinary::DM_ALL)) {
+        if ((*pHandle > XBinary::DM_CUSTOM) && (*pHandle < XBinary::DM_ALL)) {
             result = CS_ERR_OK;
         } else {
             result = cs_close(pHandle);
@@ -142,7 +142,7 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, QIODevice *pDevice, qi
 }
 
 XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, char *pData, qint32 nDataSize, XADDR nAddress, const DISASM_OPTIONS &disasmOptions)
-{    
+{
     DISASM_RESULT result = {};
 
     result.nAddress = nAddress;
@@ -251,13 +251,16 @@ XCapstone::DISASM_RESULT XCapstone::disasm_ex(csh handle, char *pData, qint32 nD
                             QString sNewString;
 
                             // TODO Check
-                            if ((disasmOptions.syntax == XBinary::SYNTAX_DEFAULT) || (disasmOptions.syntax == XBinary::SYNTAX_INTEL) || (disasmOptions.syntax == XBinary::SYNTAX_MASM)) {
+                            if ((disasmOptions.syntax == XBinary::SYNTAX_DEFAULT) || (disasmOptions.syntax == XBinary::SYNTAX_INTEL) ||
+                                (disasmOptions.syntax == XBinary::SYNTAX_MASM)) {
                                 if (result.sString.contains("rip + ")) {
-                                    sOldString = QString("rip + %1").arg(getNumberString(disasmOptions.disasmMode, pInsn->detail->x86.operands[i].mem.disp, disasmOptions.syntax));
+                                    sOldString =
+                                        QString("rip + %1").arg(getNumberString(disasmOptions.disasmMode, pInsn->detail->x86.operands[i].mem.disp, disasmOptions.syntax));
                                 }
                             } else if (disasmOptions.syntax == XBinary::SYNTAX_ATT) {
                                 if (result.sString.contains("(%rip)")) {
-                                    sOldString = QString("%1(%rip)").arg(getNumberString(disasmOptions.disasmMode, pInsn->detail->x86.operands[i].mem.disp, disasmOptions.syntax));
+                                    sOldString =
+                                        QString("%1(%rip)").arg(getNumberString(disasmOptions.disasmMode, pInsn->detail->x86.operands[i].mem.disp, disasmOptions.syntax));
                                 }
                             }
 

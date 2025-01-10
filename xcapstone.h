@@ -31,7 +31,6 @@ class XCapstone : public QObject {
     Q_OBJECT
 
 public:
-
     enum ST {
         ST_UNKNOWN = 0,
         ST_FULL,
@@ -68,7 +67,7 @@ public:
         XADDR nXrefToMemory;
         qint32 nMemorySize;
         XADDR nNextAddress;
-        bool bIsConst; // For signatures
+        bool bIsConst;  // For signatures
         quint32 nDispOffset = 0;
         quint32 nDispSize = 0;
         quint32 nImmOffset = 0;
@@ -143,7 +142,7 @@ public:
     static QList<OPERANDPART> getOperandParts(XBinary::DMFAMILY dmFamily, const QString &sString, XBinary::SYNTAX syntax);
     // TODO rep opcode
     static QString getSignature(QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, XADDR nAddress, ST signatureType, qint32 nCount);
-    static QString replaceWildChar(const QString &sString, qint32 nOffset, qint32 nSize, QChar cWild); // Move to XBinary
+    static QString replaceWildChar(const QString &sString, qint32 nOffset, qint32 nSize, QChar cWild);  // Move to XBinary
     static void printEnabledArchs();
 
     static QList<XCapstone::SIGNATURE_RECORD> getSignatureRecords(csh handle, QIODevice *pDevice, XBinary::_MEMORY_MAP *pMemoryMap, qint64 nOffset, qint32 nCount,
