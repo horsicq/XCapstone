@@ -34,22 +34,18 @@ bool XCapstone::isModeValid(XBinary::DM disasmMode)
 {
     bool bResult = false;
 
-    if ((disasmMode == XBinary::DM_X86_16) || (disasmMode == XBinary::DM_X86_32) || (disasmMode == XBinary::DM_X86_64) ||
-        (disasmMode == XBinary::DM_ARM_LE) || (disasmMode == XBinary::DM_ARM_BE) || (disasmMode == XBinary::DM_AARCH64_LE) ||
-        (disasmMode == XBinary::DM_AARCH64_BE) || (disasmMode == XBinary::DM_CORTEXM) || (disasmMode == XBinary::DM_THUMB_LE) ||
-        (disasmMode == XBinary::DM_THUMB_BE) || (disasmMode == XBinary::DM_MIPS_LE) || (disasmMode == XBinary::DM_MIPS_BE) ||
-        (disasmMode == XBinary::DM_MIPS64_LE) || (disasmMode == XBinary::DM_MIPS64_BE) || (disasmMode == XBinary::DM_PPC_LE) ||
-        (disasmMode == XBinary::DM_PPC_BE) || (disasmMode == XBinary::DM_PPC64_LE) || (disasmMode == XBinary::DM_PPC64_BE) ||
-        (disasmMode == XBinary::DM_SPARC) || (disasmMode == XBinary::DM_SPARCV9) || (disasmMode == XBinary::DM_S390X) ||
-        (disasmMode == XBinary::DM_XCORE) || (disasmMode == XBinary::DM_M68K) || (disasmMode == XBinary::DM_M68K00) ||
-        (disasmMode == XBinary::DM_M68K10) || (disasmMode == XBinary::DM_M68K20) || (disasmMode == XBinary::DM_M68K30) ||
-        (disasmMode == XBinary::DM_M68K40) || (disasmMode == XBinary::DM_M68K60) || (disasmMode == XBinary::DM_TMS320C64X) ||
-        (disasmMode == XBinary::DM_M6800) || (disasmMode == XBinary::DM_M6801) || (disasmMode == XBinary::DM_M6805) ||
-        (disasmMode == XBinary::DM_M6808) || (disasmMode == XBinary::DM_M6809) || (disasmMode == XBinary::DM_M6811) ||
-        (disasmMode == XBinary::DM_CPU12) || (disasmMode == XBinary::DM_HD6301) || (disasmMode == XBinary::DM_HD6309) ||
-        (disasmMode == XBinary::DM_HCS08) || (disasmMode == XBinary::DM_EVM) || (disasmMode == XBinary::DM_WASM) ||
-        (disasmMode == XBinary::DM_RISKV32) || (disasmMode == XBinary::DM_RISKV64) || (disasmMode == XBinary::DM_RISKVC) ||
-        (disasmMode == XBinary::DM_MOS65XX) || (disasmMode == XBinary::DM_BPF_LE) || (disasmMode == XBinary::DM_BPF_BE)) {
+    if ((disasmMode == XBinary::DM_X86_16) || (disasmMode == XBinary::DM_X86_32) || (disasmMode == XBinary::DM_X86_64) || (disasmMode == XBinary::DM_ARM_LE) ||
+        (disasmMode == XBinary::DM_ARM_BE) || (disasmMode == XBinary::DM_AARCH64_LE) || (disasmMode == XBinary::DM_AARCH64_BE) || (disasmMode == XBinary::DM_CORTEXM) ||
+        (disasmMode == XBinary::DM_THUMB_LE) || (disasmMode == XBinary::DM_THUMB_BE) || (disasmMode == XBinary::DM_MIPS_LE) || (disasmMode == XBinary::DM_MIPS_BE) ||
+        (disasmMode == XBinary::DM_MIPS64_LE) || (disasmMode == XBinary::DM_MIPS64_BE) || (disasmMode == XBinary::DM_PPC_LE) || (disasmMode == XBinary::DM_PPC_BE) ||
+        (disasmMode == XBinary::DM_PPC64_LE) || (disasmMode == XBinary::DM_PPC64_BE) || (disasmMode == XBinary::DM_SPARC) || (disasmMode == XBinary::DM_SPARCV9) ||
+        (disasmMode == XBinary::DM_S390X) || (disasmMode == XBinary::DM_XCORE) || (disasmMode == XBinary::DM_M68K) || (disasmMode == XBinary::DM_M68K00) ||
+        (disasmMode == XBinary::DM_M68K10) || (disasmMode == XBinary::DM_M68K20) || (disasmMode == XBinary::DM_M68K30) || (disasmMode == XBinary::DM_M68K40) ||
+        (disasmMode == XBinary::DM_M68K60) || (disasmMode == XBinary::DM_TMS320C64X) || (disasmMode == XBinary::DM_M6800) || (disasmMode == XBinary::DM_M6801) ||
+        (disasmMode == XBinary::DM_M6805) || (disasmMode == XBinary::DM_M6808) || (disasmMode == XBinary::DM_M6809) || (disasmMode == XBinary::DM_M6811) ||
+        (disasmMode == XBinary::DM_CPU12) || (disasmMode == XBinary::DM_HD6301) || (disasmMode == XBinary::DM_HD6309) || (disasmMode == XBinary::DM_HCS08) ||
+        (disasmMode == XBinary::DM_EVM) || (disasmMode == XBinary::DM_WASM) || (disasmMode == XBinary::DM_RISKV32) || (disasmMode == XBinary::DM_RISKV64) ||
+        (disasmMode == XBinary::DM_RISKVC) || (disasmMode == XBinary::DM_MOS65XX) || (disasmMode == XBinary::DM_BPF_LE) || (disasmMode == XBinary::DM_BPF_BE)) {
         bResult = true;
     }
 
