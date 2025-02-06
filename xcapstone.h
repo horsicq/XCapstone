@@ -39,36 +39,6 @@ public:
     static cs_err openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails, XBinary::SYNTAX syntax = XBinary::SYNTAX_DEFAULT);
     static cs_err closeHandle(csh *pHandle);
 
-    static bool isBranchOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);  // mb TODO rename
-    static bool isJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
-    static bool isJumpOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
-    static bool isRetOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
-    static bool isRetOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
-    static bool isCallOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
-    static bool isCallOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
-    static bool isCondJumpOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
-    static bool isCondJumpOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
-    static bool isNopOpcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
-    static bool isNopOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
-    static bool isInt3Opcode(XBinary::DMFAMILY dmFamily, quint32 nOpcodeID);
-    static bool isInt3Opcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
-    static bool isSyscallOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
-    static bool isPushOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
-    static bool isPopOpcode(XBinary::DMFAMILY dmFamily, const QString &sOpcode, XBinary::SYNTAX syntax);
-    static bool isGeneralRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax);
-    static bool isStackRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax);
-    static bool isSegmentRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax);
-    static bool isDebugRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax);
-    static bool isInstructionPointerRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax);
-    static bool isFlagsRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax);
-    static bool isFPURegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax);
-    static bool isXMMRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax);
-    static bool isRegister(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax);
-    static bool isRef(XBinary::DMFAMILY dmFamily, const QString &sOperand, XBinary::SYNTAX syntax);
-    static bool isNumber(XBinary::DMFAMILY dmFamily, const QString &sNumber, XBinary::SYNTAX syntax);
-
-    static QString removeRegPrefix(XBinary::DMFAMILY dmFamily, const QString &sRegister, XBinary::SYNTAX syntax);
-
     struct OPERANDPART {
         bool bIsMain;
         QString sString;
