@@ -39,13 +39,6 @@ public:
     static cs_err openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails, XBinary::SYNTAX syntax = XBinary::SYNTAX_DEFAULT);
     static cs_err closeHandle(csh *pHandle);
 
-    struct OPERANDPART {
-        bool bIsMain;
-        QString sString;
-    };
-
-    static void _addOperandPart(QList<OPERANDPART> *pListOperandParts, const QString &sString, bool bIsMain);
-    static QList<OPERANDPART> getOperandParts(XBinary::DMFAMILY dmFamily, const QString &sString, XBinary::SYNTAX syntax);
     // TODO rep opcode
     static void printEnabledArchs();
 

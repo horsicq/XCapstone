@@ -147,52 +147,6 @@ cs_err XCapstone::closeHandle(csh *pHandle)
     return result;
 }
 
-void XCapstone::_addOperandPart(QList<OPERANDPART> *pListOperandParts, const QString &sString, bool bIsMain)
-{
-    if (sString != "") {
-        OPERANDPART record = {};
-        record.sString = sString;
-        record.bIsMain = bIsMain;
-
-        pListOperandParts->append(record);
-    }
-}
-
-QList<XCapstone::OPERANDPART> XCapstone::getOperandParts(XBinary::DMFAMILY dmFamily, const QString &sString, XBinary::SYNTAX syntax)
-{
-    Q_UNUSED(dmFamily)
-    Q_UNUSED(syntax)
-
-    QList<XCapstone::OPERANDPART> listResult;
-
-    qint32 nNumberOfSymbols = sString.size();
-
-    QString sBuffer;
-
-    for (qint32 i = 0; i < nNumberOfSymbols; i++) {
-        QChar cChar = sString.at(i);
-
-        bool bNewPart = false;
-
-        if ((cChar == QChar(' ')) || (cChar == QChar(',')) || (cChar == QChar(':')) || (cChar == QChar('[')) || (cChar == QChar(']')) || (cChar == QChar('{')) ||
-            (cChar == QChar('}')) || (cChar == QChar('(')) || (cChar == QChar(')')) || (cChar == QChar('!'))) {
-            bNewPart = true;
-        }
-
-        if (bNewPart) {
-            _addOperandPart(&listResult, sBuffer, true);
-            _addOperandPart(&listResult, cChar, false);
-            sBuffer = "";
-        } else {
-            sBuffer += cChar;
-        }
-    }
-
-    _addOperandPart(&listResult, sBuffer, true);
-
-    return listResult;
-}
-
 void XCapstone::printEnabledArchs()
 {
 #ifdef QT_DEBUG
