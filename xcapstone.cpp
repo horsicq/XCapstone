@@ -103,7 +103,7 @@ cs_err XCapstone::openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails
     else if (disasmMode == XBinary::DM_RISKV32) result = cs_open(CS_ARCH_RISCV, cs_mode(CS_MODE_RISCV32), pHandle);
     else if (disasmMode == XBinary::DM_RISKV64) result = cs_open(CS_ARCH_RISCV, cs_mode(CS_MODE_RISCV64), pHandle);
     else if (disasmMode == XBinary::DM_RISKVC) result = cs_open(CS_ARCH_RISCV, cs_mode(CS_MODE_RISCVC), pHandle);
-    else if (disasmMode == XBinary::DM_MOS65XX) result = cs_open(CS_ARCH_M680X, cs_mode(CS_ARCH_MOS65XX), pHandle);
+    else if (disasmMode == XBinary::DM_MOS65XX) result = cs_open(CS_ARCH_MOS65XX, cs_mode(0), pHandle);
     else if (disasmMode == XBinary::DM_BPF_LE) result = cs_open(CS_ARCH_BPF, cs_mode(CS_MODE_BPF_CLASSIC | CS_MODE_LITTLE_ENDIAN), pHandle);
     else if (disasmMode == XBinary::DM_BPF_BE) result = cs_open(CS_ARCH_BPF, cs_mode(CS_MODE_BPF_CLASSIC | CS_MODE_BIG_ENDIAN), pHandle);
     // TODO Check more
@@ -151,21 +151,25 @@ void XCapstone::printEnabledArchs()
 {
 #ifdef QT_DEBUG
     // TODO Check more !!!
-    if (cs_support(CS_ARCH_ARM)) qDebug("CS_ARCH_ARM");
-    if (cs_support(CS_ARCH_ARM64)) qDebug("CS_ARCH_ARM64");
-    if (cs_support(CS_ARCH_MIPS)) qDebug("CS_ARCH_MIPS");
-    if (cs_support(CS_ARCH_X86)) qDebug("CS_ARCH_X86");
-    if (cs_support(CS_ARCH_PPC)) qDebug("CS_ARCH_PPC");
-    if (cs_support(CS_ARCH_SPARC)) qDebug("CS_ARCH_SPARC");
-    if (cs_support(CS_ARCH_SYSZ)) qDebug("CS_ARCH_SYSZ");
-    if (cs_support(CS_ARCH_XCORE)) qDebug("CS_ARCH_XCORE");
-    if (cs_support(CS_ARCH_M68K)) qDebug("CS_ARCH_M68K");
-    if (cs_support(CS_ARCH_TMS320C64X)) qDebug("CS_ARCH_TMS320C64X");
-    if (cs_support(CS_ARCH_M680X)) qDebug("CS_ARCH_M680X");
-    if (cs_support(CS_ARCH_EVM)) qDebug("CS_ARCH_EVM");
-    if (cs_support(CS_ARCH_MOS65XX)) qDebug("CS_ARCH_MOS65XX");
-    if (cs_support(CS_ARCH_WASM)) qDebug("CS_ARCH_WASM");
-    if (cs_support(CS_ARCH_BPF)) qDebug("CS_ARCH_BPF");
-    if (cs_support(CS_ARCH_RISCV)) qDebug("CS_ARCH_RISCV");
+    if (cs_support(CS_ARCH_ARM)) qDebug() << "CS_ARCH_ARM";
+    if (cs_support(CS_ARCH_ARM64)) qDebug() << "CS_ARCH_ARM64";
+    if (cs_support(CS_ARCH_MIPS)) qDebug() << "CS_ARCH_MIPS";
+    if (cs_support(CS_ARCH_X86)) qDebug() << "CS_ARCH_X86";
+    if (cs_support(CS_ARCH_PPC)) qDebug() << "CS_ARCH_PPC";
+    if (cs_support(CS_ARCH_SPARC)) qDebug() << "CS_ARCH_SPARC";
+    if (cs_support(CS_ARCH_SYSZ)) qDebug() << "CS_ARCH_SYSZ";
+    if (cs_support(CS_ARCH_XCORE)) qDebug() << "CS_ARCH_XCORE";
+    if (cs_support(CS_ARCH_M68K)) qDebug() << "CS_ARCH_M68K";
+    if (cs_support(CS_ARCH_TMS320C64X)) qDebug() << "CS_ARCH_TMS320C64X";
+    if (cs_support(CS_ARCH_M680X)) qDebug() << "CS_ARCH_M680X";
+    if (cs_support(CS_ARCH_EVM)) qDebug() << "CS_ARCH_EVM";
+    if (cs_support(CS_ARCH_MOS65XX)) qDebug() << "CS_ARCH_MOS65XX";
+    if (cs_support(CS_ARCH_WASM)) qDebug() << "CS_ARCH_WASM";
+    if (cs_support(CS_ARCH_BPF)) qDebug() << "CS_ARCH_BPF";
+    if (cs_support(CS_ARCH_RISCV)) qDebug() << "CS_ARCH_RISCV";
+
+    // Additional build flags
+    if (cs_support(CS_SUPPORT_DIET)) qDebug() << "CS_SUPPORT_DIET";
+    if (cs_support(CS_SUPPORT_X86_REDUCE)) qDebug() << "CS_SUPPORT_X86_REDUCE";
 #endif
 }
