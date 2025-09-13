@@ -39,7 +39,6 @@ public:
     static cs_err openHandle(XBinary::DM disasmMode, csh *pHandle, bool bDetails, XBinary::SYNTAX syntax = XBinary::SYNTAX_DEFAULT);
     static cs_err closeHandle(csh *pHandle);
 
-    // TODO rep opcode
     static void printEnabledArchs();
 
 private:
