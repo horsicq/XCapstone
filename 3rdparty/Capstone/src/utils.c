@@ -144,6 +144,10 @@ unsigned int binsearch_IndexTypeEncoding(const struct IndexType *index, size_t s
 	// binary searching since the index is sorted in encoding order
 	size_t left, right, m;
 
+	/* The unsigned return type reserves UINT_MAX for not found. */
+	if (size == 0 || size > (unsigned)-1)
+		return (unsigned)-1;
+
 	right = size - 1;
 
 	if (encoding < index[0].encoding || encoding > index[right].encoding)
@@ -155,7 +159,7 @@ unsigned int binsearch_IndexTypeEncoding(const struct IndexType *index, size_t s
 	while(left <= right) {
 		m = (left + right) / 2;
 		if (encoding == index[m].encoding) {
-			return m;
+			return (unsigned int)m; /* m < size <= UINT_MAX */
 		}
 
 		if (encoding < index[m].encoding)

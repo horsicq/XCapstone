@@ -1493,9 +1493,9 @@ static bool printAliasInstr(MCInst *MI, SStream * OS, void *info)
 {
   MCRegisterInfo *MRI = (MCRegisterInfo *) info;
   const char *AsmString;
-  unsigned I = 0;
+  size_t I = 0;
 #define ASMSTRING_CONTAIN_SIZE 64
-  unsigned AsmStringLen = 0;
+  size_t AsmStringLen = 0;
   char tmpString_[ASMSTRING_CONTAIN_SIZE];
   char *tmpString = tmpString_;
   switch (MCInst_getOpcode(MI)) {

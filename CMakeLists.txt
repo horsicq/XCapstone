@@ -120,3 +120,16 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
+
+# Vendored upstream sources are kept byte-identical to their release, so the
+# conversion/sign-compare diagnostics they emit are not ours to fix in-tree.
+# Silence them for this target only; first-party code keeps the project level.
+# The default /W3 has to be stripped from this directory's flags first, or cl
+# reports D9025 for every file it is overridden on.
+if(MSVC)
+  string(REGEX REPLACE "[-/]W[0-4]" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+  string(REGEX REPLACE "[-/]W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  target_compile_options(capstone PRIVATE /W0)
+else()
+  target_compile_options(capstone PRIVATE -w)
+endif()

@@ -294,7 +294,7 @@ static DecodeStatus decodeFRMArg(MCInst *Inst, uint64_t Imm,
                                  const void *Decoder) 
 {
   	//CS_ASSERT(isUInt<3>(Imm) && "Invalid immediate");
-  	if (!RISCVFPRndMode_isValidRoundingMode(Imm))
+  	if (Imm > 7 || !RISCVFPRndMode_isValidRoundingMode((unsigned)Imm))
     		return MCDisassembler_Fail;
 
   	//Inst.addOperand(MCOperand::createImm(Imm));

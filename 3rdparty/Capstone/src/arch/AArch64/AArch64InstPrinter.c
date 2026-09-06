@@ -65,7 +65,7 @@ static cs_ac_type get_op_access(cs_struct *h, unsigned int id, unsigned int inde
 #endif
 }
 
-static void op_addImm(MCInst *MI, int v)
+static void op_addImm(MCInst *MI, int64_t v)
 {
 	if (MI->csh->detail) {
 		MI->flat_insn->detail->arm64.operands[MI->flat_insn->detail->arm64.op_count].type = ARM64_OP_IMM;
@@ -520,7 +520,8 @@ void AArch64_printInst(MCInst *MI, SStream *O, void *Info)
 	if ((Opcode == AArch64_MOVZXi || Opcode == AArch64_MOVZWi) &&
 			MCOperand_isImm(MCInst_getOperand(MI, 1)) && MCOperand_isImm(MCInst_getOperand(MI, 2))) {
 		int RegWidth = Opcode == AArch64_MOVZXi ? 64 : 32;
-		int Shift = MCOperand_getImm(MCInst_getOperand(MI, 2));
+		// DecodeMoveImmInstruction emits a two-bit field multiplied by 16.
+		int Shift = (int)MCOperand_getImm(MCInst_getOperand(MI, 2));
 		uint64_t Value = (uint64_t)MCOperand_getImm(MCInst_getOperand(MI, 1)) << Shift;
 
 		if (isMOVZMovAlias(Value, Shift,
@@ -554,7 +555,8 @@ void AArch64_printInst(MCInst *MI, SStream *O, void *Info)
 	if ((Opcode == AArch64_MOVNXi || Opcode == AArch64_MOVNWi) &&
 			MCOperand_isImm(MCInst_getOperand(MI, 1)) && MCOperand_isImm(MCInst_getOperand(MI, 2))) {
 		int RegWidth = Opcode == AArch64_MOVNXi ? 64 : 32;
-		int Shift = MCOperand_getImm(MCInst_getOperand(MI, 2));
+		// DecodeMoveImmInstruction emits a two-bit field multiplied by 16.
+		int Shift = (int)MCOperand_getImm(MCInst_getOperand(MI, 2));
 		uint64_t Value = ~((uint64_t)MCOperand_getImm(MCInst_getOperand(MI, 1)) << Shift);
 
 		if (RegWidth == 32)
@@ -1462,19 +1464,20 @@ static void printPrefetchOp(MCInst *MI, unsigned OpNum, SStream *O, bool IsSVEPr
 static void printPSBHintOp(MCInst *MI, unsigned OpNum, SStream *O)
 {
 	MCOperand *Op = MCInst_getOperand(MI, OpNum);
-	unsigned int psbhintop = MCOperand_getImm(Op);
+	int64_t psbhintop = MCOperand_getImm(Op);
 
-	const PSB *PSB = AArch64PSBHint_lookupPSBByEncoding(psbhintop);
+	const PSB *PSB = psbhintop >= 0 && psbhintop <= UINT16_MAX
+		? AArch64PSBHint_lookupPSBByEncoding((uint16_t)psbhintop) : NULL;
 	if (PSB)
 		SStream_concat0(O, PSB->Name);
 	else
-		printUInt32Bang(O, psbhintop);
+		printInt64Bang(O, psbhintop);
 }
 
 static void printFPImmOperand(MCInst *MI, unsigned OpNum, SStream *O)
 {
 	MCOperand *MO = MCInst_getOperand(MI, OpNum);
-	float FPImm = MCOperand_isFPImm(MO) ? MCOperand_getFPImm(MO) : AArch64_AM_getFPImmFloat((int)MCOperand_getImm(MO));
+	double FPImm = MCOperand_isFPImm(MO) ? MCOperand_getFPImm(MO) : AArch64_AM_getFPImmFloat((int)MCOperand_getImm(MO));
 
 	// 8 decimal places are enough to perfectly represent permitted floats.
 #if defined(_KERNEL_MODE)
@@ -2021,20 +2024,21 @@ static void printSIMDType10Operand(MCInst *MI, unsigned OpNum, SStream *O)
 
 static void printComplexRotationOp(MCInst *MI, unsigned OpNum, SStream *O, int64_t Angle, int64_t Remainder)
 {
-	unsigned int Val = MCOperand_getImm(MCInst_getOperand(MI, OpNum));
+	int64_t Val = MCOperand_getImm(MCInst_getOperand(MI, OpNum));
 	printInt64Bang(O, (Val * Angle) + Remainder);
 	op_addImm(MI, (Val * Angle) + Remainder);
 }
 
 static void printSVEPattern(MCInst *MI, unsigned OpNum, SStream *O)
 {
-	unsigned Val = MCOperand_getImm(MCInst_getOperand(MI, OpNum));
+	int64_t Val = MCOperand_getImm(MCInst_getOperand(MI, OpNum));
 
-	const SVEPREDPAT *Pat = lookupSVEPREDPATByEncoding(Val);
+	const SVEPREDPAT *Pat = Val >= 0 && Val <= UINT16_MAX
+		? lookupSVEPREDPATByEncoding((uint16_t)Val) : NULL;
 	if (Pat)
 		SStream_concat0(O, Pat->Name);
 	else
-		printUInt32Bang(O, Val);
+		printInt64Bang(O, Val);
 }
 
 // default suffix = 0
@@ -2070,9 +2074,12 @@ static void printSVERegOp(MCInst *MI, unsigned OpNum, SStream *O, char suffix)
 		SStream_concat(O, ".%c", suffix);
 }
 
-static void printImmSVE16(int16_t Val, SStream *O)
+static void printImmSVE16(uint64_t Val, SStream *O)
 {
-	printUInt32Bang(O, Val);
+	// Replicated logical immediates print their signed low 16-bit lane.
+	// Preserve its previous sign extension into the unsigned formatter.
+	uint32_t Lane = (uint32_t)(Val & UINT64_C(0xffff));
+	printUInt32Bang(O, (uint32_t)SignExtend32(Lane, 16));
 }
 
 static void printImmSVE32(int32_t Val, SStream *O)
@@ -2087,8 +2094,9 @@ static void printImmSVE64(int64_t Val, SStream *O)
 
 static void printImm8OptLsl32(MCInst *MI, unsigned OpNum, SStream *O)
 {
-	unsigned UnscaledVal = MCOperand_getImm(MCInst_getOperand(MI, OpNum));
-	unsigned Shift = MCOperand_getImm(MCInst_getOperand(MI, OpNum + 1));
+	// DecodeImm8OptLsl emits an 8-bit value and a shift of 0 or 8.
+	unsigned UnscaledVal = (unsigned)MCOperand_getImm(MCInst_getOperand(MI, OpNum));
+	unsigned Shift = (unsigned)MCOperand_getImm(MCInst_getOperand(MI, OpNum + 1));
 	uint32_t Val;
 
 	// assert(AArch64_AM::getShiftType(Shift) == AArch64_AM::LSL &&
@@ -2107,8 +2115,9 @@ static void printImm8OptLsl32(MCInst *MI, unsigned OpNum, SStream *O)
 
 static void printImm8OptLsl64(MCInst *MI, unsigned OpNum, SStream *O)
 {
-	unsigned UnscaledVal = MCOperand_getImm(MCInst_getOperand(MI, OpNum));
-	unsigned Shift = MCOperand_getImm(MCInst_getOperand(MI, OpNum + 1));
+	// DecodeImm8OptLsl emits an 8-bit value and a shift of 0 or 8.
+	unsigned UnscaledVal = (unsigned)MCOperand_getImm(MCInst_getOperand(MI, OpNum));
+	unsigned Shift = (unsigned)MCOperand_getImm(MCInst_getOperand(MI, OpNum + 1));
 	uint64_t Val;
 
 	// assert(AArch64_AM::getShiftType(Shift) == AArch64_AM::LSL &&
@@ -2176,9 +2185,9 @@ static void printExactFPImm(MCInst *MI, unsigned OpNum, SStream *O, unsigned Imm
 {
 	const ExactFPImm *Imm0Desc = lookupExactFPImmByEnum(ImmIs0);
 	const ExactFPImm *Imm1Desc = lookupExactFPImmByEnum(ImmIs1);
-	unsigned Val = MCOperand_getImm(MCInst_getOperand(MI, OpNum));
+	bool IsNonZero = MCOperand_getImm(MCInst_getOperand(MI, OpNum)) != 0;
 
-	SStream_concat0(O, Val ? Imm1Desc->Repr : Imm0Desc->Repr);
+	SStream_concat0(O, IsNonZero ? Imm1Desc->Repr : Imm0Desc->Repr);
 }
 
 static void printGPR64as32(MCInst *MI, unsigned OpNum, SStream *O)

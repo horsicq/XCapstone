@@ -405,7 +405,10 @@ static void printCSRSystemRegister(MCInst *MI, unsigned OpNo,
                                    //const MCSubtargetInfo &STI,
                                    SStream *O) 
 {
-	unsigned Imm = MCOperand_getImm(MCInst_getOperand(MI, OpNo));
+	int64_t RawImm = MCOperand_getImm(MCInst_getOperand(MI, OpNo));
+	/* CSR operands are decoded by decodeUImmOperand with N == 12. */
+	CS_ASSERT(RawImm >= 0 && RawImm <= 0xfff);
+	unsigned Imm = (unsigned)RawImm;
 	const char *Name = getCSRSystemRegisterName(Imm);
 
 	if (Name) {
@@ -417,8 +420,8 @@ static void printCSRSystemRegister(MCInst *MI, unsigned OpNo,
 
 static void printFenceArg(MCInst *MI, unsigned OpNo, SStream *O) 
 {
-  	unsigned FenceArg = MCOperand_getImm(MCInst_getOperand(MI, OpNo));
-  	//CS_ASSERT (((FenceArg >> 4) == 0) && "Invalid immediate in printFenceArg");
+  	int64_t FenceArg = MCOperand_getImm(MCInst_getOperand(MI, OpNo));
+  	CS_ASSERT(FenceArg >= 0 && FenceArg <= 0xf);
 
   	if ((FenceArg & RISCVFenceField_I) != 0)
     		SStream_concat0(O, "i");

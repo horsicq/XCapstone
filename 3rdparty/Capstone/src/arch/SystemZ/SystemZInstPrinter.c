@@ -377,7 +377,7 @@ static void printBDRAddrOperand(MCInst *MI, int OpNum, SStream *O)
 {
 	unsigned Base = MCOperand_getReg(MCInst_getOperand(MI, OpNum));
 	uint64_t Disp = (uint64_t)MCOperand_getImm(MCInst_getOperand(MI, OpNum + 1));
-	uint64_t Length = MCOperand_getReg(MCInst_getOperand(MI, OpNum + 2));
+	unsigned Length = MCOperand_getReg(MCInst_getOperand(MI, OpNum + 2));
 
 	if (Disp > HEX_THRESHOLD)
 		SStream_concat(O, "0x%"PRIx64, Disp);

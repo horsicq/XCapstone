@@ -20,6 +20,7 @@
 
 #include <stdio.h>	// DEBUG
 #include <stdlib.h>
+#include <limits.h>
 
 #include "../../cs_priv.h"
 #include "../../utils.h"
@@ -1931,12 +1932,15 @@ static DecodeStatus DecodeSVELogicalImmInstruction(MCInst *Inst, uint32_t insn,
 static DecodeStatus DecodeSImm(MCInst *Inst, uint64_t Imm, uint64_t Address,
 		const void *Decoder, int Bits)
 {
-	if (Imm & ~((1LL << Bits) - 1))
+	// Generated callers use 4..10 bits; keep all mask shifts in range.
+	if (Bits <= 0 || Bits >= 64)
+		return Fail;
+	if (Imm & ~((UINT64_C(1) << Bits) - 1))
 		return Fail;
 
-	// Imm is a signed immediate, so sign extend it.
-	if (Imm & (1 << (Bits - 1)))
-		Imm |= ~((1LL << Bits) - 1);
+	// Imm is a signed immediate, so sign extend it in its 64-bit domain.
+	if (Imm & (UINT64_C(1) << (Bits - 1)))
+		Imm |= ~((UINT64_C(1) << Bits) - 1);
 
 	MCOperand_CreateImm0(Inst, Imm);
 

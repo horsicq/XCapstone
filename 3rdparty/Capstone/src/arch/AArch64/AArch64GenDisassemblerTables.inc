@@ -22436,9 +22436,10 @@ static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI, \
 		InsnType insn, uint64_t Address) \
 { \
   unsigned Start, Len, NumToSkip, PIdx, Opc, DecodeIdx; \
-  InsnType Val, FieldValue, PositiveMask, NegativeMask; \
+  uint64_t Val, FieldValue, TableValue; \
+  InsnType PositiveMask, NegativeMask; \
   bool Pred, Fail, DecodeComplete = true; \
-  uint32_t ExpectedValue; \
+  uint64_t ExpectedValue; \
   const uint8_t *Ptr = DecodeTable; \
   uint32_t CurFieldValue = 0; \
   DecodeStatus S = MCDisassembler_Success; \
@@ -22484,7 +22485,9 @@ static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI, \
     } \
     case MCD_OPC_CheckPredicate: { \
       /* Decode the Predicate Index value. */ \
-      PIdx = decodeULEB128(++Ptr, &Len); \
+      TableValue = decodeULEB128(++Ptr, &Len); \
+      if (TableValue > UINT_MAX) return MCDisassembler_Fail; \
+      PIdx = (unsigned)TableValue; \
       Ptr += Len; \
       /* NumToSkip is a plain 24-bit integer. */ \
       NumToSkip = *Ptr++; \
@@ -22498,9 +22501,13 @@ static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI, \
     } \
     case MCD_OPC_Decode: { \
       /* Decode the Opcode value. */ \
-      Opc = decodeULEB128(++Ptr, &Len); \
+      TableValue = decodeULEB128(++Ptr, &Len); \
+      if (TableValue > UINT_MAX) return MCDisassembler_Fail; \
+      Opc = (unsigned)TableValue; \
       Ptr += Len; \
-      DecodeIdx = decodeULEB128(Ptr, &Len); \
+      TableValue = decodeULEB128(Ptr, &Len); \
+      if (TableValue > UINT_MAX) return MCDisassembler_Fail; \
+      DecodeIdx = (unsigned)TableValue; \
       Ptr += Len; \
       MCInst_clear(MI); \
       MCInst_setOpcode(MI, Opc); \
@@ -22510,9 +22517,13 @@ static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI, \
     } \
     case MCD_OPC_TryDecode: { \
       /* Decode the Opcode value. */ \
-      Opc = decodeULEB128(++Ptr, &Len); \
+      TableValue = decodeULEB128(++Ptr, &Len); \
+      if (TableValue > UINT_MAX) return MCDisassembler_Fail; \
+      Opc = (unsigned)TableValue; \
       Ptr += Len; \
-      DecodeIdx = decodeULEB128(Ptr, &Len); \
+      TableValue = decodeULEB128(Ptr, &Len); \
+      if (TableValue > UINT_MAX) return MCDisassembler_Fail; \
+      DecodeIdx = (unsigned)TableValue; \
       Ptr += Len; \
       /* NumToSkip is a plain 24-bit integer. */ \
       NumToSkip = *Ptr++; \
@@ -22536,9 +22547,13 @@ static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI, \
     } \
     case MCD_OPC_SoftFail: { \
       /* Decode the mask values. */ \
-      PositiveMask = decodeULEB128(++Ptr, &Len); \
+      TableValue = decodeULEB128(++Ptr, &Len); \
+      if (TableValue > UINT32_MAX) return MCDisassembler_Fail; \
+      PositiveMask = (InsnType)TableValue; \
       Ptr += Len; \
-      NegativeMask = decodeULEB128(Ptr, &Len); \
+      TableValue = decodeULEB128(Ptr, &Len); \
+      if (TableValue > UINT32_MAX) return MCDisassembler_Fail; \
+      NegativeMask = (InsnType)TableValue; \
       Ptr += Len; \
       Fail = (insn & PositiveMask) || (~insn & NegativeMask); \
       if (Fail) \

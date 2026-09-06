@@ -40,3 +40,16 @@ add_library(capstone_x86 STATIC
 
 set_target_properties(capstone_x86 PROPERTIES LINKER_LANGUAGE C)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+# Vendored upstream sources are kept byte-identical to their release, so the
+# conversion/sign-compare diagnostics they emit are not ours to fix in-tree.
+# Silence them for this target only; first-party code keeps the project level.
+# The default /W3 has to be stripped from this directory's flags first, or cl
+# reports D9025 for every file it is overridden on.
+if(MSVC)
+  string(REGEX REPLACE "[-/]W[0-4]" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+  string(REGEX REPLACE "[-/]W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  target_compile_options(capstone_x86 PRIVATE /W0)
+else()
+  target_compile_options(capstone_x86 PRIVATE -w)
+endif()

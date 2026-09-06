@@ -24284,7 +24284,10 @@ static bool AArch64InstPrinterValidateMCOperand(MCOperand *MCOp,
     // "psb" is an alias to "hint" only for certain values of CRm:Op2 fields.
     if (!MCOperand_isImm(MCOp))
       return false;
-    return AArch64PSBHint_lookupPSBByEncoding(MCOperand_getImm(MCOp)) != NULL;
+    Val = MCOperand_getImm(MCOp);
+    if (Val < 0 || Val > UINT16_MAX)
+      return false;
+    return AArch64PSBHint_lookupPSBByEncoding((uint16_t)Val) != NULL;
 
     }
   }

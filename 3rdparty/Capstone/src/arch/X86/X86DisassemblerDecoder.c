@@ -1421,7 +1421,10 @@ static int readDisplacement(struct InternalInstruction* insn)
 		return 0;
 
 	insn->consumedDisplacement = true;
-	insn->displacementOffset = insn->readerCursor - insn->startLocation;
+	/* An x86 instruction occupies at most 15 bytes. */
+	if (insn->readerCursor - insn->startLocation > 15)
+		return -1;
+	insn->displacementOffset = (uint8_t)(insn->readerCursor - insn->startLocation);
 
 	switch (insn->eaDisplacement) {
 		case EA_DISP_NONE:
@@ -1822,7 +1825,10 @@ static int readImmediate(struct InternalInstruction* insn, uint8_t size)
 	else
 		insn->immediateSize = size;
 
-	insn->immediateOffset = insn->readerCursor - insn->startLocation;
+	/* Preserve the architectural length bound before narrowing metadata. */
+	if (insn->readerCursor - insn->startLocation > 15)
+		return -1;
+	insn->immediateOffset = (uint8_t)(insn->readerCursor - insn->startLocation);
 
 	switch (size) {
 		case 1:
@@ -1971,7 +1977,7 @@ static int readOperands(struct InternalInstruction* insn)
 
 				// Apply the AVX512 compressed displacement scaling factor.
 				if (op->encoding != ENCODING_REG && insn->eaDisplacement == EA_DISP_8)
-					insn->displacement *= 1 << (op->encoding - ENCODING_VSIB);
+					insn->displacement *= INT64_C(1) << (op->encoding - ENCODING_VSIB);
 				break;
 
 			case ENCODING_REG:
@@ -1984,7 +1990,7 @@ static int readOperands(struct InternalInstruction* insn)
 
 				// Apply the AVX512 compressed displacement scaling factor.
 				if (op->encoding != ENCODING_REG && insn->eaDisplacement == EA_DISP_8)
-					insn->displacement *= 1 << (op->encoding - ENCODING_RM);
+					insn->displacement *= INT64_C(1) << (op->encoding - ENCODING_RM);
 				break;
 
 			case ENCODING_IB:

@@ -169,7 +169,8 @@ static void printOperand(MCInst *MI, unsigned OpNo, SStream *O)
 
 		if (MI->csh->detail) {
 			MI->flat_insn->detail->tms320c64x.operands[MI->flat_insn->detail->tms320c64x.op_count].type = TMS320C64X_OP_IMM;
-			MI->flat_insn->detail->tms320c64x.operands[MI->flat_insn->detail->tms320c64x.op_count].imm = Imm;
+			/* Preserve the public signed 32-bit operand and architectural address wrap. */
+			MI->flat_insn->detail->tms320c64x.operands[MI->flat_insn->detail->tms320c64x.op_count].imm = SignExtend32((uint32_t)Imm, 32);
 			MI->flat_insn->detail->tms320c64x.op_count++;
 		}
 	}

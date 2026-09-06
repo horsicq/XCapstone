@@ -1674,7 +1674,7 @@ static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI,\
     }\
     case MCD_OPC_FilterValue: {\
       unsigned Len;\
-      InsnType Val = decodeULEB128(++Ptr, &Len);\
+      uint64_t Val = decodeULEB128(++Ptr, &Len);\
       Ptr += Len;\
       unsigned NumToSkip = *Ptr++;\
       NumToSkip |= (*Ptr++) << 8;\
@@ -1688,7 +1688,7 @@ static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI,\
       unsigned Start = *++Ptr;\
       unsigned Len = *++Ptr;\
       InsnType FieldValue = fieldname(insn, Start, Len);\
-      uint32_t ExpectedValue = decodeULEB128(++Ptr, &Len);\
+      uint64_t ExpectedValue = decodeULEB128(++Ptr, &Len);\
       Ptr += Len;\
       unsigned NumToSkip = *Ptr++;\
       NumToSkip |= (*Ptr++) << 8;\
@@ -1700,46 +1700,49 @@ static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI,\
     }\
     case MCD_OPC_CheckPredicate: {\
       unsigned Len;\
-      unsigned PIdx = decodeULEB128(++Ptr, &Len);\
+      uint64_t PIdx = decodeULEB128(++Ptr, &Len);\
       Ptr += Len;\
       unsigned NumToSkip = *Ptr++;\
       NumToSkip |= (*Ptr++) << 8;\
       NumToSkip |= (*Ptr++) << 16;\
       bool Pred;\
-      if (!(Pred = checkDecoderPredicate(PIdx, Bits)))\
+      if (PIdx > (unsigned)-1) return MCDisassembler_Fail;\
+      if (!(Pred = checkDecoderPredicate((unsigned)PIdx, Bits)))\
         Ptr += NumToSkip;\
       (void)Pred;\
       break;\
     }\
     case MCD_OPC_Decode: {\
       unsigned Len;\
-      unsigned Opc = decodeULEB128(++Ptr, &Len);\
+      uint64_t Opc = decodeULEB128(++Ptr, &Len);\
       Ptr += Len;\
-      unsigned DecodeIdx = decodeULEB128(Ptr, &Len);\
+      uint64_t DecodeIdx = decodeULEB128(Ptr, &Len);\
       Ptr += Len;\
 \
       MCInst_clear(MI);\
-      MCInst_setOpcode(MI, Opc);\
+      if (Opc > (unsigned)-1 || DecodeIdx > (unsigned)-1) return MCDisassembler_Fail;\
+      MCInst_setOpcode(MI, (unsigned)Opc);\
       bool DecodeComplete;\
-      S = decoder(S, DecodeIdx, insn, MI, Address, DisAsm, &DecodeComplete);\
+      S = decoder(S, (unsigned)DecodeIdx, insn, MI, Address, DisAsm, &DecodeComplete);\
       CS_ASSERT(DecodeComplete);\
 \
       return S;\
     }\
     case MCD_OPC_TryDecode: {\
       unsigned Len;\
-      unsigned Opc = decodeULEB128(++Ptr, &Len);\
+      uint64_t Opc = decodeULEB128(++Ptr, &Len);\
       Ptr += Len;\
-      unsigned DecodeIdx = decodeULEB128(Ptr, &Len);\
+      uint64_t DecodeIdx = decodeULEB128(Ptr, &Len);\
       Ptr += Len;\
       unsigned NumToSkip = *Ptr++;\
       NumToSkip |= (*Ptr++) << 8;\
       NumToSkip |= (*Ptr++) << 16;\
 \
       MCInst TmpMI;\
-      MCInst_setOpcode(&TmpMI, Opc);\
+      if (Opc > (unsigned)-1 || DecodeIdx > (unsigned)-1) return MCDisassembler_Fail;\
+      MCInst_setOpcode(&TmpMI, (unsigned)Opc);\
       bool DecodeComplete;\
-      S = decoder(S, DecodeIdx, insn, &TmpMI, Address, DisAsm, &DecodeComplete);\
+      S = decoder(S, (unsigned)DecodeIdx, insn, &TmpMI, Address, DisAsm, &DecodeComplete);\
 \
       if (DecodeComplete) {\
         *MI = TmpMI;\
@@ -1753,11 +1756,11 @@ static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI,\
     }\
     case MCD_OPC_SoftFail: {\
       unsigned Len;\
-      InsnType PositiveMask = decodeULEB128(++Ptr, &Len);\
+      uint64_t PositiveMask = decodeULEB128(++Ptr, &Len);\
       Ptr += Len;\
-      InsnType NegativeMask = decodeULEB128(Ptr, &Len);\
+      uint64_t NegativeMask = decodeULEB128(Ptr, &Len);\
       Ptr += Len;\
-      bool Fail = (insn & PositiveMask) || (~insn & NegativeMask);\
+      bool Fail = (insn & PositiveMask) || (~(uint64_t)insn & NegativeMask);\
       if (Fail)\
         S = MCDisassembler_SoftFail;\
       break;\

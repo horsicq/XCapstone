@@ -6562,10 +6562,13 @@ static DecodeStatus fname(DecodeStatus S, unsigned Idx, InsnType insn, MCInst *M
 static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI, \
 		InsnType insn, uint64_t Address) \
 { \
-  unsigned Start, Len, NumToSkip, PIdx, Opc, DecodeIdx; \
-  InsnType Val, FieldValue, PositiveMask, NegativeMask; \
+  unsigned Start, Len, NumToSkip; \
+  /* Keep ULEB values wide until the unsigned decoder interface. */ \
+  uint64_t PIdx, Opc, DecodeIdx; \
+  InsnType FieldValue; \
+  uint64_t Val, PositiveMask, NegativeMask; \
   bool Pred, Fail, DecodeComplete = true; \
-  uint32_t ExpectedValue; \
+  uint64_t ExpectedValue; \
   const uint8_t *Ptr = DecodeTable; \
   uint32_t CurFieldValue = 0; \
   DecodeStatus S = MCDisassembler_Success; \
@@ -6618,7 +6621,8 @@ static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI, \
       NumToSkip |= (*Ptr++) << 8; \
       NumToSkip |= (*Ptr++) << 16; \
       /* Check the predicate. */ \
-      if (!(Pred = checkDecoderPredicate(PIdx, MI))) \
+      if (PIdx > (unsigned)-1) return MCDisassembler_Fail; \
+      if (!(Pred = checkDecoderPredicate((unsigned)PIdx, MI))) \
         Ptr += NumToSkip; \
       (void)Pred; \
       break; \
@@ -6630,8 +6634,9 @@ static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI, \
       DecodeIdx = decodeULEB128(Ptr, &Len); \
       Ptr += Len; \
       MCInst_clear(MI); \
-      MCInst_setOpcode(MI, Opc); \
-      S = decoder(S, DecodeIdx, insn, MI, Address, &DecodeComplete); \
+      if (Opc > (unsigned)-1 || DecodeIdx > (unsigned)-1) return MCDisassembler_Fail; \
+      MCInst_setOpcode(MI, (unsigned)Opc); \
+      S = decoder(S, (unsigned)DecodeIdx, insn, MI, Address, &DecodeComplete); \
       /* assert(DecodeComplete); */ \
       return S; \
     } \
@@ -6646,8 +6651,9 @@ static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI, \
       NumToSkip |= (*Ptr++) << 8; \
       NumToSkip |= (*Ptr++) << 16; \
       /* Perform the decode operation. */ \
-      MCInst_setOpcode(MI, Opc); \
-      S = decoder(S, DecodeIdx, insn, MI, Address, &DecodeComplete); \
+      if (Opc > (unsigned)-1 || DecodeIdx > (unsigned)-1) return MCDisassembler_Fail; \
+      MCInst_setOpcode(MI, (unsigned)Opc); \
+      S = decoder(S, (unsigned)DecodeIdx, insn, MI, Address, &DecodeComplete); \
       if (DecodeComplete) { \
         /* Decoding complete. */ \
         return S; \
@@ -6667,7 +6673,7 @@ static DecodeStatus fname(const uint8_t DecodeTable[], MCInst *MI, \
       Ptr += Len; \
       NegativeMask = decodeULEB128(Ptr, &Len); \
       Ptr += Len; \
-      Fail = (insn & PositiveMask) || (~insn & NegativeMask); \
+      Fail = (insn & PositiveMask) || (~(uint64_t)insn & NegativeMask); \
       if (Fail) \
         S = MCDisassembler_SoftFail; \
       break; \

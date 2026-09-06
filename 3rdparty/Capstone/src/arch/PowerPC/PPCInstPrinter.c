@@ -1014,7 +1014,8 @@ static void printAbsBranchOperand(MCInst *MI, unsigned OpNo, SStream *O)
 		return;
 	}
 
-	imm = SignExtend32(MCOperand_getImm(MCInst_getOperand(MI, OpNo)) * 4, 32);
+	/* Branch displacement is a signed 32-bit quantity before adding the PC. */
+	imm = SignExtend64((uint64_t)(MCOperand_getImm(MCInst_getOperand(MI, OpNo)) * 4), 32);
 	//imm = MCOperand_getImm(MCInst_getOperand(MI, OpNo)) * 4;
 
 	if (!PPC_abs_branch(MI->csh, MCInst_getOpcode(MI))) {

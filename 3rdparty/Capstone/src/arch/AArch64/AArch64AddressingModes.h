@@ -196,6 +196,9 @@ static inline bool AArch64_AM_processLogicalImmediate(uint64_t Imm, unsigned Reg
 	uint32_t CTO, I;
 	uint64_t Mask, NImms;
 
+	if (RegSize != 32 && RegSize != 64)
+		return false;
+
 	if (Imm == 0ULL || Imm == ~0ULL ||
 		(RegSize != 64 && (Imm >> RegSize != 0 || Imm == (~0ULL >> (64 - RegSize))))) {
 		return false;
@@ -219,9 +222,9 @@ static inline bool AArch64_AM_processLogicalImmediate(uint64_t Imm, unsigned Reg
 	Imm &= Mask;
 
 	if (isShiftedMask_64(Imm)) {
-		I = CountTrailingZeros_32(Imm);
+		I = CountTrailingZeros_64(Imm);
 		// assert(I < 64 && "undefined behavior");
-		CTO = CountTrailingOnes_32(Imm >> I);
+		CTO = CountTrailingOnes_64(Imm >> I);
 	} else {
 		unsigned CLO;
 
@@ -229,9 +232,9 @@ static inline bool AArch64_AM_processLogicalImmediate(uint64_t Imm, unsigned Reg
 		if (!isShiftedMask_64(~Imm))
 			return false;
 
-		CLO = CountLeadingOnes_32(Imm);
+		CLO = CountLeadingOnes_64(Imm);
 		I = 64 - CLO;
-		CTO = CLO + CountTrailingOnes_32(Imm) - (64 - Size);
+		CTO = CLO + CountTrailingOnes_64(Imm) - (64 - Size);
 	}
 
 	// Encode in Immr the number of RORs it would take to get *from* 0^m 1^n
@@ -416,7 +419,8 @@ static inline bool AArch64_AM_isAdvSIMDModImmType3(uint64_t Imm)
 
 static inline uint8_t AArch64_AM_encodeAdvSIMDModImmType3(uint64_t Imm)
 {
-	return (Imm & 0xff0000ULL) >> 16;
+	// The mask selects exactly one byte before narrowing.
+	return (uint8_t)((Imm & 0xff0000ULL) >> 16);
 }
 
 static inline uint64_t AArch64_AM_decodeAdvSIMDModImmType3(uint8_t Imm)
@@ -514,7 +518,8 @@ static inline uint64_t AArch64_AM_decodeAdvSIMDModImmType8(uint8_t Imm)
 
 static inline uint8_t AArch64_AM_encodeAdvSIMDModImmType8(uint64_t Imm)
 {
-	return (Imm & 0x00ff0000ULL) >> 16;
+	// The mask selects exactly one byte before narrowing.
+	return (uint8_t)((Imm & 0x00ff0000ULL) >> 16);
 }
 
 // abcdefgh abcdefgh abcdefgh abcdefgh abcdefgh abcdefgh abcdefgh abcdefgh
